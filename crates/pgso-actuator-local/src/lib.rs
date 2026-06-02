@@ -38,22 +38,36 @@ impl Actuator for LocalActuator {
                 self.directive_blocks.clear();
             }
             Action::Prune(id) => {
+                // G2: protected tools are never pruned. Pruning a tool that is
+                // absent (already pruned, or unknown id) is an intentional,
+                // idempotent no-op — the end-to-end pipeline (M4) replays the
+                // same decision across consecutive windows while a deviation is
+                // sustained, so this MUST be safe to apply repeatedly. The
+                // decision's *intent* is recorded upstream in the AuditLog (G5),
+                // so tolerance here does not lose the audit signal.
                 if !self.protected.contains(id) {
-                    // G2: protected tools are never pruned
                     self.active_catalog.remove(id);
                 }
             }
             Action::RequireStepUp(id) => {
+                // Idempotent: setting the flag on an absent tool is a no-op
+                // (see the Prune rationale above).
                 self.active_catalog.set_step_up(id, true);
             }
             Action::InjectDirective(text) => {
                 self.directive_blocks.push(text.clone());
             }
-            // `Action` is `#[non_exhaustive]`; any future variant added in a
-            // later milestone must fail toward inaction (governing principle:
-            // PGSO fails toward inaction, not intervention). Treat as a no-op
-            // that leaves the catalog unchanged rather than panicking.
-            _ => {}
+            // `Action` is `#[non_exhaustive]`; a variant added in a later
+            // milestone reaches this arm. Release behavior: leave the catalog
+            // unchanged (governing principle — PGSO fails toward inaction).
+            // Debug/test builds trip this assertion so an unhandled variant is
+            // caught loudly during development rather than silently ignored.
+            _ => {
+                debug_assert!(
+                    false,
+                    "unhandled #[non_exhaustive] Action variant in LocalActuator::apply"
+                );
+            }
         }
         Ok(self.active_catalog.clone())
     }

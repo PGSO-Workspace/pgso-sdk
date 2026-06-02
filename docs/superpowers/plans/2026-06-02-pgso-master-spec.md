@@ -116,9 +116,6 @@ impl Catalog {
             t.requires_step_up = flag;
         }
     }
-    pub fn reset_all_step_ups(&mut self) {
-        for t in &mut self.tools { t.requires_step_up = false; }
-    }
 }
 
 /// The paralinguistic axis being measured.
