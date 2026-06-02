@@ -1,3 +1,5 @@
+//! Governance actions and the audit trail that accompanies each decision.
+
 use crate::types::{Axis, ToolId};
 
 /// A governance action emitted by the rule engine.
@@ -24,11 +26,18 @@ pub const RESTORE_NOMINAL_RULE_ID: &str = "restore_nominal";
 /// Audit trail for a governance decision (INV-5).
 #[derive(Debug, Clone)]
 pub struct AuditRecord {
+    /// Caller-supplied timestamp of the decision in milliseconds.
     pub timestamp_ms: u64,
+    /// Raw signal value that drove the decision, if any.
     pub signal_value: Option<f32>,
+    /// Axis the decision was made on, if any.
     pub axis: Option<Axis>,
+    /// Deviation from baseline at decision time, if any.
     pub deviation: Option<f32>,
+    /// Deviation threshold that was crossed to trigger the decision, if any.
     pub threshold_crossed: Option<f32>,
+    /// Identifier of the rule that fired, if any (e.g. [`RESTORE_NOMINAL_RULE_ID`]
+    /// for a restore-to-nominal reversal).
     pub rule_id: Option<String>,
 }
 
@@ -61,7 +70,9 @@ impl AuditRecord {
 /// A governance decision: an action paired with its audit trail.
 #[derive(Debug, Clone)]
 pub struct ScopeDecision {
+    /// The governance action to apply.
     pub action: Action,
+    /// The audit trail explaining why the action was emitted.
     pub audit: AuditRecord,
 }
 
@@ -72,7 +83,8 @@ impl ScopeDecision {
         Self { action, audit: AuditRecord::empty() }
     }
 
-    #[must_use] 
+    /// Decision pairing an action with its audit trail.
+    #[must_use]
     pub const fn with_audit(action: Action, audit: AuditRecord) -> Self {
         Self { action, audit }
     }

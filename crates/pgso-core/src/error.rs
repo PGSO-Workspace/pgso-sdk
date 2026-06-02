@@ -1,3 +1,5 @@
+//! Error types for the actuator boundary.
+
 use crate::types::ToolId;
 
 /// Error surface for [`crate::traits::Actuator`] implementations.

@@ -12,6 +12,7 @@
     clippy::cast_possible_truncation,
     clippy::cast_sign_loss
 )]
+#![deny(missing_docs)]
 
 mod dsp;
 mod features;
@@ -24,19 +25,29 @@ use pgso_core::{AudioWindow, Axis, Signal, SignalReading};
 /// Configuration for the DSP extractor. Defaults target 16 kHz speech.
 #[derive(Debug, Clone)]
 pub struct EgemapsConfig {
+    /// Samples per analysis window (800 ms @ 16 kHz = 12800).
     pub window_size: usize, // samples per analysis window (800ms @16k = 12800)
+    /// Hop between successive analysis windows in samples (400 ms @ 16 kHz = 6400).
     pub window_hop: usize,  // overlap hop (400ms @16k = 6400)
+    /// Samples per intra-window frame (≈ 64 ms @ 16 kHz).
     pub frame_size: usize,  // intra-window frame (1024 @16k ≈ 64ms)
+    /// Hop between successive frames in samples (16 ms @ 16 kHz = 256).
     pub frame_hop: usize,   // frame hop (256 @16k = 16ms)
+    /// Lowest F0 considered, in Hz.
     pub min_f0: f32,
+    /// Highest F0 considered, in Hz.
     pub max_f0: f32,
+    /// A frame is voiced if its voicing probability exceeds this value.
     pub voicing_threshold: f32, // frame voiced if voicing prob exceeds this
+    /// A frame is treated as silent below this RMS energy.
     pub energy_floor: f32,      // frame considered silent below this RMS
+    /// A window emits a reading only if its voiced fraction is at least this.
     pub min_voiced_fraction: f32, // window emits a reading only above this
 }
 
 impl EgemapsConfig {
-    #[must_use] 
+    /// Default configuration scaled to the given sample rate (Hz), targeting speech.
+    #[must_use]
     pub fn for_sample_rate(sr: u32) -> Self {
         let s = sr as f32;
         Self {
@@ -56,7 +67,9 @@ impl EgemapsConfig {
 /// One reading paired with the interpretable features that produced it.
 #[derive(Debug, Clone)]
 pub struct ExplainedReading {
+    /// The signal reading handed to the decision engine.
     pub reading: SignalReading,
+    /// The interpretable low-level descriptors that produced the reading.
     pub features: AcousticFeatures,
 }
 

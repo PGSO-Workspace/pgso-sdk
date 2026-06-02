@@ -1,7 +1,7 @@
 //! The [`RuleEngine`]: deterministic mapping from [`EngineOutput`] to a list of
 //! [`ScopeDecision`]s, with the inviolable-allowlist guarantee built in.
 //!
-//! Rules are declared with the [`pgso_rules!`] macro. Each rule has a
+//! Rules are declared with the [`pgso_rules!`](crate::pgso_rules) macro. Each rule has a
 //! [`RulePredicate`] (axis + minimum deviation + minimum confidence) and a list
 //! of [`Action`]s to emit when it matches.
 //!
@@ -54,8 +54,8 @@ pub struct Rule {
 }
 
 impl Rule {
-    /// Construct a rule from its parts. Used by the [`pgso_rules!`] macro and in
-    /// tests/property generators.
+    /// Construct a rule from its parts. Used by the [`pgso_rules!`](crate::pgso_rules)
+    /// macro and in tests/property generators.
     #[must_use]
     pub fn new(
         id: &str,

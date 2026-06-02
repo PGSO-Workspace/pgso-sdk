@@ -1,3 +1,6 @@
+//! The two extension traits at the core's boundary: [`Signal`] (perception)
+//! and [`Actuator`] (catalog exposure).
+
 use crate::{action::ScopeDecision, error::ActuatorError, types::{AudioWindow, Catalog, SignalReading}};
 
 /// Perception source. Implementations are stateful (may maintain running statistics).
