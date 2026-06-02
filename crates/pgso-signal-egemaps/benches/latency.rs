@@ -18,7 +18,11 @@ fn voiced_window(sr: u32, secs: f32) -> AudioWindow {
     let samples = (0..len)
         .map(|i| 0.4 * (2.0 * PI * 180.0 * i as f32 / sr as f32).sin())
         .collect();
-    AudioWindow { samples, sample_rate: sr, timestamp_ms: 0 }
+    AudioWindow {
+        samples,
+        sample_rate: sr,
+        timestamp_ms: 0,
+    }
 }
 
 fn bench_window_to_reading(c: &mut Criterion) {

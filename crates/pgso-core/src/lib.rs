@@ -10,20 +10,20 @@
 
 #![deny(missing_docs)]
 
-pub mod types;
 pub mod action;
-pub mod error;
-pub mod traits;
-pub mod engine;
-pub mod rules;
 pub mod audit;
+pub mod engine;
+pub mod error;
 pub mod pipeline;
+pub mod rules;
+pub mod traits;
+pub mod types;
 
-pub use types::*;
 pub use action::*;
-pub use error::*;
-pub use traits::*;
-pub use engine::{DecisionEngine, EngineConfig, EngineOutput};
-pub use rules::{Rule, RuleEngine, RulePredicate, RuleSet};
 pub use audit::AuditLog;
+pub use engine::{DecisionEngine, EngineConfig, EngineOutput};
+pub use error::*;
 pub use pipeline::{Pgso, PgsoBuildError, PgsoBuilder};
+pub use rules::{Rule, RuleEngine, RulePredicate, RuleSet};
+pub use traits::*;
+pub use types::*;

@@ -101,7 +101,9 @@ mod tests {
 
     /// Generate a pure sine of given frequency, amplitude, length.
     fn sine(freq: f32, amp: f32, len: usize, sr: u32) -> Vec<f32> {
-        (0..len).map(|i| amp * (2.0 * PI * freq * i as f32 / sr as f32).sin()).collect()
+        (0..len)
+            .map(|i| amp * (2.0 * PI * freq * i as f32 / sr as f32).sin())
+            .collect()
     }
 
     #[test]
@@ -132,7 +134,10 @@ mod tests {
     fn test_estimate_f0_silence_unvoiced() {
         let frame = vec![0.0; 1024];
         let (_f0, voicing) = estimate_f0(&frame, 16000, 50.0, 500.0);
-        assert!(voicing < 0.1, "silence should be unvoiced, voicing was {voicing}");
+        assert!(
+            voicing < 0.1,
+            "silence should be unvoiced, voicing was {voicing}"
+        );
     }
 
     #[test]

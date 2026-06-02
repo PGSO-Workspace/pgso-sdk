@@ -15,7 +15,11 @@ fn main() {
     let samples: Vec<f32> = (0..len)
         .map(|i| 0.4 * (2.0 * PI * 180.0 * i as f32 / sr as f32).sin())
         .collect();
-    let window = AudioWindow { samples, sample_rate: sr, timestamp_ms: 0 };
+    let window = AudioWindow {
+        samples,
+        sample_rate: sr,
+        timestamp_ms: 0,
+    };
 
     let mut signal = EgemapsSignal::new(sr);
     for (i, e) in signal.extract_explained(&window).into_iter().enumerate() {

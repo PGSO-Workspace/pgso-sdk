@@ -15,10 +15,14 @@ fn arb_axis() -> impl Strategy<Value = Axis> {
 }
 
 fn arb_reading() -> impl Strategy<Value = SignalReading> {
-    (0.0f32..1.0, arb_axis(), 0.0f32..1.0, 0u64..10000)
-        .prop_map(|(value, axis, confidence, ts)| SignalReading {
-            value, axis, confidence, timestamp_ms: ts,
-        })
+    (0.0f32..1.0, arb_axis(), 0.0f32..1.0, 0u64..10000).prop_map(|(value, axis, confidence, ts)| {
+        SignalReading {
+            value,
+            axis,
+            confidence,
+            timestamp_ms: ts,
+        }
+    })
 }
 
 fn arb_tool_id() -> impl Strategy<Value = ToolId> {
@@ -39,10 +43,13 @@ fn arb_action() -> impl Strategy<Value = Action> {
 }
 
 fn arb_rule() -> impl Strategy<Value = Rule> {
-    (arb_axis(), 0.0f32..1.0, 0.0f32..1.0, prop::collection::vec(arb_action(), 1..4))
-        .prop_map(|(axis, dev, conf, actions)| {
-            Rule::new("random_rule", axis, dev, conf, actions)
-        })
+    (
+        arb_axis(),
+        0.0f32..1.0,
+        0.0f32..1.0,
+        prop::collection::vec(arb_action(), 1..4),
+    )
+        .prop_map(|(axis, dev, conf, actions)| Rule::new("random_rule", axis, dev, conf, actions))
 }
 
 proptest! {

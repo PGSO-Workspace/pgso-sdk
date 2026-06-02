@@ -33,7 +33,9 @@ struct MockSignal {
 
 impl MockSignal {
     fn new(readings: Vec<Vec<SignalReading>>) -> Self {
-        Self { sequence: VecDeque::from(readings) }
+        Self {
+            sequence: VecDeque::from(readings),
+        }
     }
 }
 
@@ -46,11 +48,20 @@ impl Signal for MockSignal {
 /// A throwaway audio window. The mock ignores the samples; only the timestamp
 /// is meaningful, and even that is carried purely for shape.
 fn dummy_window(ts: u64) -> AudioWindow {
-    AudioWindow { samples: vec![0.0; 12800], sample_rate: 16000, timestamp_ms: ts }
+    AudioWindow {
+        samples: vec![0.0; 12800],
+        sample_rate: 16000,
+        timestamp_ms: ts,
+    }
 }
 
 const fn reading(value: f32, axis: Axis, confidence: f32, ts: u64) -> SignalReading {
-    SignalReading { value, axis, confidence, timestamp_ms: ts }
+    SignalReading {
+        value,
+        axis,
+        confidence,
+        timestamp_ms: ts,
+    }
 }
 
 /// The standard four-tool fixture from the master spec §4.6.
@@ -166,7 +177,11 @@ fn test_e2e_recovery_restores_catalog() {
     }
 
     let catalog = pgso.current_catalog();
-    assert_eq!(catalog.len(), 4, "catalog should be fully restored after recovery");
+    assert_eq!(
+        catalog.len(),
+        4,
+        "catalog should be fully restored after recovery"
+    );
     assert!(catalog.contains(&ToolId::from("close_sale")));
 
     // G5/REQ-4.6: the reversal must be auditable. The audit trail should hold
@@ -271,9 +286,18 @@ fn test_e2e_audit_trail() {
     // Every recorded intervention must carry a fully populated audit record
     // tying it to the signal, the rule, and the timestamp that produced it.
     let last = entries.last().unwrap();
-    assert!(last.audit.rule_id.is_some(), "audit record must name the firing rule");
-    assert!(last.audit.deviation.is_some(), "audit record must carry the deviation");
-    assert!(last.audit.axis.is_some(), "audit record must carry the axis");
+    assert!(
+        last.audit.rule_id.is_some(),
+        "audit record must name the firing rule"
+    );
+    assert!(
+        last.audit.deviation.is_some(),
+        "audit record must carry the deviation"
+    );
+    assert!(
+        last.audit.axis.is_some(),
+        "audit record must carry the axis"
+    );
     assert_eq!(
         last.audit.rule_id.as_deref(),
         Some("step_up"),
@@ -313,7 +337,10 @@ fn test_e2e_determinism_on_trace() {
 
     let mut pgso1 = Pgso::builder()
         .signal(MockSignal::new(make_readings()))
-        .actuator(pgso_actuator_local::LocalActuator::new(test_catalog(), protected.clone()))
+        .actuator(pgso_actuator_local::LocalActuator::new(
+            test_catalog(),
+            protected.clone(),
+        ))
         .engine(DecisionEngine::new(config.clone()))
         .rules(RuleEngine::new(rules_fn(), protected.clone()))
         .build()
@@ -321,7 +348,10 @@ fn test_e2e_determinism_on_trace() {
 
     let mut pgso2 = Pgso::builder()
         .signal(MockSignal::new(make_readings()))
-        .actuator(pgso_actuator_local::LocalActuator::new(test_catalog(), protected.clone()))
+        .actuator(pgso_actuator_local::LocalActuator::new(
+            test_catalog(),
+            protected.clone(),
+        ))
         .engine(DecisionEngine::new(config))
         .rules(RuleEngine::new(rules_fn(), protected))
         .build()
@@ -368,7 +398,11 @@ fn test_e2e_smoke_calm_keeps_full_catalog() {
 
     for i in 0..10 {
         let catalog = pgso.process_window(&dummy_window(i)).unwrap();
-        assert_eq!(catalog.len(), 4, "calm prosody must keep the full catalog at window {i}");
+        assert_eq!(
+            catalog.len(),
+            4,
+            "calm prosody must keep the full catalog at window {i}"
+        );
     }
 
     assert!(

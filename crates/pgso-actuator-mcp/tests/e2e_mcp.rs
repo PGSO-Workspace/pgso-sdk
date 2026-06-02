@@ -29,7 +29,9 @@ struct MockSignal {
 
 impl MockSignal {
     fn new(readings: Vec<Vec<SignalReading>>) -> Self {
-        Self { sequence: VecDeque::from(readings) }
+        Self {
+            sequence: VecDeque::from(readings),
+        }
     }
 }
 
@@ -40,11 +42,20 @@ impl Signal for MockSignal {
 }
 
 fn dummy_window(ts: u64) -> AudioWindow {
-    AudioWindow { samples: vec![0.0; 12800], sample_rate: 16000, timestamp_ms: ts }
+    AudioWindow {
+        samples: vec![0.0; 12800],
+        sample_rate: 16000,
+        timestamp_ms: ts,
+    }
 }
 
 const fn reading(value: f32, axis: Axis, confidence: f32, ts: u64) -> SignalReading {
-    SignalReading { value, axis, confidence, timestamp_ms: ts }
+    SignalReading {
+        value,
+        axis,
+        confidence,
+        timestamp_ms: ts,
+    }
 }
 
 /// The standard four-tool fixture from the master spec §4.6.

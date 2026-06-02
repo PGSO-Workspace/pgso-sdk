@@ -66,7 +66,11 @@ impl Rule {
     ) -> Self {
         Self {
             id: id.to_string(),
-            predicate: RulePredicate { axis, min_deviation, min_confidence },
+            predicate: RulePredicate {
+                axis,
+                min_deviation,
+                min_confidence,
+            },
             actions,
         }
     }
@@ -119,11 +123,10 @@ impl RuleEngine {
 
         // Single pass: filter matching rules and emit their decisions inline
         // (no intermediate `Vec<&Rule>` allocation on this per-output hot path).
-        let matching = self
-            .rules
-            .rules()
-            .iter()
-            .filter(|r| r.predicate.matches(output.axis, output.deviation, output.confidence));
+        let matching = self.rules.rules().iter().filter(|r| {
+            r.predicate
+                .matches(output.axis, output.deviation, output.confidence)
+        });
 
         for rule in matching {
             for action in &rule.actions {
@@ -213,8 +216,12 @@ mod tests {
 
     fn sample_output(axis: Axis, deviation: f32, confidence: f32) -> EngineOutput {
         EngineOutput {
-            axis, raw_value: 0.9, deviation, confidence,
-            baseline: 0.5, timestamp_ms: 1000,
+            axis,
+            raw_value: 0.9,
+            deviation,
+            confidence,
+            baseline: 0.5,
+            timestamp_ms: 1000,
         }
     }
 
@@ -231,7 +238,10 @@ mod tests {
         let engine = RuleEngine::new(rules, HashSet::new());
         let decisions = engine.evaluate(&sample_output(Axis::Arousal, 0.5, 0.8));
         assert_eq!(decisions.len(), 1);
-        assert_eq!(decisions[0].action, Action::RequireStepUp(ToolId::from("close_sale")));
+        assert_eq!(
+            decisions[0].action,
+            Action::RequireStepUp(ToolId::from("close_sale"))
+        );
     }
 
     #[test]
@@ -283,7 +293,10 @@ mod tests {
         };
         let engine = RuleEngine::new(rules, HashSet::new());
         let decisions = engine.evaluate(&sample_output(Axis::Valence, 0.5, 0.8));
-        assert_eq!(decisions[0].action, Action::RequireStepUp(ToolId::from("close_sale")));
+        assert_eq!(
+            decisions[0].action,
+            Action::RequireStepUp(ToolId::from("close_sale"))
+        );
     }
 
     #[test]

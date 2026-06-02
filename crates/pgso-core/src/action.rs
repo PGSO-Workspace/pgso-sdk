@@ -43,18 +43,22 @@ pub struct AuditRecord {
 
 impl AuditRecord {
     /// Empty audit record for hand-constructed decisions in tests.
-    #[must_use] 
+    #[must_use]
     pub const fn empty() -> Self {
         Self {
-            timestamp_ms: 0, signal_value: None, axis: None,
-            deviation: None, threshold_crossed: None, rule_id: None,
+            timestamp_ms: 0,
+            signal_value: None,
+            axis: None,
+            deviation: None,
+            threshold_crossed: None,
+            rule_id: None,
         }
     }
 
     /// Audit record for a restore-to-nominal event: a catalog reversal with no
     /// originating rule. Carries the caller-supplied `timestamp_ms` and the
     /// [`RESTORE_NOMINAL_RULE_ID`] marker so the reversal is traceable (G5).
-    #[must_use] 
+    #[must_use]
     pub fn restore(timestamp_ms: u64) -> Self {
         Self {
             timestamp_ms,
@@ -78,9 +82,12 @@ pub struct ScopeDecision {
 
 impl ScopeDecision {
     /// Decision with an empty audit record (for M1 tests).
-    #[must_use] 
+    #[must_use]
     pub const fn new(action: Action) -> Self {
-        Self { action, audit: AuditRecord::empty() }
+        Self {
+            action,
+            audit: AuditRecord::empty(),
+        }
     }
 
     /// Decision pairing an action with its audit trail.

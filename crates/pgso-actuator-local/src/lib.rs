@@ -9,10 +9,8 @@
 
 #![deny(missing_docs)]
 
+use pgso_core::{Action, Actuator, ActuatorError, Catalog, ScopeDecision, ToolId};
 use std::collections::HashSet;
-use pgso_core::{
-    Action, Actuator, ActuatorError, Catalog, ScopeDecision, ToolId,
-};
 
 /// In-memory [`Actuator`]: applies governance decisions to a tool catalog held
 /// in memory, honouring a set of protected (never-pruned) tools.
@@ -136,7 +134,8 @@ mod tests {
     fn test_allow_returns_full_catalog() {
         let (mut act, _, close_sale, _, _) = fixture();
         // First prune a tool
-        act.apply(&ScopeDecision::new(Action::Prune(close_sale.clone()))).unwrap();
+        act.apply(&ScopeDecision::new(Action::Prune(close_sale.clone())))
+            .unwrap();
         assert!(!act.current_catalog().contains(&close_sale));
         // Then Allow to restore
         let catalog = act.apply(&ScopeDecision::new(Action::Allow)).unwrap();

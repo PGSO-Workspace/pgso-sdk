@@ -104,9 +104,9 @@ pub fn relative_perturbation(xs: &[f32]) -> f32 {
 #[derive(Debug, Clone)]
 pub struct AxisMapping {
     /// Reference mean energy that maps to roughly `1.0` on the Arousal axis.
-    pub energy_ref: f32,  // energy that maps to ~1.0
+    pub energy_ref: f32, // energy that maps to ~1.0
     /// Reference F0 standard deviation (Hz) that maps to roughly `1.0`.
-    pub f0_std_ref: f32,  // F0 std (Hz) that maps to ~1.0
+    pub f0_std_ref: f32, // F0 std (Hz) that maps to ~1.0
     /// Weight applied to the normalized energy term.
     pub w_energy: f32,
     /// Weight applied to the normalized F0-std term.
@@ -126,7 +126,7 @@ impl Default for AxisMapping {
 
 impl AxisMapping {
     /// Map mean energy + F0 std to an Arousal scalar in `[0, 1]`.
-    #[must_use] 
+    #[must_use]
     pub fn arousal(&self, mean_energy: f32, f0_std: f32) -> f32 {
         let e = (mean_energy / self.energy_ref).clamp(0.0, 1.0);
         let p = (f0_std / self.f0_std_ref).clamp(0.0, 1.0);

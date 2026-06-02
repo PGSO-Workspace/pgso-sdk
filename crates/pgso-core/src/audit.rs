@@ -21,7 +21,9 @@ impl AuditLog {
     /// Create an empty log.
     #[must_use]
     pub const fn new() -> Self {
-        Self { entries: Vec::new() }
+        Self {
+            entries: Vec::new(),
+        }
     }
 
     /// Append a clone of `decision` to the log.

@@ -79,7 +79,11 @@ struct AxisState {
 
 impl AxisState {
     const fn new(prior: f32) -> Self {
-        Self { baseline: prior, readings_count: 0, consecutive_above: 0 }
+        Self {
+            baseline: prior,
+            readings_count: 0,
+            consecutive_above: 0,
+        }
     }
 
     /// Advance the three-layer baseline with a new value.
@@ -116,7 +120,7 @@ impl DecisionEngine {
     /// In debug/test builds the configuration ranges documented on
     /// [`EngineConfig`] are asserted, so a misconfiguration surfaces loudly
     /// rather than silently corrupting the baseline.
-    #[must_use] 
+    #[must_use]
     pub fn new(config: EngineConfig) -> Self {
         debug_assert!(
             (0.0..=1.0).contains(&config.ema_alpha),
@@ -133,7 +137,10 @@ impl DecisionEngine {
             config.deviation_threshold >= 0.0,
             "EngineConfig.deviation_threshold must be non-negative"
         );
-        Self { config, axes: HashMap::new() }
+        Self {
+            config,
+            axes: HashMap::new(),
+        }
     }
 
     /// Process one reading.
@@ -172,7 +179,11 @@ impl DecisionEngine {
         let deviation = (reading.value - baseline_ref).abs();
 
         // Then fold this reading into the baseline (warm-up mean → EMA).
-        state.update_baseline(reading.value, self.config.ema_alpha, self.config.warmup_readings);
+        state.update_baseline(
+            reading.value,
+            self.config.ema_alpha,
+            self.config.warmup_readings,
+        );
 
         if deviation >= self.config.deviation_threshold {
             // saturating: a pathological unbroken stream can't wrap the counter.
@@ -204,7 +215,12 @@ mod tests {
     use crate::types::{Axis, SignalReading};
 
     fn reading(value: f32, axis: Axis, confidence: f32, ts: u64) -> SignalReading {
-        SignalReading { value, axis, confidence, timestamp_ms: ts }
+        SignalReading {
+            value,
+            axis,
+            confidence,
+            timestamp_ms: ts,
+        }
     }
 
     fn default_config() -> EngineConfig {
@@ -273,8 +289,16 @@ mod tests {
         let mut engine = DecisionEngine::new(config);
         let out = engine.process(&reading(0.95, Axis::Valence, 0.9, 0));
         let o = out.expect("first reading far from the prior should be able to trigger");
-        assert!((o.deviation - 0.45).abs() < 1e-6, "deviation vs prior 0.5 should be 0.45, got {}", o.deviation);
-        assert!((o.baseline - 0.5).abs() < 1e-6, "reported baseline should be the prior reference, got {}", o.baseline);
+        assert!(
+            (o.deviation - 0.45).abs() < 1e-6,
+            "deviation vs prior 0.5 should be 0.45, got {}",
+            o.deviation
+        );
+        assert!(
+            (o.baseline - 0.5).abs() < 1e-6,
+            "reported baseline should be the prior reference, got {}",
+            o.baseline
+        );
     }
 
     #[test]
@@ -299,7 +323,9 @@ mod tests {
         }
         // A reading AT the adapted baseline must not deviate/trigger.
         assert!(
-            engine.process(&reading(0.7, Axis::Valence, 0.9, 15)).is_none(),
+            engine
+                .process(&reading(0.7, Axis::Valence, 0.9, 15))
+                .is_none(),
             "a reading at the adapted baseline must not trigger"
         );
         // A reading FAR from the adapted baseline must trigger, and the reported
@@ -307,7 +333,11 @@ mod tests {
         let o = engine
             .process(&reading(0.2, Axis::Valence, 0.9, 16))
             .expect("a reading far below the adapted baseline should trigger");
-        assert!(o.baseline > 0.5, "baseline should have adapted near 0.7, got {}", o.baseline);
+        assert!(
+            o.baseline > 0.5,
+            "baseline should have adapted near 0.7, got {}",
+            o.baseline
+        );
     }
 
     #[test]
