@@ -73,7 +73,7 @@ fn test_mock_second_signal_accepted() {
 
     // Calm latency (5-window warm-up) then 3 windows of sustained high latency.
     let mut latencies = vec![0.5; 5];
-    latencies.extend(std::iter::repeat_n(0.95, 3));
+    latencies.extend([0.95; 3]);
 
     let signal = MockLatencySignal::new(latencies);
     let actuator = LocalActuator::new(catalog, protected.clone());

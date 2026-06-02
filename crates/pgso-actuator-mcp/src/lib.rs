@@ -46,6 +46,7 @@ use std::collections::HashSet;
 /// read [`McpActuator::tools_list_response`] for the MCP payload and
 /// [`McpActuator::has_changed`] to decide whether to emit
 /// `notifications/tools/list_changed`.
+#[derive(Debug)]
 pub struct McpActuator {
     /// The full nominal catalog, restored on [`Action::Allow`].
     base_catalog: Catalog,
@@ -94,10 +95,14 @@ impl McpActuator {
             .tools()
             .iter()
             .map(|t| {
+                // Per the MCP spec, `name` is the programmatic identifier a
+                // client sends in `tools/call`; `title` is the human display
+                // label. So the stable `ToolId` is the name and `Tool::name`
+                // (the label) is the title.
                 json!({
-                    "name": t.name,
+                    "name": t.id.as_str(),
                     "title": t.name,
-                    "description": format!("Tool: {}", t.id.as_str()),
+                    "description": format!("The {} tool.", t.name),
                     "inputSchema": {
                         "type": "object",
                         "properties": {},
@@ -231,8 +236,9 @@ mod tests {
 
         let payload = act.tools_list_response();
         let tools = payload["tools"].as_array().unwrap();
+        // `name` is the programmatic id (MCP spec); pruned id must be absent.
         let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
-        assert!(!names.contains(&"Close Sale"));
+        assert!(!names.contains(&"close_sale"));
         assert_eq!(tools.len(), 3);
     }
 
@@ -249,7 +255,7 @@ mod tests {
         let tools = payload["tools"].as_array().unwrap();
         let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
         assert!(
-            names.contains(&"Escalate to Human"),
+            names.contains(&"escalate"),
             "G2: protected tool must survive"
         );
     }
@@ -310,8 +316,10 @@ mod tests {
         let act = fixture();
         let payload = act.tools_list_response();
         let first = &payload["tools"][0];
-        assert!(first["name"].is_string());
-        assert!(first["title"].is_string());
+        // Lock in the spec mapping: name = programmatic id, title = display label.
+        // (Fixture's first tool is Tool::new("search", "Web Search").)
+        assert_eq!(first["name"], "search");
+        assert_eq!(first["title"], "Web Search");
         assert!(first["description"].is_string());
         assert_eq!(first["inputSchema"]["type"], "object");
         assert!(first["inputSchema"]["properties"].is_object());
@@ -328,7 +336,7 @@ mod tests {
         let payload = act.tools_list_response();
         let tools = payload["tools"].as_array().unwrap();
         let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
-        assert!(names.contains(&"Close Sale"));
+        assert!(names.contains(&"close_sale"));
         assert_eq!(tools.len(), 4);
         // RequireStepUp changes the served catalog (the tool's flag), so the
         // change flag is set.

@@ -129,14 +129,15 @@ fn test_e2e_over_mcp() {
     // close_sale absent, escalate present.
     let payload = McpActuator::new(catalog, protected).tools_list_response();
     let tools = payload["tools"].as_array().unwrap();
+    // `name` is the programmatic id per the MCP spec (display label is `title`).
     let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
     assert_eq!(tools.len(), 3, "MCP tools/list should omit the pruned tool");
     assert!(
-        !names.contains(&"Close Sale"),
+        !names.contains(&"close_sale"),
         "REQ-5.2: pruned tool must be absent from the MCP tools/list payload"
     );
     assert!(
-        names.contains(&"Escalate to Human"),
+        names.contains(&"escalate"),
         "REQ-5.6 (G2 over MCP): protected tool must remain in the MCP payload"
     );
 }
