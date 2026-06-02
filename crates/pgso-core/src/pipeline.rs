@@ -34,7 +34,7 @@
 //! and [`Pgso::process_window`] propagates [`ActuatorError`] with `?`.
 
 use crate::{
-    action::{Action, ScopeDecision},
+    action::{Action, AuditRecord, ScopeDecision},
     audit::AuditLog,
     engine::DecisionEngine,
     error::ActuatorError,
@@ -119,8 +119,30 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
         // catalog to nominal and drop any directive block via Action::Allow.
         // Silence (no readings) is deliberately NOT a restore trigger: absence
         // of signal holds the current state rather than resetting it.
+        //
+        // G5/REQ-4.6: a restore that actually changes the served catalog
+        // (pruned -> full, directive cleared) is itself a catalog mutation and
+        // MUST be auditable so the reversal is traceable. We record it only when
+        // the catalog truly changed — a no-op Allow on an already-nominal catalog
+        // (every calm window) is not a mutation and would only flood the log.
         if !any_triggered && !readings.is_empty() {
-            self.actuator.apply(&ScopeDecision::new(Action::Allow))?;
+            let before = self.actuator.current_catalog();
+            let timestamp_ms = readings.last().map_or(0, |r| r.timestamp_ms);
+            let restore = ScopeDecision::with_audit(
+                Action::Allow,
+                AuditRecord {
+                    timestamp_ms,
+                    signal_value: None,
+                    axis: None,
+                    deviation: None,
+                    threshold_crossed: None,
+                    rule_id: Some("restore_nominal".to_string()),
+                },
+            );
+            let after = self.actuator.apply(&restore)?;
+            if after != before {
+                self.audit_log.record(&restore);
+            }
         }
 
         Ok(self.actuator.current_catalog())

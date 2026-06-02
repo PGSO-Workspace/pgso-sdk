@@ -168,6 +168,22 @@ fn test_e2e_recovery_restores_catalog() {
     let catalog = pgso.current_catalog();
     assert_eq!(catalog.len(), 4, "catalog should be fully restored after recovery");
     assert!(catalog.contains(&ToolId::from("close_sale")));
+
+    // G5/REQ-4.6: the reversal must be auditable. The audit trail should hold
+    // both the prune intervention and the restore-to-nominal event (which is
+    // what clears the directive block per G1 — observable here via the log).
+    let entries = pgso.audit_log().entries();
+    assert!(
+        entries.iter().any(|d| matches!(d.action, Action::Prune(_))),
+        "audit log should record the prune intervention"
+    );
+    assert!(
+        entries.iter().any(|d| {
+            matches!(d.action, Action::Allow)
+                && d.audit.rule_id.as_deref() == Some("restore_nominal")
+        }),
+        "audit log should record the restore-to-nominal reversal (G5: reversible + traceable)"
+    );
 }
 
 /// REQ-4.5 (G2 end-to-end): a rule that targets a PROTECTED tool must never
