@@ -4,6 +4,15 @@
 //! shimmer, voicing) from raw audio, with no ML runtime and no proprietary
 //! dependency. Each `SignalReading` is explainable via [`ExplainedReading`].
 
+// Window/frame arithmetic converts sample counts and rates between integer and
+// float; the precision loss and f32<->usize/u64 conversions are intentional and
+// bounded for streaming audio.
+#![allow(
+    clippy::cast_precision_loss,
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss
+)]
+
 mod dsp;
 mod features;
 mod windowing;
@@ -27,6 +36,7 @@ pub struct EgemapsConfig {
 }
 
 impl EgemapsConfig {
+    #[must_use] 
     pub fn for_sample_rate(sr: u32) -> Self {
         let s = sr as f32;
         Self {
@@ -63,6 +73,7 @@ impl EgemapsSignal {
     /// Build a signal for audio already resampled to `sample_rate` (typically
     /// 16 kHz). Windows fed to [`Self::extract`]/[`Self::extract_explained`] are
     /// assumed to be at this rate (see those methods).
+    #[must_use] 
     pub fn new(sample_rate: u32) -> Self {
         Self {
             config: EgemapsConfig::for_sample_rate(sample_rate),
@@ -80,6 +91,7 @@ impl EgemapsSignal {
     /// `min_f0 >= max_f0` yields an empty lag window so every frame reads as
     /// unvoiced (no readings). The `debug_assert`s below catch the common
     /// mistakes in dev/test builds.
+    #[must_use] 
     pub fn with_config(sample_rate: u32, config: EgemapsConfig) -> Self {
         debug_assert!(
             config.min_f0 < config.max_f0,

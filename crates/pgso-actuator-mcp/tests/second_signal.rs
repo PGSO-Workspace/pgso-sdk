@@ -3,7 +3,7 @@
 //! `Signal` boundary admits more than prosody.
 //!
 //! This test deliberately uses `LocalActuator` (not `McpActuator`) — the point
-//! here is the *signal* axis of agnosticism, mirroring the M4 PoC actuator. It
+//! here is the *signal* axis of agnosticism, mirroring the M4 `PoC` actuator. It
 //! lives in `pgso-actuator-mcp/tests/` (with `pgso-actuator-local` as a
 //! dev-dependency of THIS crate) so that `pgso-core` — including its
 //! `Cargo.toml` — stays 100% untouched for the M5 diff.

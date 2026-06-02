@@ -3,7 +3,7 @@
 //! These tests wire a [`MockSignal`] (pre-programmed [`SignalReading`]
 //! sequences) through the generic [`Pgso`] pipeline into a
 //! [`pgso_actuator_local::LocalActuator`], proving the full governance loop —
-//! Signal -> DecisionEngine -> RuleEngine -> Actuator — without model noise.
+//! Signal -> `DecisionEngine` -> `RuleEngine` -> Actuator — without model noise.
 //!
 //! Each test maps to a requirement from `m4-e2e-wiring.md`:
 //! - `test_e2e_sustained_deviation_prunes_tool` — REQ-4.2 / REQ-4.3
@@ -49,7 +49,7 @@ fn dummy_window(ts: u64) -> AudioWindow {
     AudioWindow { samples: vec![0.0; 12800], sample_rate: 16000, timestamp_ms: ts }
 }
 
-fn reading(value: f32, axis: Axis, confidence: f32, ts: u64) -> SignalReading {
+const fn reading(value: f32, axis: Axis, confidence: f32, ts: u64) -> SignalReading {
     SignalReading { value, axis, confidence, timestamp_ms: ts }
 }
 
@@ -63,7 +63,7 @@ fn test_catalog() -> Catalog {
     ])
 }
 
-fn default_config() -> EngineConfig {
+const fn default_config() -> EngineConfig {
     EngineConfig {
         confidence_threshold: 0.5,
         deviation_threshold: 0.3,

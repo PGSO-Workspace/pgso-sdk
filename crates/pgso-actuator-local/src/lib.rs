@@ -11,6 +11,7 @@ pub struct LocalActuator {
 }
 
 impl LocalActuator {
+    #[must_use] 
     pub fn new(catalog: Catalog, protected: HashSet<ToolId>) -> Self {
         Self {
             active_catalog: catalog.clone(),
@@ -20,6 +21,7 @@ impl LocalActuator {
         }
     }
 
+    #[must_use] 
     pub fn directives(&self) -> &[String] {
         &self.directive_blocks
     }

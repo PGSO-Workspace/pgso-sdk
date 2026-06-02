@@ -10,6 +10,10 @@
 //! state. Timestamps are taken from the caller-supplied
 //! [`SignalReading::timestamp_ms`].
 
+// The baseline's cumulative-mean/EMA math converts small reading counts (u64) to
+// float; the precision loss is expected and bounded.
+#![allow(clippy::cast_precision_loss)]
+
 use crate::types::{Axis, SignalReading};
 use std::collections::HashMap;
 
@@ -74,7 +78,7 @@ struct AxisState {
 }
 
 impl AxisState {
-    fn new(prior: f32) -> Self {
+    const fn new(prior: f32) -> Self {
         Self { baseline: prior, readings_count: 0, consecutive_above: 0 }
     }
 
@@ -90,7 +94,7 @@ impl AxisState {
             let n = self.readings_count as f32;
             self.baseline = self.baseline * (n - 1.0) / n + value / n;
         } else {
-            self.baseline = self.baseline * (1.0 - alpha) + value * alpha;
+            self.baseline = self.baseline.mul_add(1.0 - alpha, value * alpha);
         }
     }
 }
@@ -112,6 +116,7 @@ impl DecisionEngine {
     /// In debug/test builds the configuration ranges documented on
     /// [`EngineConfig`] are asserted, so a misconfiguration surfaces loudly
     /// rather than silently corrupting the baseline.
+    #[must_use] 
     pub fn new(config: EngineConfig) -> Self {
         debug_assert!(
             (0.0..=1.0).contains(&config.ema_alpha),
@@ -309,7 +314,7 @@ mod tests {
     fn test_determinism() {
         let config = default_config();
         let readings: Vec<SignalReading> = (0..20)
-            .map(|i| reading(0.3 + (i as f32) * 0.03, Axis::Arousal, 0.8, i))
+            .map(|i| reading((i as f32).mul_add(0.03, 0.3), Axis::Arousal, 0.8, i))
             .collect();
 
         let mut engine1 = DecisionEngine::new(config.clone());

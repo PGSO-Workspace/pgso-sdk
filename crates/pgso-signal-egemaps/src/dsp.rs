@@ -1,5 +1,15 @@
 //! Pure-Rust DSP primitives for paralinguistic LLD extraction.
 
+// Audio DSP intentionally mixes integer sample counts/lags with f32 sample math.
+// The f32<->usize conversions and precision loss here are expected and bounded
+// (lags fit within the analysis window; counts are small), so these cast lints
+// are allowed at module scope while `pedantic` stays meaningful elsewhere.
+#![allow(
+    clippy::cast_precision_loss,
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss
+)]
+
 /// Root-mean-square energy of a frame (intensity proxy).
 pub fn rms_energy(frame: &[f32]) -> f32 {
     if frame.is_empty() {
@@ -101,7 +111,7 @@ mod tests {
         assert!(rms_energy(&loud) > rms_energy(&quiet));
         // RMS of a sine with amplitude A is A/sqrt(2)
         let e = rms_energy(&loud);
-        assert!((e - 0.5 / 2.0_f32.sqrt()).abs() < 0.02, "rms was {}", e);
+        assert!((e - 0.5 / 2.0_f32.sqrt()).abs() < 0.02, "rms was {e}");
     }
 
     #[test]
@@ -114,15 +124,15 @@ mod tests {
         // 200 Hz tone at 16kHz → expect F0 ≈ 200 Hz, strongly voiced
         let frame = sine(200.0, 0.5, 1024, 16000);
         let (f0, voicing) = estimate_f0(&frame, 16000, 50.0, 500.0);
-        assert!((f0 - 200.0).abs() < 10.0, "f0 was {}", f0);
-        assert!(voicing > 0.5, "voicing was {}", voicing);
+        assert!((f0 - 200.0).abs() < 10.0, "f0 was {f0}");
+        assert!(voicing > 0.5, "voicing was {voicing}");
     }
 
     #[test]
     fn test_estimate_f0_silence_unvoiced() {
         let frame = vec![0.0; 1024];
         let (_f0, voicing) = estimate_f0(&frame, 16000, 50.0, 500.0);
-        assert!(voicing < 0.1, "silence should be unvoiced, voicing was {}", voicing);
+        assert!(voicing < 0.1, "silence should be unvoiced, voicing was {voicing}");
     }
 
     #[test]
@@ -130,7 +140,7 @@ mod tests {
         // 120 Hz tone → expect F0 ≈ 120 Hz
         let frame = sine(120.0, 0.4, 2048, 16000);
         let (f0, voicing) = estimate_f0(&frame, 16000, 50.0, 500.0);
-        assert!((f0 - 120.0).abs() < 8.0, "f0 was {}", f0);
+        assert!((f0 - 120.0).abs() < 8.0, "f0 was {f0}");
         assert!(voicing > 0.5);
     }
 }

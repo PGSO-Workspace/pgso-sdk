@@ -3,6 +3,7 @@
 pub struct ToolId(String);
 
 impl ToolId {
+    #[must_use] 
     pub fn as_str(&self) -> &str { &self.0 }
 }
 
@@ -21,7 +22,7 @@ impl From<String> for ToolId {
 }
 
 /// A tool in the agent's catalog.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Tool {
     pub id: ToolId,
     pub name: String,
@@ -35,17 +36,23 @@ impl Tool {
 }
 
 /// An ordered collection of tools exposed to the agent.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Catalog {
     tools: Vec<Tool>,
 }
 
 impl Catalog {
-    pub fn new(tools: Vec<Tool>) -> Self { Self { tools } }
+    #[must_use] 
+    pub const fn new(tools: Vec<Tool>) -> Self { Self { tools } }
+    #[must_use] 
     pub fn tools(&self) -> &[Tool] { &self.tools }
-    pub fn len(&self) -> usize { self.tools.len() }
-    pub fn is_empty(&self) -> bool { self.tools.is_empty() }
+    #[must_use] 
+    pub const fn len(&self) -> usize { self.tools.len() }
+    #[must_use] 
+    pub const fn is_empty(&self) -> bool { self.tools.is_empty() }
+    #[must_use] 
     pub fn contains(&self, id: &ToolId) -> bool { self.tools.iter().any(|t| t.id == *id) }
+    #[must_use] 
     pub fn find(&self, id: &ToolId) -> Option<&Tool> { self.tools.iter().find(|t| t.id == *id) }
 
     pub fn remove(&mut self, id: &ToolId) { self.tools.retain(|t| t.id != *id); }
@@ -66,7 +73,7 @@ pub enum Axis {
 
 /// A single reading from a Signal extractor.
 /// `value` is the raw per-channel model output, normalized to ~[0,1].
-/// The DecisionEngine computes deviation relative to speaker baseline.
+/// The `DecisionEngine` computes deviation relative to speaker baseline.
 #[derive(Debug, Clone)]
 pub struct SignalReading {
     pub value: f32,

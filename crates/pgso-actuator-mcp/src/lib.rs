@@ -123,13 +123,13 @@ impl McpActuator {
     /// absent/protected tool, or an [`Action::InjectDirective`] (which never
     /// affects the tools payload) does not flip this flag.
     #[must_use]
-    pub fn has_changed(&self) -> bool {
+    pub const fn has_changed(&self) -> bool {
         self.changed
     }
 
     /// Clear the change flag after a `notifications/tools/list_changed` has been
     /// emitted.
-    pub fn acknowledge_change(&mut self) {
+    pub const fn acknowledge_change(&mut self) {
         self.changed = false;
     }
 

@@ -81,7 +81,7 @@ pub struct RuleSet {
 impl RuleSet {
     /// Create a rule set from a list of rules.
     #[must_use]
-    pub fn new(rules: Vec<Rule>) -> Self {
+    pub const fn new(rules: Vec<Rule>) -> Self {
         Self { rules }
     }
 
@@ -103,7 +103,7 @@ impl RuleEngine {
     /// Construct an engine from a rule set and the set of protected tool ids.
     /// Protected ids can never be pruned by [`RuleEngine::evaluate`].
     #[must_use]
-    pub fn new(rules: RuleSet, protected: HashSet<ToolId>) -> Self {
+    pub const fn new(rules: RuleSet, protected: HashSet<ToolId>) -> Self {
         Self { rules, protected }
     }
 

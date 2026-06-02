@@ -14,9 +14,11 @@ pub enum Action {
     InjectDirective(String),
 }
 
-/// `rule_id` marker for a restore-to-nominal audit record — a catalog reversal
-/// that has no originating rule. Used by the pipeline's level-triggered recovery
-/// and asserted by callers inspecting the audit trail.
+/// `rule_id` marker for a restore-to-nominal audit record.
+///
+/// A restore is a catalog reversal with no originating rule. Used by the
+/// pipeline's level-triggered recovery and asserted by callers inspecting the
+/// audit trail.
 pub const RESTORE_NOMINAL_RULE_ID: &str = "restore_nominal";
 
 /// Audit trail for a governance decision (INV-5).
@@ -32,7 +34,8 @@ pub struct AuditRecord {
 
 impl AuditRecord {
     /// Empty audit record for hand-constructed decisions in tests.
-    pub fn empty() -> Self {
+    #[must_use] 
+    pub const fn empty() -> Self {
         Self {
             timestamp_ms: 0, signal_value: None, axis: None,
             deviation: None, threshold_crossed: None, rule_id: None,
@@ -42,6 +45,7 @@ impl AuditRecord {
     /// Audit record for a restore-to-nominal event: a catalog reversal with no
     /// originating rule. Carries the caller-supplied `timestamp_ms` and the
     /// [`RESTORE_NOMINAL_RULE_ID`] marker so the reversal is traceable (G5).
+    #[must_use] 
     pub fn restore(timestamp_ms: u64) -> Self {
         Self {
             timestamp_ms,
@@ -63,11 +67,13 @@ pub struct ScopeDecision {
 
 impl ScopeDecision {
     /// Decision with an empty audit record (for M1 tests).
-    pub fn new(action: Action) -> Self {
+    #[must_use] 
+    pub const fn new(action: Action) -> Self {
         Self { action, audit: AuditRecord::empty() }
     }
 
-    pub fn with_audit(action: Action, audit: AuditRecord) -> Self {
+    #[must_use] 
+    pub const fn with_audit(action: Action, audit: AuditRecord) -> Self {
         Self { action, audit }
     }
 }
