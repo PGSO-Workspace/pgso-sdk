@@ -309,12 +309,16 @@ pgso-sdk/
 │   ├── pgso-actuator-local/            # (M1)
 │   │   ├── Cargo.toml                  # deps: pgso-core
 │   │   └── src/lib.rs
-│   ├── pgso-signal-onnx/              # (M3)
-│   │   ├── Cargo.toml                  # deps: pgso-core, ort
+│   ├── pgso-signal-egemaps/            # (M3) DEFAULT signal: pure-Rust DSP
+│   │   ├── Cargo.toml                  # deps: pgso-core ONLY (no ML, no openSMILE)
 │   │   └── src/
-│   │       ├── lib.rs
-│   │       ├── windowing.rs
-│   │       └── vad.rs
+│   │       ├── lib.rs                  # EgemapsSignal + Signal impl
+│   │       ├── windowing.rs            # sliding windows + frame framing
+│   │       ├── dsp.rs                  # F0 (autocorr), RMS energy, jitter, shimmer, voicing
+│   │       └── features.rs             # AcousticFeatures (auditability) + axis mapping
+│   ├── pgso-signal-onnx/               # (opt-in, OUT OF SCOPE for M3) wav2vec2 via ort
+│   │   ├── Cargo.toml                  # deps: pgso-core, ort — feature "onnx", ablation only
+│   │   └── src/lib.rs                  # see m3-signal-onnx-backup.md
 │   └── pgso-actuator-mcp/             # (M5)
 │       ├── Cargo.toml                  # deps: pgso-core, serde, serde_json
 │       └── src/lib.rs
@@ -360,7 +364,7 @@ members = ["crates/*"]
 |---|-----------|--------|------|
 | 1 | Local actuator hides one tool by flag | exposure point is controllable | `m1-local-actuator.md` |
 | 2 | Deterministic core | decision logic + allowlist invariant | `m2-deterministic-core.md` |
-| 3 | Paralinguistic signal (streaming) | real signal behind the trait | `m3-signal-onnx.md` |
+| 3 | Paralinguistic signal (eGeMAPS DSP, default) | real auditable signal behind the trait | `m3-signal-egemaps.md` |
 | 4 | End-to-end wiring | prosody alters catalog (the PoC) | `m4-e2e-wiring.md` |
 | 5 | MCP adapter + mock signal | transport agnosticism proven | `m5-transport-agnosticism.md` |
 
@@ -386,7 +390,7 @@ M1 (core types + LocalActuator)
  ▼
 M2 (DecisionEngine + RuleEngine + allowlist invariant)
  ▼
-M3 (Signal/ONNX streaming)
+M3 (Signal: eGeMAPS DSP extractor, default — pure Rust, auditable)
  ▼
 M4 (end-to-end wiring = PoC)
  ▼
@@ -414,3 +418,5 @@ M5 (MCP adapter + mock signal = agnosticism)
 **R7** `prop_allowlist_never_pruned` (M2) is the single most important test. Its absence or failure is a blocking defect.
 
 **R8** Before coding M5, verify the current MCP `tools/list` / `notifications/tools/list_changed` shape against the live spec. If it differs, adjust the adapter design first.
+
+**R9** M3 is eGeMAPS-first: the DEFAULT signal is an owned pure-Rust DSP extractor (`pgso-signal-egemaps`, interpretable LLD subset), NOT openSMILE (proprietary, non-commercial) and NOT the ONNX model (1.2GB, opt-in only). A sub-agent that makes ONNX or openSMILE the default in M3, or binds to openSMILE at all, has violated the spec → reject. ONNX stays behind feature `onnx` in a separate crate for later ablation, out of scope for the M3 build.
