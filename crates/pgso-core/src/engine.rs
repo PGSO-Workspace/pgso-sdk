@@ -15,23 +15,32 @@ use std::collections::HashMap;
 
 /// Configuration for the [`DecisionEngine`]. All thresholds are caller-supplied
 /// so the decision path stays free of magic constants and ambient state.
+///
+/// These values are set by the SDK integrator in code (not from untrusted
+/// input). [`DecisionEngine::new`] `debug_assert!`s the ranges below so a
+/// misconfiguration is caught loudly in dev/test builds.
 #[derive(Debug, Clone)]
 pub struct EngineConfig {
     /// Minimum [`SignalReading::confidence`] to act on a reading. Below this the
-    /// engine abstains (returns `None`) and holds state (G4).
+    /// engine abstains (returns `None`) and holds state (G4). Expected `[0, 1]`.
     pub confidence_threshold: f32,
-    /// Minimum `|value - baseline|` deviation to count a window as "above".
+    /// Minimum `|value - baseline|` deviation (inclusive) to count a window as
+    /// "above". Expected finite and non-negative.
     pub deviation_threshold: f32,
     /// Number of consecutive above-threshold windows required to trigger
-    /// (hysteresis). A lone spike never triggers.
+    /// (hysteresis). A lone spike never triggers. A value of `0` behaves
+    /// identically to `1` (trigger on the first above-threshold window).
     pub hysteresis_window: u32,
     /// EMA smoothing factor applied to the baseline after warm-up. Larger values
-    /// track the signal faster.
+    /// track the signal faster. MUST be in `[0, 1]`; values outside this range
+    /// make the baseline diverge or oscillate.
     pub ema_alpha: f32,
     /// Number of initial readings used to seed a stable personal baseline via a
     /// cumulative mean before switching to EMA.
     pub warmup_readings: u64,
-    /// Baseline value assumed at `t = 0`, before any reading for an axis.
+    /// Baseline value assumed at `t = 0`, before any reading for an axis. This is
+    /// the cold-start reference the first reading's deviation is measured against
+    /// (see [`DecisionEngine::process`]). Expected in the signal's value range.
     pub population_prior: f32,
 }
 
@@ -99,7 +108,26 @@ pub struct DecisionEngine {
 impl DecisionEngine {
     /// Create an engine with the given configuration. No per-axis state exists
     /// until the first reading for that axis arrives.
+    ///
+    /// In debug/test builds the configuration ranges documented on
+    /// [`EngineConfig`] are asserted, so a misconfiguration surfaces loudly
+    /// rather than silently corrupting the baseline.
     pub fn new(config: EngineConfig) -> Self {
+        debug_assert!(
+            (0.0..=1.0).contains(&config.ema_alpha),
+            "EngineConfig.ema_alpha must be in [0, 1], got {}",
+            config.ema_alpha
+        );
+        debug_assert!(
+            config.confidence_threshold.is_finite()
+                && config.deviation_threshold.is_finite()
+                && config.population_prior.is_finite(),
+            "EngineConfig thresholds and prior must be finite"
+        );
+        debug_assert!(
+            config.deviation_threshold >= 0.0,
+            "EngineConfig.deviation_threshold must be non-negative"
+        );
         Self { config, axes: HashMap::new() }
     }
 
@@ -109,8 +137,22 @@ impl DecisionEngine {
     /// `hysteresis_window` consecutive above-threshold windows. Returns `None`
     /// on abstention (confidence below threshold, G4) or when the deviation is
     /// sub-threshold or not yet sustained.
+    ///
+    /// Deviation is measured against the *established* baseline — the value
+    /// before this reading is folded in — so the population prior is the genuine
+    /// cold-start reference and an anomalous reading is measured against prior
+    /// expectation, not against a baseline already pulled toward it. The baseline
+    /// is then adapted with this reading (three-layer: prior → cumulative mean →
+    /// EMA).
+    ///
+    /// This is **level-triggered**, not edge-triggered: while a deviation stays
+    /// sustained it returns `Some` on *every* reading, and `None` as soon as the
+    /// deviation subsides. The end-to-end pipeline (M4) depends on this to keep
+    /// governance applied while the signal persists and to restore the catalog
+    /// when it returns to nominal.
     pub fn process(&mut self, reading: &SignalReading) -> Option<EngineOutput> {
-        // G4: abstain on low confidence — hold state, emit nothing.
+        // G4: abstain on low confidence — hold state, emit nothing, and do not
+        // adapt the baseline from a reading we don't trust.
         if reading.confidence < self.config.confidence_threshold {
             return None;
         }
@@ -120,12 +162,16 @@ impl DecisionEngine {
             .entry(reading.axis)
             .or_insert_with(|| AxisState::new(self.config.population_prior));
 
+        // Measure against the established baseline BEFORE adapting it.
+        let baseline_ref = state.baseline;
+        let deviation = (reading.value - baseline_ref).abs();
+
+        // Then fold this reading into the baseline (warm-up mean → EMA).
         state.update_baseline(reading.value, self.config.ema_alpha, self.config.warmup_readings);
 
-        let deviation = (reading.value - state.baseline).abs();
-
-        if deviation > self.config.deviation_threshold {
-            state.consecutive_above += 1;
+        if deviation >= self.config.deviation_threshold {
+            // saturating: a pathological unbroken stream can't wrap the counter.
+            state.consecutive_above = state.consecutive_above.saturating_add(1);
         } else {
             // Sub-threshold window breaks the run (hysteresis reset).
             state.consecutive_above = 0;
@@ -141,7 +187,7 @@ impl DecisionEngine {
             raw_value: reading.value,
             deviation,
             confidence: reading.confidence,
-            baseline: state.baseline,
+            baseline: baseline_ref,
             timestamp_ms: reading.timestamp_ms,
         })
     }
@@ -206,19 +252,57 @@ mod tests {
     }
 
     #[test]
-    fn test_baseline_adapts_ema() {
-        let mut engine = DecisionEngine::new(default_config());
-        // Feed a drifting-but-calm signal
-        for i in 0..20 {
-            let val = 0.3 + (i as f32) * 0.01; // slowly drifts up
-            engine.process(&reading(val, Axis::Valence, 0.9, i));
+    fn test_first_reading_measures_against_prior() {
+        // Cold-start: with measure-then-update, the population prior is the
+        // reference the first reading deviates from — NOT a structurally-zero
+        // deviation. (hysteresis_window = 1 so one sustained-enough reading can
+        // trigger.)
+        let config = EngineConfig {
+            confidence_threshold: 0.5,
+            deviation_threshold: 0.3,
+            hysteresis_window: 1,
+            ema_alpha: 0.1,
+            warmup_readings: 5,
+            population_prior: 0.5,
+        };
+        let mut engine = DecisionEngine::new(config);
+        let out = engine.process(&reading(0.95, Axis::Valence, 0.9, 0));
+        let o = out.expect("first reading far from the prior should be able to trigger");
+        assert!((o.deviation - 0.45).abs() < 1e-6, "deviation vs prior 0.5 should be 0.45, got {}", o.deviation);
+        assert!((o.baseline - 0.5).abs() < 1e-6, "reported baseline should be the prior reference, got {}", o.baseline);
+    }
+
+    #[test]
+    fn test_baseline_adapts_to_signal() {
+        // The baseline must adapt toward a sustained signal far from the prior,
+        // so later readings are measured against the ADAPTED baseline, not the
+        // stale prior. Non-vacuous: asserts both that an at-baseline reading does
+        // NOT trigger and that a far-from-baseline reading DOES, plus the
+        // reported baseline reflects adaptation.
+        let config = EngineConfig {
+            confidence_threshold: 0.5,
+            deviation_threshold: 0.3,
+            hysteresis_window: 1,
+            ema_alpha: 0.3,
+            warmup_readings: 3,
+            population_prior: 0.1,
+        };
+        let mut engine = DecisionEngine::new(config);
+        // Converge the baseline near 0.7 (far from prior 0.1).
+        for i in 0..15 {
+            engine.process(&reading(0.7, Axis::Valence, 0.9, i));
         }
-        // Baseline should have tracked upward
-        let output = engine.process(&reading(0.9, Axis::Valence, 0.9, 20));
-        // Deviation should be relative to adapted baseline (~0.4), not population prior (0.5)
-        if let Some(o) = output {
-            assert!(o.baseline > 0.3, "baseline should have adapted: {}", o.baseline);
-        }
+        // A reading AT the adapted baseline must not deviate/trigger.
+        assert!(
+            engine.process(&reading(0.7, Axis::Valence, 0.9, 15)).is_none(),
+            "a reading at the adapted baseline must not trigger"
+        );
+        // A reading FAR from the adapted baseline must trigger, and the reported
+        // baseline must reflect adaptation (≫ the 0.1 prior).
+        let o = engine
+            .process(&reading(0.2, Axis::Valence, 0.9, 16))
+            .expect("a reading far below the adapted baseline should trigger");
+        assert!(o.baseline > 0.5, "baseline should have adapted near 0.7, got {}", o.baseline);
     }
 
     #[test]

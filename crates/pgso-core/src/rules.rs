@@ -90,15 +90,6 @@ impl RuleSet {
     pub fn rules(&self) -> &[Rule] {
         &self.rules
     }
-
-    /// Collect, in declaration order, the rules whose predicate matches the
-    /// given axis/deviation/confidence.
-    fn matching_rules(&self, axis: Axis, deviation: f32, confidence: f32) -> Vec<&Rule> {
-        self.rules
-            .iter()
-            .filter(|r| r.predicate.matches(axis, deviation, confidence))
-            .collect()
-    }
 }
 
 /// Evaluates a [`RuleSet`] against [`EngineOutput`]s and enforces the protected
@@ -124,10 +115,15 @@ impl RuleEngine {
     /// fully populated [`AuditRecord`] (REQ-2.11).
     #[must_use]
     pub fn evaluate(&self, output: &EngineOutput) -> Vec<ScopeDecision> {
+        let mut decisions = Vec::new();
+
+        // Single pass: filter matching rules and emit their decisions inline
+        // (no intermediate `Vec<&Rule>` allocation on this per-output hot path).
         let matching = self
             .rules
-            .matching_rules(output.axis, output.deviation, output.confidence);
-        let mut decisions = Vec::new();
+            .rules()
+            .iter()
+            .filter(|r| r.predicate.matches(output.axis, output.deviation, output.confidence));
 
         for rule in matching {
             for action in &rule.actions {
