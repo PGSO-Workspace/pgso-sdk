@@ -1,0 +1,15 @@
+[package]
+name = "pgso-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror = "2"
+
+[dev-dependencies]
+proptest = "1"
+# E2E tests (tests/e2e.rs) wire the generic pipeline to a concrete actuator.
+# This is a DEV-dependency only: it never enters pgso-core's normal build graph,
+# so INV-1 (pure core) holds and the dev-dep cycle (actuator-local -> core,
+# core dev-deps actuator-local) is permitted by Cargo.
+pgso-actuator-local = { path = "../pgso-actuator-local" }
