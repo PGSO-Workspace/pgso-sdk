@@ -438,6 +438,7 @@ dependencies = [
 name = "pgso-core"
 version = "0.1.0"
 dependencies = [
+ "pgso-actuator-local",
  "proptest",
  "thiserror",
 ]
