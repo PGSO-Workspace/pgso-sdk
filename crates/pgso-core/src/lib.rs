@@ -2,8 +2,10 @@ pub mod types;
 pub mod action;
 pub mod error;
 pub mod traits;
+pub mod engine;
 
 pub use types::*;
 pub use action::*;
 pub use error::*;
 pub use traits::*;
+pub use engine::{DecisionEngine, EngineConfig, EngineOutput};
