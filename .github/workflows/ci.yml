@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  # Treat all rustc warnings as errors across build/test, matching the local bar.
+  RUSTFLAGS: "-D warnings"
+
+jobs:
+  check:
+    name: fmt · clippy · test · doc (stable)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@v2
+
+      - name: Format check
+        run: cargo fmt --all -- --check
+
+      - name: Clippy (deny warnings; default lint set incl. incompatible_msrv)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test --workspace
+
+      - name: Doc (deny warnings; enforces #![deny(missing_docs)])
+        run: cargo doc --workspace --no-deps
+        env:
+          RUSTDOCFLAGS: "-D warnings"
+
+  msrv:
+    name: build · test (MSRV 1.82)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install MSRV toolchain (1.82)
+        uses: dtolnay/rust-toolchain@1.82.0
+
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build (verifies the declared MSRV compiles)
+        run: cargo build --workspace
+
+      - name: Test
+        run: cargo test --workspace
