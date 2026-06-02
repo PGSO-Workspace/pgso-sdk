@@ -8,7 +8,8 @@ mod dsp;
 mod features;
 mod windowing;
 
-pub use features::{AcousticFeatures, AxisMapping, RunningStats};
+pub use features::{AcousticFeatures, AxisMapping};
+use features::RunningStats;
 use pgso_core::{AudioWindow, Axis, Signal, SignalReading};
 
 /// Configuration for the DSP extractor. Defaults target 16 kHz speech.
@@ -59,6 +60,9 @@ pub struct EgemapsSignal {
 }
 
 impl EgemapsSignal {
+    /// Build a signal for audio already resampled to `sample_rate` (typically
+    /// 16 kHz). Windows fed to [`Self::extract`]/[`Self::extract_explained`] are
+    /// assumed to be at this rate (see those methods).
     pub fn new(sample_rate: u32) -> Self {
         Self {
             config: EgemapsConfig::for_sample_rate(sample_rate),
@@ -69,7 +73,22 @@ impl EgemapsSignal {
         }
     }
 
+    /// Like [`Self::new`] but with an explicit [`EgemapsConfig`].
+    ///
+    /// Caller-trust boundary: `config` is assumed well-formed. A nonsensical
+    /// config does not error but degrades gracefully toward abstention — e.g.
+    /// `min_f0 >= max_f0` yields an empty lag window so every frame reads as
+    /// unvoiced (no readings). The `debug_assert`s below catch the common
+    /// mistakes in dev/test builds.
     pub fn with_config(sample_rate: u32, config: EgemapsConfig) -> Self {
+        debug_assert!(
+            config.min_f0 < config.max_f0,
+            "EgemapsConfig.min_f0 must be < max_f0"
+        );
+        debug_assert!(
+            config.window_size > 0 && config.window_hop > 0 && config.frame_size > 0 && config.frame_hop > 0,
+            "EgemapsConfig window/frame sizes and hops must be non-zero"
+        );
         Self {
             config,
             sample_rate,
@@ -80,7 +99,15 @@ impl EgemapsSignal {
     }
 
     /// Extract readings AND their interpretable features (auditability, REQ-3.6).
+    ///
+    /// `window.samples` MUST already be at the construction `sample_rate`; the
+    /// per-window `window.sample_rate` field is not used to resample (a mismatch
+    /// silently misreads F0). The `debug_assert` flags a mismatch in dev/test.
     pub fn extract_explained(&mut self, window: &AudioWindow) -> Vec<ExplainedReading> {
+        debug_assert_eq!(
+            window.sample_rate, self.sample_rate,
+            "AudioWindow.sample_rate must match the signal's construction rate"
+        );
         let cfg = &self.config;
         let mut out = Vec::new();
 

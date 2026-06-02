@@ -15,23 +15,12 @@ impl RunningStats {
         Self::default()
     }
 
-    pub fn count(&self) -> u64 {
-        self.count
-    }
-
     pub fn update(&mut self, value: f32) {
         self.count += 1;
         let v = value as f64;
         let delta = v - self.mean;
         self.mean += delta / self.count as f64;
         self.m2 += delta * (v - self.mean);
-    }
-
-    pub fn std_dev(&self) -> f32 {
-        if self.count < 2 {
-            return 0.0;
-        }
-        (self.m2 / (self.count - 1) as f64).sqrt() as f32
     }
 
     /// Difference of `value` from the running mean (0.0 until a baseline exists).
@@ -42,7 +31,23 @@ impl RunningStats {
         value - self.mean as f32
     }
 
-    /// Z-score of `value`, or 0.0 if no baseline / zero variance.
+    /// Number of samples folded in so far. Test-only inspection helper.
+    #[cfg(test)]
+    pub fn count(&self) -> u64 {
+        self.count
+    }
+
+    /// Sample standard deviation (0.0 if < 2 samples). Test-only helper.
+    #[cfg(test)]
+    pub fn std_dev(&self) -> f32 {
+        if self.count < 2 {
+            return 0.0;
+        }
+        (self.m2 / (self.count - 1) as f64).sqrt() as f32
+    }
+
+    /// Z-score of `value`, or 0.0 if no baseline / zero variance. Test-only helper.
+    #[cfg(test)]
     pub fn z_score(&self, value: f32) -> f32 {
         let sd = self.std_dev();
         if sd < 1e-9 || self.count < 2 {

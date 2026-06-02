@@ -9,13 +9,26 @@ pub fn rms_energy(frame: &[f32]) -> f32 {
     (sum_sq / frame.len() as f32).sqrt()
 }
 
-/// Estimate fundamental frequency (F0) via normalized autocorrelation.
+/// Estimate fundamental frequency (F0) via autocorrelation.
 ///
-/// Returns `(f0_hz, voicing_probability)`. Voicing is the normalized
-/// autocorrelation peak height in [0,1]; F0 is 0.0 when unvoiced.
+/// Returns `(f0_hz, voicing_probability)`; F0 is 0.0 when unvoiced. The search
+/// is bounded to `[min_f0, max_f0]` Hz, which maps to a lag window
+/// `[sr/max_f0, sr/min_f0]` samples (so `f0 = sr / best_lag`).
 ///
-/// The search is bounded to `[min_f0, max_f0]` Hz, which maps to a lag
-/// window `[sr/max_f0, sr/min_f0]` samples (so `f0 = sr / best_lag`).
+/// Two distinct quantities are computed from the frame:
+///
+/// - **Lag selection** uses the *unnormalized* autocorrelation. Because the
+///   number of summed terms shrinks with lag, it is biased toward shorter lags
+///   (higher F0), which protects against octave-down (subharmonic) errors. The
+///   protection margin is modest, so under heavy noise or strong subharmonics an
+///   octave error is still possible — acceptable for clean-speech use; revisit
+///   (e.g. a YIN-style cumulative-mean-normalized difference) if it surfaces.
+/// - **Voicing** is the *normalized* cross-correlation (NCCF) at the selected
+///   lag: `best_r / sqrt(E_head * E_tail)` over the overlapped region. Unlike
+///   `best_r / r0` (where `r0` spans all `N` samples but `best_r` only `N-lag`),
+///   the NCCF is independent of lag, so low- and high-pitched voices of equal
+///   periodicity report equal voicing confidence. This matters because voicing
+///   feeds the public `SignalReading.confidence` and the engine's abstention.
 pub fn estimate_f0(frame: &[f32], sample_rate: u32, min_f0: f32, max_f0: f32) -> (f32, f32) {
     let sr = sample_rate as f32;
     let min_lag = (sr / max_f0).floor().max(1.0) as usize;
@@ -24,12 +37,13 @@ pub fn estimate_f0(frame: &[f32], sample_rate: u32, min_f0: f32, max_f0: f32) ->
         return (0.0, 0.0);
     }
 
-    // Zero-lag energy (autocorrelation at lag 0).
+    // Zero-lag energy; silence guard.
     let r0: f32 = frame.iter().map(|x| x * x).sum();
     if r0 <= 1e-9 {
         return (0.0, 0.0);
     }
 
+    // Octave-safe lag selection via unnormalized autocorrelation.
     let mut best_lag = 0usize;
     let mut best_r = 0.0f32;
     for lag in min_lag..=max_lag {
@@ -48,7 +62,19 @@ pub fn estimate_f0(frame: &[f32], sample_rate: u32, min_f0: f32, max_f0: f32) ->
     if best_lag == 0 {
         return (0.0, 0.0);
     }
-    let voicing = (best_r / r0).clamp(0.0, 1.0);
+
+    // Pitch-independent voicing: NCCF at the selected lag over the overlapped
+    // region (head = frame[..overlap], tail = frame[best_lag..]).
+    let overlap = frame.len() - best_lag;
+    let e_head: f32 = frame[..overlap].iter().map(|x| x * x).sum();
+    let e_tail: f32 = frame[best_lag..].iter().map(|x| x * x).sum();
+    let denom = (e_head * e_tail).sqrt();
+    let voicing = if denom > 1e-9 {
+        (best_r / denom).clamp(0.0, 1.0)
+    } else {
+        0.0
+    };
+
     let f0 = sr / best_lag as f32;
     (f0, voicing)
 }
