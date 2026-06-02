@@ -1,0 +1,15 @@
+[package]
+name = "pgso-actuator-mcp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pgso-core = { path = "../pgso-core" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+# Integration tests live in this crate (NOT in pgso-core) so the agnosticism
+# proof — an empty `git diff` for crates/pgso-core — holds: the second-signal
+# test reuses LocalActuator, so that crate is a dev-dependency here only.
+pgso-actuator-local = { path = "../pgso-actuator-local" }

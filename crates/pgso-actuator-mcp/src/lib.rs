@@ -1,0 +1,337 @@
+//! `pgso-actuator-mcp`: an [`Actuator`] that exposes the governed tool catalog
+//! over the **Model Context Protocol** (MCP) `tools/list` transport.
+//!
+//! This crate is the *transport-agnosticism proof* for PGSO (Milestone 5). It
+//! implements the exact same [`Actuator`] boundary as `pgso-actuator-local`,
+//! with identical governance semantics (G1/G2/G3), but additionally renders the
+//! served catalog as an MCP `tools/list` JSON payload and tracks whether a
+//! `notifications/tools/list_changed` should be emitted. The deterministic
+//! [`pgso_core`] engine, rules, and pipeline drive it **without any change** —
+//! the empty `git diff` for `crates/pgso-core` is the headline result.
+//!
+//! ## MCP shape (verified against the 2025-06-18 MCP spec)
+//!
+//! The `tools/list` *result* object is:
+//!
+//! ```json
+//! { "tools": [ { "name": "...", "title": "...", "description": "...",
+//!               "inputSchema": { "type": "object", "properties": {}, "required": [] } } ] }
+//! ```
+//!
+//! [`McpActuator::tools_list_response`] returns exactly this `result` object
+//! (the JSON-RPC envelope — `jsonrpc`/`id`/`result` — and pagination
+//! `nextCursor` are the responsibility of the surrounding MCP server and are out
+//! of scope for the governance layer). `notifications/tools/list_changed` is a
+//! server→client notification with no `params`, emitted when the served catalog
+//! changes; [`McpActuator::has_changed`] / [`McpActuator::acknowledge_change`]
+//! track exactly that.
+//!
+//! ## No panics (master spec §5)
+//!
+//! Nothing in this module's library code panics: [`McpActuator::apply`]
+//! propagates [`ActuatorError`] via its `Result`, and the JSON is built with
+//! [`serde_json::json!`], which is infallible for the owned `String`/`Value`
+//! inputs used here (no fallible serialization, no `.unwrap()`). `.unwrap()`
+//! appears only under `#[cfg(test)]`.
+
+use pgso_core::{Action, Actuator, ActuatorError, Catalog, ScopeDecision, ToolId};
+use serde_json::{json, Value};
+use std::collections::HashSet;
+
+/// An [`Actuator`] that serves the governed catalog as MCP `tools/list`
+/// payloads.
+///
+/// Construct one with [`McpActuator::new`], drive it through the standard
+/// [`Actuator`] interface (so it slots into [`pgso_core::Pgso`] unchanged), then
+/// read [`McpActuator::tools_list_response`] for the MCP payload and
+/// [`McpActuator::has_changed`] to decide whether to emit
+/// `notifications/tools/list_changed`.
+pub struct McpActuator {
+    /// The full nominal catalog, restored on [`Action::Allow`].
+    base_catalog: Catalog,
+    /// The catalog currently served over MCP (after governance).
+    active_catalog: Catalog,
+    /// Tool ids that are never pruned (G2 inviolable allowlist).
+    protected: HashSet<ToolId>,
+    /// Set when the served catalog changes; cleared by
+    /// [`McpActuator::acknowledge_change`]. Drives
+    /// `notifications/tools/list_changed`.
+    changed: bool,
+    /// Appended directive blocks (G1). Not part of the MCP tools payload; kept
+    /// for parity with `LocalActuator` and cleared on [`Action::Allow`].
+    directive_blocks: Vec<String>,
+}
+
+impl McpActuator {
+    /// Create an actuator serving `catalog`, treating every id in `protected` as
+    /// inviolable (never pruned — G2).
+    #[must_use]
+    pub fn new(catalog: Catalog, protected: HashSet<ToolId>) -> Self {
+        Self {
+            active_catalog: catalog.clone(),
+            base_catalog: catalog,
+            protected,
+            changed: false,
+            directive_blocks: Vec::new(),
+        }
+    }
+
+    /// Render the currently-served catalog as the MCP `tools/list` *result*
+    /// object: `{ "tools": [ { name, title, description, inputSchema } ] }`.
+    ///
+    /// Pruned tools are absent; protected tools that a rule targeted are still
+    /// present (G2 over MCP — REQ-5.6). The shape matches the 2025-06-18 MCP
+    /// spec; see the [module docs](self) for what is intentionally left to the
+    /// surrounding MCP server (the JSON-RPC envelope and pagination).
+    ///
+    /// This is infallible: it builds owned [`serde_json::Value`]s with
+    /// [`serde_json::json!`] and never serializes a fallible type, so it cannot
+    /// panic (master spec §5).
+    #[must_use]
+    pub fn tools_list_response(&self) -> Value {
+        let tools: Vec<Value> = self
+            .active_catalog
+            .tools()
+            .iter()
+            .map(|t| {
+                json!({
+                    "name": t.name,
+                    "title": t.name,
+                    "description": format!("Tool: {}", t.id.as_str()),
+                    "inputSchema": {
+                        "type": "object",
+                        "properties": {},
+                        "required": []
+                    }
+                })
+            })
+            .collect();
+        json!({ "tools": tools })
+    }
+
+    /// Whether the served catalog has changed since the last
+    /// [`McpActuator::acknowledge_change`] (i.e. whether a
+    /// `notifications/tools/list_changed` is owed to the client).
+    ///
+    /// Set **only** when the served catalog actually changed — an
+    /// [`Action::Allow`] on an already-nominal catalog, a no-op `Prune` of an
+    /// absent/protected tool, or an [`Action::InjectDirective`] (which never
+    /// affects the tools payload) does not flip this flag.
+    #[must_use]
+    pub fn has_changed(&self) -> bool {
+        self.changed
+    }
+
+    /// Clear the change flag after a `notifications/tools/list_changed` has been
+    /// emitted.
+    pub fn acknowledge_change(&mut self) {
+        self.changed = false;
+    }
+
+    /// The directive blocks currently appended to the agent context (G1).
+    /// Mirrors `LocalActuator::directives`; not part of the MCP tools payload.
+    #[must_use]
+    pub fn directives(&self) -> &[String] {
+        &self.directive_blocks
+    }
+}
+
+impl Actuator for McpActuator {
+    fn current_catalog(&self) -> Catalog {
+        self.active_catalog.clone()
+    }
+
+    fn apply(&mut self, decision: &ScopeDecision) -> Result<Catalog, ActuatorError> {
+        // Snapshot the served catalog so we can detect whether this decision
+        // actually changed what MCP serves (drives the list_changed flag).
+        let prev = self.active_catalog.clone();
+
+        match &decision.action {
+            Action::Allow => {
+                // G1: restore to nominal and drop any directive block. Mirrors
+                // LocalActuator exactly.
+                self.active_catalog = self.base_catalog.clone();
+                self.directive_blocks.clear();
+            }
+            Action::Prune(id) => {
+                // G2: protected tools are never pruned. Pruning an absent tool
+                // (already pruned, or unknown id) is an intentional, idempotent
+                // no-op — the M4 pipeline replays the same decision across
+                // consecutive windows while a deviation is sustained, so this
+                // MUST be safe to apply repeatedly. The decision's intent is
+                // recorded upstream in the AuditLog (G5), so tolerance here does
+                // not lose the audit signal.
+                if !self.protected.contains(id) {
+                    self.active_catalog.remove(id);
+                }
+            }
+            Action::RequireStepUp(id) => {
+                // Idempotent: setting the flag on an absent tool is a no-op (see
+                // the Prune rationale above).
+                self.active_catalog.set_step_up(id, true);
+            }
+            Action::InjectDirective(text) => {
+                self.directive_blocks.push(text.clone());
+            }
+            // `Action` is `#[non_exhaustive]`; a variant added in a later
+            // milestone reaches this arm. Release behavior: leave the catalog
+            // unchanged (governing principle — PGSO fails toward inaction).
+            // Debug/test builds trip this assertion so an unhandled variant is
+            // caught loudly during development rather than silently ignored.
+            _ => {
+                debug_assert!(
+                    false,
+                    "unhandled #[non_exhaustive] Action variant in McpActuator::apply"
+                );
+            }
+        }
+
+        // notifications/tools/list_changed is owed only when the *served*
+        // catalog actually changed. The MCP payload is a pure function of
+        // `active_catalog`, so comparing it before/after is exactly the right
+        // signal: a no-op Prune/RequireStepUp, an already-nominal Allow, or an
+        // InjectDirective (which never touches the tools list) leaves it unset.
+        if self.active_catalog != prev {
+            self.changed = true;
+        }
+
+        Ok(self.active_catalog.clone())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pgso_core::Tool;
+
+    fn fixture() -> McpActuator {
+        let tools = vec![
+            Tool::new("search", "Web Search"),
+            Tool::new("calculate", "Calculator"),
+            Tool::new("close_sale", "Close Sale"),
+            Tool::new("escalate", "Escalate to Human"),
+        ];
+        let protected = HashSet::from([ToolId::from("escalate")]);
+        McpActuator::new(Catalog::new(tools), protected)
+    }
+
+    #[test]
+    fn test_mcp_adapter_implements_actuator() {
+        // REQ-5.1: object-safe — McpActuator is usable as `Box<dyn Actuator>`.
+        let act: Box<dyn Actuator> = Box::new(fixture());
+        assert_eq!(act.current_catalog().len(), 4);
+    }
+
+    #[test]
+    fn test_mcp_prune_omits_tool_from_list() {
+        // REQ-5.2: a pruned tool is absent from the tools/list payload.
+        let mut act = fixture();
+        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from("close_sale"))))
+            .unwrap();
+
+        let payload = act.tools_list_response();
+        let tools = payload["tools"].as_array().unwrap();
+        let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
+        assert!(!names.contains(&"Close Sale"));
+        assert_eq!(tools.len(), 3);
+    }
+
+    #[test]
+    fn test_mcp_protected_tool_survives() {
+        // REQ-5.6 (G2 over MCP): a rule targeting a protected tool leaves it in
+        // the served list. (Here applied directly; the RuleEngine also downgrades
+        // Prune→RequireStepUp upstream, but the actuator alone must also hold.)
+        let mut act = fixture();
+        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from("escalate"))))
+            .unwrap();
+
+        let payload = act.tools_list_response();
+        let tools = payload["tools"].as_array().unwrap();
+        let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
+        assert!(
+            names.contains(&"Escalate to Human"),
+            "G2: protected tool must survive"
+        );
+    }
+
+    #[test]
+    fn test_mcp_allow_restores_full_list() {
+        // G1: Allow restores the full catalog over MCP.
+        let mut act = fixture();
+        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from("close_sale"))))
+            .unwrap();
+        act.apply(&ScopeDecision::new(Action::Allow)).unwrap();
+
+        let payload = act.tools_list_response();
+        let tools = payload["tools"].as_array().unwrap();
+        assert_eq!(tools.len(), 4);
+    }
+
+    #[test]
+    fn test_mcp_has_changed_flag() {
+        // notifications/tools/list_changed bookkeeping.
+        let mut act = fixture();
+        assert!(!act.has_changed());
+        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from("close_sale"))))
+            .unwrap();
+        assert!(act.has_changed());
+        act.acknowledge_change();
+        assert!(!act.has_changed());
+    }
+
+    #[test]
+    fn test_mcp_has_changed_unset_on_noop_prune() {
+        // The flag tracks REAL changes only: pruning a protected tool (a no-op
+        // for the served catalog) must NOT request a list_changed notification.
+        let mut act = fixture();
+        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from("escalate"))))
+            .unwrap();
+        assert!(
+            !act.has_changed(),
+            "no-op prune of a protected tool must not flip the change flag"
+        );
+    }
+
+    #[test]
+    fn test_mcp_has_changed_unset_on_directive() {
+        // InjectDirective never alters the served tools list, so it owes no
+        // list_changed notification.
+        let mut act = fixture();
+        act.apply(&ScopeDecision::new(Action::InjectDirective("De-escalate.".into())))
+            .unwrap();
+        assert!(!act.has_changed());
+        assert_eq!(act.directives(), &["De-escalate.".to_string()]);
+    }
+
+    #[test]
+    fn test_mcp_payload_shape_matches_spec() {
+        // R8: each tool object carries name/title/description and a well-formed
+        // inputSchema (type=object, properties present), per the MCP spec.
+        let act = fixture();
+        let payload = act.tools_list_response();
+        let first = &payload["tools"][0];
+        assert!(first["name"].is_string());
+        assert!(first["title"].is_string());
+        assert!(first["description"].is_string());
+        assert_eq!(first["inputSchema"]["type"], "object");
+        assert!(first["inputSchema"]["properties"].is_object());
+    }
+
+    #[test]
+    fn test_mcp_stepup_keeps_tool_in_list() {
+        // RequireStepUp keeps the tool served (friction, not removal — G3).
+        let mut act = fixture();
+        act.apply(&ScopeDecision::new(Action::RequireStepUp(ToolId::from(
+            "close_sale",
+        ))))
+        .unwrap();
+        let payload = act.tools_list_response();
+        let tools = payload["tools"].as_array().unwrap();
+        let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
+        assert!(names.contains(&"Close Sale"));
+        assert_eq!(tools.len(), 4);
+        // RequireStepUp changes the served catalog (the tool's flag), so the
+        // change flag is set.
+        assert!(act.has_changed());
+    }
+}
