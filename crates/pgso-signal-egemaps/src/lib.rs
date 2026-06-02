@@ -4,29 +4,50 @@
 //! shimmer, voicing) from raw audio, with no ML runtime and no proprietary
 //! dependency. Each `SignalReading` is explainable via [`ExplainedReading`].
 
+// Window/frame arithmetic converts sample counts and rates between integer and
+// float; the precision loss and f32<->usize/u64 conversions are intentional and
+// bounded for streaming audio.
+#![allow(
+    clippy::cast_precision_loss,
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss
+)]
+#![deny(missing_docs)]
+
 mod dsp;
 mod features;
 mod windowing;
 
-pub use features::{AcousticFeatures, AxisMapping};
 use features::RunningStats;
+pub use features::{AcousticFeatures, AxisMapping};
 use pgso_core::{AudioWindow, Axis, Signal, SignalReading};
 
 /// Configuration for the DSP extractor. Defaults target 16 kHz speech.
 #[derive(Debug, Clone)]
 pub struct EgemapsConfig {
+    /// Samples per analysis window (800 ms @ 16 kHz = 12800).
     pub window_size: usize, // samples per analysis window (800ms @16k = 12800)
-    pub window_hop: usize,  // overlap hop (400ms @16k = 6400)
-    pub frame_size: usize,  // intra-window frame (1024 @16k ≈ 64ms)
-    pub frame_hop: usize,   // frame hop (256 @16k = 16ms)
+    /// Hop between successive analysis windows in samples (400 ms @ 16 kHz = 6400).
+    pub window_hop: usize, // overlap hop (400ms @16k = 6400)
+    /// Samples per intra-window frame (≈ 64 ms @ 16 kHz).
+    pub frame_size: usize, // intra-window frame (1024 @16k ≈ 64ms)
+    /// Hop between successive frames in samples (16 ms @ 16 kHz = 256).
+    pub frame_hop: usize, // frame hop (256 @16k = 16ms)
+    /// Lowest F0 considered, in Hz.
     pub min_f0: f32,
+    /// Highest F0 considered, in Hz.
     pub max_f0: f32,
+    /// A frame is voiced if its voicing probability exceeds this value.
     pub voicing_threshold: f32, // frame voiced if voicing prob exceeds this
-    pub energy_floor: f32,      // frame considered silent below this RMS
+    /// A frame is treated as silent below this RMS energy.
+    pub energy_floor: f32, // frame considered silent below this RMS
+    /// A window emits a reading only if its voiced fraction is at least this.
     pub min_voiced_fraction: f32, // window emits a reading only above this
 }
 
 impl EgemapsConfig {
+    /// Default configuration scaled to the given sample rate (Hz), targeting speech.
+    #[must_use]
     pub fn for_sample_rate(sr: u32) -> Self {
         let s = sr as f32;
         Self {
@@ -46,7 +67,9 @@ impl EgemapsConfig {
 /// One reading paired with the interpretable features that produced it.
 #[derive(Debug, Clone)]
 pub struct ExplainedReading {
+    /// The signal reading handed to the decision engine.
     pub reading: SignalReading,
+    /// The interpretable low-level descriptors that produced the reading.
     pub features: AcousticFeatures,
 }
 
@@ -63,6 +86,7 @@ impl EgemapsSignal {
     /// Build a signal for audio already resampled to `sample_rate` (typically
     /// 16 kHz). Windows fed to [`Self::extract`]/[`Self::extract_explained`] are
     /// assumed to be at this rate (see those methods).
+    #[must_use]
     pub fn new(sample_rate: u32) -> Self {
         Self {
             config: EgemapsConfig::for_sample_rate(sample_rate),
@@ -80,13 +104,17 @@ impl EgemapsSignal {
     /// `min_f0 >= max_f0` yields an empty lag window so every frame reads as
     /// unvoiced (no readings). The `debug_assert`s below catch the common
     /// mistakes in dev/test builds.
+    #[must_use]
     pub fn with_config(sample_rate: u32, config: EgemapsConfig) -> Self {
         debug_assert!(
             config.min_f0 < config.max_f0,
             "EgemapsConfig.min_f0 must be < max_f0"
         );
         debug_assert!(
-            config.window_size > 0 && config.window_hop > 0 && config.frame_size > 0 && config.frame_hop > 0,
+            config.window_size > 0
+                && config.window_hop > 0
+                && config.frame_size > 0
+                && config.frame_hop > 0,
             "EgemapsConfig window/frame sizes and hops must be non-zero"
         );
         Self {
@@ -186,7 +214,10 @@ impl EgemapsSignal {
                 timestamp_ms: window.timestamp_ms,
             };
 
-            out.push(ExplainedReading { reading, features: features_payload });
+            out.push(ExplainedReading {
+                reading,
+                features: features_payload,
+            });
         }
 
         out
@@ -212,7 +243,11 @@ mod tests {
         let samples = (0..len)
             .map(|i| amp * (2.0 * PI * freq * i as f32 / sr as f32).sin())
             .collect();
-        AudioWindow { samples, sample_rate: sr, timestamp_ms: ts }
+        AudioWindow {
+            samples,
+            sample_rate: sr,
+            timestamp_ms: ts,
+        }
     }
 
     #[test]
@@ -231,8 +266,15 @@ mod tests {
         let readings = sig.extract(&window);
         assert!(!readings.is_empty(), "voiced tone should yield readings");
         for r in &readings {
-            assert!((0.0..=1.0).contains(&r.value), "value out of range: {}", r.value);
-            assert!((0.0..=1.0).contains(&r.confidence), "confidence out of range");
+            assert!(
+                (0.0..=1.0).contains(&r.value),
+                "value out of range: {}",
+                r.value
+            );
+            assert!(
+                (0.0..=1.0).contains(&r.confidence),
+                "confidence out of range"
+            );
             assert!(matches!(r.axis, Axis::Arousal | Axis::Valence));
         }
     }
@@ -245,7 +287,10 @@ mod tests {
             sample_rate: 16000,
             timestamp_ms: 0,
         };
-        assert!(sig.extract(&silence).is_empty(), "silence must yield no readings (G4)");
+        assert!(
+            sig.extract(&silence).is_empty(),
+            "silence must yield no readings (G4)"
+        );
     }
 
     #[test]
@@ -256,7 +301,11 @@ mod tests {
         assert!(!explained.is_empty());
         let features = &explained[0].features;
         // Pitch of a 180 Hz tone should be recovered to within tolerance.
-        assert!((features.mean_f0_hz - 180.0).abs() < 15.0, "mean_f0 was {}", features.mean_f0_hz);
+        assert!(
+            (features.mean_f0_hz - 180.0).abs() < 15.0,
+            "mean_f0 was {}",
+            features.mean_f0_hz
+        );
         assert!(features.mean_energy > 0.0);
         assert!((0.0..=1.0).contains(&features.voiced_fraction));
     }

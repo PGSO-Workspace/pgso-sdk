@@ -4,6 +4,10 @@
 //! confidence interval; read p50/p95/p99 from the generated report (or the
 //! slope/mean lines printed to stdout).
 
+// Synthetic-tone generation converts sample indices/rate between int and float;
+// the precision loss is irrelevant to a benchmark fixture.
+#![allow(clippy::cast_precision_loss)]
+
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use pgso_core::{AudioWindow, Signal};
 use pgso_signal_egemaps::EgemapsSignal;
@@ -14,7 +18,11 @@ fn voiced_window(sr: u32, secs: f32) -> AudioWindow {
     let samples = (0..len)
         .map(|i| 0.4 * (2.0 * PI * 180.0 * i as f32 / sr as f32).sin())
         .collect();
-    AudioWindow { samples, sample_rate: sr, timestamp_ms: 0 }
+    AudioWindow {
+        samples,
+        sample_rate: sr,
+        timestamp_ms: 0,
+    }
 }
 
 fn bench_window_to_reading(c: &mut Criterion) {
@@ -23,7 +31,7 @@ fn bench_window_to_reading(c: &mut Criterion) {
         b.iter(|| {
             let mut sig = EgemapsSignal::new(16000);
             black_box(sig.extract(black_box(&window)))
-        })
+        });
     });
 }
 

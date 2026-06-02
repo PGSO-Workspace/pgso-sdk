@@ -1,8 +1,12 @@
 //! Per-window functionals, the documented axis mapping, and a lightweight
 //! running baseline used only for human-readable auditability deltas.
 
+// Functionals convert small integer counts to f32/f64 for averaging; the
+// precision loss is expected and bounded for audio-frame statistics.
+#![allow(clippy::cast_precision_loss)]
+
 /// Online mean/variance (Welford). Used for the auditability "vs baseline"
-/// deltas — NOT for the governance decision (the DecisionEngine owns that).
+/// deltas — NOT for the governance decision (the `DecisionEngine` owns that).
 #[derive(Debug, Default, Clone)]
 pub struct RunningStats {
     count: u64,
@@ -17,7 +21,7 @@ impl RunningStats {
 
     pub fn update(&mut self, value: f32) {
         self.count += 1;
-        let v = value as f64;
+        let v = f64::from(value);
         let delta = v - self.mean;
         self.mean += delta / self.count as f64;
         self.m2 += delta * (v - self.mean);
@@ -33,7 +37,7 @@ impl RunningStats {
 
     /// Number of samples folded in so far. Test-only inspection helper.
     #[cfg(test)]
-    pub fn count(&self) -> u64 {
+    pub const fn count(&self) -> u64 {
         self.count
     }
 
@@ -99,9 +103,13 @@ pub fn relative_perturbation(xs: &[f32]) -> f32 {
 /// are the design choice PGSO commits to and reports.
 #[derive(Debug, Clone)]
 pub struct AxisMapping {
-    pub energy_ref: f32,  // energy that maps to ~1.0
-    pub f0_std_ref: f32,  // F0 std (Hz) that maps to ~1.0
+    /// Reference mean energy that maps to roughly `1.0` on the Arousal axis.
+    pub energy_ref: f32, // energy that maps to ~1.0
+    /// Reference F0 standard deviation (Hz) that maps to roughly `1.0`.
+    pub f0_std_ref: f32, // F0 std (Hz) that maps to ~1.0
+    /// Weight applied to the normalized energy term.
     pub w_energy: f32,
+    /// Weight applied to the normalized F0-std term.
     pub w_f0_std: f32,
 }
 
@@ -117,23 +125,31 @@ impl Default for AxisMapping {
 }
 
 impl AxisMapping {
-    /// Map mean energy + F0 std to an Arousal scalar in [0,1].
+    /// Map mean energy + F0 std to an Arousal scalar in `[0, 1]`.
+    #[must_use]
     pub fn arousal(&self, mean_energy: f32, f0_std: f32) -> f32 {
         let e = (mean_energy / self.energy_ref).clamp(0.0, 1.0);
         let p = (f0_std / self.f0_std_ref).clamp(0.0, 1.0);
-        (self.w_energy * e + self.w_f0_std * p).clamp(0.0, 1.0)
+        self.w_energy.mul_add(e, self.w_f0_std * p).clamp(0.0, 1.0)
     }
 }
 
 /// Interpretable acoustic features behind one reading — the auditability payload.
 #[derive(Debug, Clone)]
 pub struct AcousticFeatures {
+    /// Mean fundamental frequency over voiced frames, in Hz.
     pub mean_f0_hz: f32,
+    /// Standard deviation of F0 over voiced frames, in Hz (pitch dynamism).
     pub f0_std_hz: f32,
+    /// Mean RMS energy over voiced frames.
     pub mean_energy: f32,
+    /// Relative F0-period perturbation (jitter), a voice-quality measure.
     pub jitter: f32,
+    /// Relative amplitude perturbation (shimmer), a voice-quality measure.
     pub shimmer: f32,
+    /// Fraction of frames in the window classified as voiced, in `[0, 1]`.
     pub voiced_fraction: f32,
+    /// Mean voicing probability over voiced frames, in `[0, 1]`.
     pub mean_voicing: f32,
     /// Mean energy minus the speaker's running-baseline energy (explainability).
     pub energy_vs_baseline: f32,

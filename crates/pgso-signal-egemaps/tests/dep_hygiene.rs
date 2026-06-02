@@ -12,10 +12,10 @@ use std::path::PathBuf;
 /// Crate names that would violate R9 / INV-1 if they appeared as a dependency.
 /// Matched case-insensitively, by exact dependency name.
 const FORBIDDEN: &[&str] = &[
-    "ort",       // ONNX Runtime bindings
-    "onnx",      // any ONNX crate
+    "ort",  // ONNX Runtime bindings
+    "onnx", // any ONNX crate
     "onnxruntime",
-    "tract",     // ONNX/TF inference engine
+    "tract", // ONNX/TF inference engine
     "tract-onnx",
     "opensmile", // proprietary, non-commercial — must never bind
     "tch",       // libtorch bindings
@@ -135,7 +135,10 @@ fn test_egemaps_substring_false_positive_guard() {
         "expected criterion html_reports feature in manifest"
     );
     // The substring "ort" IS present (inside html_repORTs) — naive checks fail here.
-    assert!(manifest.contains("ort"), "the fragile substring is present, as expected");
+    assert!(
+        manifest.contains("ort"),
+        "the fragile substring is present, as expected"
+    );
     // But no dependency is NAMED any forbidden crate:
     let deps = dependency_names(&manifest);
     assert!(!deps.iter().any(|d| FORBIDDEN.contains(&d.as_str())));

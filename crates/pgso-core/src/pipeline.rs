@@ -29,9 +29,9 @@
 //!
 //! ## No panics (master spec §5)
 //!
-//! Nothing in this module panics. [`PgsoBuilder::build`] returns a
-//! [`Result`]`<_, `[`PgsoBuildError`]`>` rather than unwrapping missing stages,
-//! and [`Pgso::process_window`] propagates [`ActuatorError`] with `?`.
+//! Nothing in this module panics. [`PgsoBuilder::build`] returns a typed
+//! [`PgsoBuildError`] rather than unwrapping missing stages, and
+//! [`Pgso::process_window`] propagates [`ActuatorError`] with `?`.
 
 use crate::{
     action::{Action, AuditRecord, ScopeDecision},
@@ -91,7 +91,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
     /// Process one audio window through the full pipeline and return the
     /// resulting catalog.
     ///
-    /// Drives Signal -> DecisionEngine -> RuleEngine -> Actuator for every
+    /// Drives Signal -> `DecisionEngine` -> `RuleEngine` -> Actuator for every
     /// reading the signal produced for this window. See the [module
     /// docs](self) for the level-triggered recovery semantics. Returns the
     /// catalog as served after any governance actions for this window.
@@ -128,7 +128,8 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
         if !any_triggered && !readings.is_empty() {
             let before = self.actuator.current_catalog();
             let timestamp_ms = readings.last().map_or(0, |r| r.timestamp_ms);
-            let restore = ScopeDecision::with_audit(Action::Allow, AuditRecord::restore(timestamp_ms));
+            let restore =
+                ScopeDecision::with_audit(Action::Allow, AuditRecord::restore(timestamp_ms));
             let after = self.actuator.apply(&restore)?;
             if after != before {
                 self.audit_log.record(&restore);
@@ -147,7 +148,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
     /// The append-only audit trail of every governance intervention applied so
     /// far (G5 / INV-5).
     #[must_use]
-    pub fn audit_log(&self) -> &AuditLog {
+    pub const fn audit_log(&self) -> &AuditLog {
         &self.audit_log
     }
 }
@@ -165,7 +166,12 @@ pub struct PgsoBuilder<S: Signal, A: Actuator> {
 
 impl<S: Signal, A: Actuator> Default for PgsoBuilder<S, A> {
     fn default() -> Self {
-        Self { signal: None, engine: None, rules: None, actuator: None }
+        Self {
+            signal: None,
+            engine: None,
+            rules: None,
+            actuator: None,
+        }
     }
 }
 

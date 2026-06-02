@@ -3,7 +3,7 @@
 //! `Signal` boundary admits more than prosody.
 //!
 //! This test deliberately uses `LocalActuator` (not `McpActuator`) — the point
-//! here is the *signal* axis of agnosticism, mirroring the M4 PoC actuator. It
+//! here is the *signal* axis of agnosticism, mirroring the M4 `PoC` actuator. It
 //! lives in `pgso-actuator-mcp/tests/` (with `pgso-actuator-local` as a
 //! dev-dependency of THIS crate) so that `pgso-core` — including its
 //! `Cargo.toml` — stays 100% untouched for the M5 diff.
@@ -27,7 +27,9 @@ struct MockLatencySignal {
 
 impl MockLatencySignal {
     fn new(readings: Vec<f32>) -> Self {
-        Self { latency_readings: VecDeque::from(readings) }
+        Self {
+            latency_readings: VecDeque::from(readings),
+        }
     }
 }
 
@@ -48,7 +50,11 @@ impl Signal for MockLatencySignal {
 }
 
 fn dummy_window(ts: u64) -> AudioWindow {
-    AudioWindow { samples: vec![0.0; 12800], sample_rate: 16000, timestamp_ms: ts }
+    AudioWindow {
+        samples: vec![0.0; 12800],
+        sample_rate: 16000,
+        timestamp_ms: ts,
+    }
 }
 
 /// REQ-5.5: the mock latency signal, plugged into the unchanged pipeline, drives

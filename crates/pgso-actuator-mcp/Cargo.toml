@@ -1,7 +1,8 @@
 [package]
 name = "pgso-actuator-mcp"
 version = "0.1.0"
-edition = "2021"
+edition.workspace = true
+rust-version.workspace = true
 
 [dependencies]
 pgso-core = { path = "../pgso-core" }

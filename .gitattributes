@@ -1,0 +1,5 @@
+# Normalize line endings: store LF in the repo, so `cargo fmt --check` and
+# diffs are deterministic across Windows/Linux/macOS and in CI.
+* text=auto eol=lf
+*.png binary
+*.onnx binary

@@ -20,8 +20,10 @@ pub struct AuditLog {
 impl AuditLog {
     /// Create an empty log.
     #[must_use]
-    pub fn new() -> Self {
-        Self { entries: Vec::new() }
+    pub const fn new() -> Self {
+        Self {
+            entries: Vec::new(),
+        }
     }
 
     /// Append a clone of `decision` to the log.

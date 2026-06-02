@@ -1,8 +1,19 @@
-use std::collections::HashSet;
-use pgso_core::{
-    Action, Actuator, ActuatorError, Catalog, ScopeDecision, ToolId,
-};
+//! `pgso-actuator-local`: the in-memory reference [`Actuator`].
+//!
+//! Holds the tool catalog in memory and applies governance decisions
+//! deterministically and infallibly (no I/O). It enforces the inviolable
+//! allowlist (G2 — protected tools are never pruned), restores to nominal on
+//! `Allow` (G1 — including clearing injected directives), and applies
+//! `Prune`/`RequireStepUp` idempotently so the pipeline may replay a decision
+//! across windows while a deviation is sustained.
 
+#![deny(missing_docs)]
+
+use pgso_core::{Action, Actuator, ActuatorError, Catalog, ScopeDecision, ToolId};
+use std::collections::HashSet;
+
+/// In-memory [`Actuator`]: applies governance decisions to a tool catalog held
+/// in memory, honouring a set of protected (never-pruned) tools.
 pub struct LocalActuator {
     base_catalog: Catalog,
     active_catalog: Catalog,
@@ -11,6 +22,9 @@ pub struct LocalActuator {
 }
 
 impl LocalActuator {
+    /// Create an actuator serving `catalog`, treating tool ids in `protected` as
+    /// inviolable (never pruned, per G2).
+    #[must_use]
     pub fn new(catalog: Catalog, protected: HashSet<ToolId>) -> Self {
         Self {
             active_catalog: catalog.clone(),
@@ -20,6 +34,9 @@ impl LocalActuator {
         }
     }
 
+    /// Borrow the directive blocks currently injected into the agent's context
+    /// (in injection order); cleared when the catalog is restored to nominal.
+    #[must_use]
     pub fn directives(&self) -> &[String] {
         &self.directive_blocks
     }
@@ -117,7 +134,8 @@ mod tests {
     fn test_allow_returns_full_catalog() {
         let (mut act, _, close_sale, _, _) = fixture();
         // First prune a tool
-        act.apply(&ScopeDecision::new(Action::Prune(close_sale.clone()))).unwrap();
+        act.apply(&ScopeDecision::new(Action::Prune(close_sale.clone())))
+            .unwrap();
         assert!(!act.current_catalog().contains(&close_sale));
         // Then Allow to restore
         let catalog = act.apply(&ScopeDecision::new(Action::Allow)).unwrap();

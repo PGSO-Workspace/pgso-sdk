@@ -123,13 +123,13 @@ impl McpActuator {
     /// absent/protected tool, or an [`Action::InjectDirective`] (which never
     /// affects the tools payload) does not flip this flag.
     #[must_use]
-    pub fn has_changed(&self) -> bool {
+    pub const fn has_changed(&self) -> bool {
         self.changed
     }
 
     /// Clear the change flag after a `notifications/tools/list_changed` has been
     /// emitted.
-    pub fn acknowledge_change(&mut self) {
+    pub const fn acknowledge_change(&mut self) {
         self.changed = false;
     }
 
@@ -231,8 +231,10 @@ mod tests {
     fn test_mcp_prune_omits_tool_from_list() {
         // REQ-5.2: a pruned tool is absent from the tools/list payload.
         let mut act = fixture();
-        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from("close_sale"))))
-            .unwrap();
+        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from(
+            "close_sale",
+        ))))
+        .unwrap();
 
         let payload = act.tools_list_response();
         let tools = payload["tools"].as_array().unwrap();
@@ -264,8 +266,10 @@ mod tests {
     fn test_mcp_allow_restores_full_list() {
         // G1: Allow restores the full catalog over MCP.
         let mut act = fixture();
-        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from("close_sale"))))
-            .unwrap();
+        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from(
+            "close_sale",
+        ))))
+        .unwrap();
         act.apply(&ScopeDecision::new(Action::Allow)).unwrap();
 
         let payload = act.tools_list_response();
@@ -278,8 +282,10 @@ mod tests {
         // notifications/tools/list_changed bookkeeping.
         let mut act = fixture();
         assert!(!act.has_changed());
-        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from("close_sale"))))
-            .unwrap();
+        act.apply(&ScopeDecision::new(Action::Prune(ToolId::from(
+            "close_sale",
+        ))))
+        .unwrap();
         assert!(act.has_changed());
         act.acknowledge_change();
         assert!(!act.has_changed());
@@ -303,8 +309,10 @@ mod tests {
         // InjectDirective never alters the served tools list, so it owes no
         // list_changed notification.
         let mut act = fixture();
-        act.apply(&ScopeDecision::new(Action::InjectDirective("De-escalate.".into())))
-            .unwrap();
+        act.apply(&ScopeDecision::new(Action::InjectDirective(
+            "De-escalate.".into(),
+        )))
+        .unwrap();
         assert!(!act.has_changed());
         assert_eq!(act.directives(), &["De-escalate.".to_string()]);
     }

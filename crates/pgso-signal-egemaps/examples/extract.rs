@@ -1,6 +1,10 @@
 //! The "press go" default-signal demo: synth a voiced tone, extract, print the
 //! interpretable features behind each reading. No model download, runs on CPU.
 
+// Synthetic-tone generation converts sample indices/rate between int and float;
+// the precision loss is irrelevant to a demo fixture.
+#![allow(clippy::cast_precision_loss)]
+
 use pgso_core::AudioWindow;
 use pgso_signal_egemaps::EgemapsSignal;
 use std::f32::consts::PI;
@@ -11,7 +15,11 @@ fn main() {
     let samples: Vec<f32> = (0..len)
         .map(|i| 0.4 * (2.0 * PI * 180.0 * i as f32 / sr as f32).sin())
         .collect();
-    let window = AudioWindow { samples, sample_rate: sr, timestamp_ms: 0 };
+    let window = AudioWindow {
+        samples,
+        sample_rate: sr,
+        timestamp_ms: 0,
+    };
 
     let mut signal = EgemapsSignal::new(sr);
     for (i, e) in signal.extract_explained(&window).into_iter().enumerate() {

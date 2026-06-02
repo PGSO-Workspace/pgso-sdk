@@ -1,4 +1,11 @@
-use crate::{action::ScopeDecision, error::ActuatorError, types::{AudioWindow, Catalog, SignalReading}};
+//! The two extension traits at the core's boundary: [`Signal`] (perception)
+//! and [`Actuator`] (catalog exposure).
+
+use crate::{
+    action::ScopeDecision,
+    error::ActuatorError,
+    types::{AudioWindow, Catalog, SignalReading},
+};
 
 /// Perception source. Implementations are stateful (may maintain running statistics).
 pub trait Signal {
@@ -9,6 +16,15 @@ pub trait Signal {
 
 /// Exposure point where governance decisions mutate the tool catalog.
 pub trait Actuator {
+    /// The catalog currently served to the agent.
     fn current_catalog(&self) -> Catalog;
+
+    /// Apply a governance decision and return the resulting served catalog.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ActuatorError`] if the transport cannot apply the decision
+    /// (e.g. an unknown tool id or a transport/serialization failure). The
+    /// in-memory reference actuator is infallible.
     fn apply(&mut self, decision: &ScopeDecision) -> Result<Catalog, ActuatorError>;
 }
