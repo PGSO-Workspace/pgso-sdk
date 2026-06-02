@@ -180,7 +180,7 @@ fn test_e2e_recovery_restores_catalog() {
     assert!(
         entries.iter().any(|d| {
             matches!(d.action, Action::Allow)
-                && d.audit.rule_id.as_deref() == Some("restore_nominal")
+                && d.audit.rule_id.as_deref() == Some(pgso_core::RESTORE_NOMINAL_RULE_ID)
         }),
         "audit log should record the restore-to-nominal reversal (G5: reversible + traceable)"
     );

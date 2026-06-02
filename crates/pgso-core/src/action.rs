@@ -14,6 +14,11 @@ pub enum Action {
     InjectDirective(String),
 }
 
+/// `rule_id` marker for a restore-to-nominal audit record — a catalog reversal
+/// that has no originating rule. Used by the pipeline's level-triggered recovery
+/// and asserted by callers inspecting the audit trail.
+pub const RESTORE_NOMINAL_RULE_ID: &str = "restore_nominal";
+
 /// Audit trail for a governance decision (INV-5).
 #[derive(Debug, Clone)]
 pub struct AuditRecord {
@@ -31,6 +36,20 @@ impl AuditRecord {
         Self {
             timestamp_ms: 0, signal_value: None, axis: None,
             deviation: None, threshold_crossed: None, rule_id: None,
+        }
+    }
+
+    /// Audit record for a restore-to-nominal event: a catalog reversal with no
+    /// originating rule. Carries the caller-supplied `timestamp_ms` and the
+    /// [`RESTORE_NOMINAL_RULE_ID`] marker so the reversal is traceable (G5).
+    pub fn restore(timestamp_ms: u64) -> Self {
+        Self {
+            timestamp_ms,
+            signal_value: None,
+            axis: None,
+            deviation: None,
+            threshold_crossed: None,
+            rule_id: Some(RESTORE_NOMINAL_RULE_ID.to_string()),
         }
     }
 }

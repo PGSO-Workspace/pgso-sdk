@@ -128,17 +128,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
         if !any_triggered && !readings.is_empty() {
             let before = self.actuator.current_catalog();
             let timestamp_ms = readings.last().map_or(0, |r| r.timestamp_ms);
-            let restore = ScopeDecision::with_audit(
-                Action::Allow,
-                AuditRecord {
-                    timestamp_ms,
-                    signal_value: None,
-                    axis: None,
-                    deviation: None,
-                    threshold_crossed: None,
-                    rule_id: Some("restore_nominal".to_string()),
-                },
-            );
+            let restore = ScopeDecision::with_audit(Action::Allow, AuditRecord::restore(timestamp_ms));
             let after = self.actuator.apply(&restore)?;
             if after != before {
                 self.audit_log.record(&restore);
