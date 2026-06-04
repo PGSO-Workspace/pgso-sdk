@@ -13,6 +13,10 @@ pgso-core = { path = "../pgso-core" }
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
+# Used only by the end-to-end `governance` example (the reference actuator).
+# Dev-dependency only: never enters the normal build graph, so pgso-core purity
+# (INV-1) and this crate's dependency surface are unchanged.
+pgso-actuator-local = { path = "../pgso-actuator-local" }
 
 [[bench]]
 name = "latency"
