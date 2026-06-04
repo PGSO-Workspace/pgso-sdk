@@ -34,6 +34,8 @@
 //! inputs used here (no fallible serialization, no `.unwrap()`). `.unwrap()`
 //! appears only under `#[cfg(test)]`.
 
+#![deny(missing_docs)]
+
 use pgso_core::{Action, Actuator, ActuatorError, Catalog, ScopeDecision, ToolId};
 use serde_json::{json, Value};
 use std::collections::HashSet;
