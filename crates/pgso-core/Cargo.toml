@@ -3,6 +3,12 @@ name = "pgso-core"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
+description = "Pure, deterministic governance core for PGSO: Signal/Actuator traits, decision engine, inviolable allowlist, and audit log. Depends only on thiserror."
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords = ["agent", "governance", "paralinguistic", "deterministic", "audit"]
+categories = ["algorithms"]
 
 [dependencies]
 thiserror = "2"

@@ -3,8 +3,19 @@ name = "pgso-signal-egemaps"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
+description = "Default PGSO signal: a pure-Rust, eGeMAPS-style prosodic feature extractor (F0, energy, jitter, shimmer, voicing) mapped to an arousal reading. No ML runtime, no model download."
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords = ["audio", "dsp", "prosody", "egemaps", "speech"]
+categories = ["multimedia::audio", "science"]
 
 [features]
+# `egemaps` (default): the pure-Rust eGeMAPS-style DSP extractor — no ML runtime,
+# no model download. It is the only feature today. A neural extractor (e.g. an
+# `onnx`/wav2vec2 ablation) is a planned SEPARATE crate (`pgso-signal-onnx`), not
+# a feature toggle here. The other crates (core, actuator-local, actuator-mcp)
+# expose no Cargo features.
 default = ["egemaps"]
 egemaps = []
 
