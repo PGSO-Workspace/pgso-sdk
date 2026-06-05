@@ -457,6 +457,7 @@ name = "pgso-signal-egemaps"
 version = "0.1.0"
 dependencies = [
  "criterion",
+ "pgso-actuator-local",
  "pgso-core",
 ]
 

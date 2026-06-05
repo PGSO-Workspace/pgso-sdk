@@ -7,7 +7,7 @@
 A Rust SDK that gives an agent **ears**: it perceives **how** something is said — pitch, energy, jitter, rhythm — directly from raw audio (no ASR), and uses that paralinguistic signal to **deterministically govern which tools the agent's catalog exposes**.
 
 [![CI](https://github.com/Kochi-sicem/pgso-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/Kochi-sicem/pgso-sdk/actions/workflows/ci.yml)
-[![Rust](https://img.shields.io/badge/rust-1.82%2B-orange.svg)](#minimum-supported-rust-version)
+[![Rust](https://img.shields.io/badge/rust-1.83%2B-orange.svg)](#minimum-supported-rust-version)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 </div>
@@ -252,13 +252,13 @@ Enforced in [CI](.github/workflows/ci.yml) on every push and PR:
 - **`clippy`** — `-D warnings` (default lint set, incl. `incompatible_msrv`)
 - **`test`** — full workspace test suite
 - **`doc`** — `RUSTDOCFLAGS=-D warnings` (enforces `#![deny(missing_docs)]`)
-- **MSRV job** — build + test on Rust **1.82**
+- **MSRV job** — build-verified on Rust **1.83** (the full test suite runs on stable; a transitive dev-dependency needs a newer Cargo to test)
 
 Quality posture: **0 `unsafe`**, **0 panics in library code** (`Result` + `thiserror` throughout), library code **`clippy::pedantic` + `nursery` clean**, **100% public-API documentation**, deterministic decision path (no clock, no RNG).
 
 ### Minimum Supported Rust Version
 
-**1.82** — declared in `[workspace.package]` and verified by the CI `msrv` job.
+**1.83** — declared in `[workspace.package]` and verified by the CI `msrv` job.
 
 ---
 

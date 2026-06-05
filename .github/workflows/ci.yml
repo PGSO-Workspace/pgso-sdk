@@ -40,19 +40,21 @@ jobs:
           RUSTDOCFLAGS: "-D warnings"
 
   msrv:
-    name: build · test (MSRV 1.82)
+    name: build (MSRV 1.83)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install MSRV toolchain (1.82)
-        uses: dtolnay/rust-toolchain@1.82.0
+      - name: Install MSRV toolchain (1.83)
+        uses: dtolnay/rust-toolchain@1.83.0
 
       - name: Cache cargo artifacts
         uses: Swatinem/rust-cache@v2
 
-      - name: Build (verifies the declared MSRV compiles)
-        run: cargo build --workspace
-
-      - name: Test
-        run: cargo test --workspace
+      # MSRV is verified by BUILDING the published crates on 1.83 (the lowest
+      # rustc that compiles them: pgso-actuator-mcp uses a `const fn(&mut self)`,
+      # stabilized in 1.83). We do NOT run the test suite here: the dev/test graph
+      # pulls a transitive dev-dependency (getrandom 0.4.x) that needs a newer
+      # Cargo, so the full suite runs on stable in the `check` job above.
+      - name: Build (verifies the declared MSRV compiles the crates)
+        run: cargo build --workspace --locked

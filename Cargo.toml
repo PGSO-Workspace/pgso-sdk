@@ -8,7 +8,7 @@ exclude = ["experiments"]
 # rust-version is the declared MSRV, enforced by the `msrv` CI job.
 [workspace.package]
 edition = "2021"
-rust-version = "1.82"
+rust-version = "1.83"
 authors = ["Lucio Yen"]
 license = "MIT"
 repository = "https://github.com/Kochi-sicem/pgso-sdk"
