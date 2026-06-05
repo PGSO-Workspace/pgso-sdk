@@ -210,7 +210,6 @@ macro_rules! pgso_rules {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::pgso_rules;
     use crate::{Action, Axis, ToolId};
     use std::collections::HashSet;
 
