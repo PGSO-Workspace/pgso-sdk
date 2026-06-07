@@ -100,6 +100,12 @@ mirroring Phase-1's fresh-extractor-per-utterance). Record per utterance:
 `intervened ∈ {0,1}` (any rule fired and mutated the served catalog), the multiset
 of emitted `Action`s, the served catalog, and the G2 assertion outcome.
 
+The warm-up is **noise-free by design** — the baseline converges to exactly
+`base[spk]` before every test segment — which is what isolates the signal-value
+axis cleanly. This is deliberately friendlier than live operation, where the
+baseline is itself estimated from noisy readings; that gap is a recorded
+limitation (§6.1), not a design defect.
+
 ### 3.3 Frozen config + pre-registered operating point
 Use the shipped governance-demo `EngineConfig` **unchanged**:
 `confidence_threshold = 0.5`, `hysteresis_window = 3`, `warmup_readings = 5`,
@@ -147,10 +153,19 @@ construction (allowed); the Rust core is deterministic given its input readings.
 | **L4** | 0.00 | Noise — sanity (must collapse to chance) |
 
 ### 3.6 Governance-correctness definition — oracle defines intent
-At **L0** the signal equals `a_true` exactly, so the engine's own decision *is* the
-ground-truth intent. L0 correctness = 100% **by construction** (a wiring sanity
-check). For L1–L4, a decision is **correct** iff it matches that utterance's L0
-(oracle) decision. Per level we report:
+The **oracle intent** is the engine's decision on the **L0 _constructed_ signal**
+(ρ = 1.0 to truth, same fixed marginal as every other level) — **not** raw
+`a_true`. This distinction is load-bearing: §3.4's quantile back-map is
+*rank-preserving*, not the identity, so the L0 signal is a rank-faithful
+*reshaping* of `a_true`, and the engine governs on `deviation = |value − baseline|`,
+which is sensitive to the scalar value, not just its rank. The oracle decision is
+therefore computed **once, through the exact same driver pipeline**, on the L0
+signal, and **frozen**. Because L0's own signal *is* that oracle reference, L0
+correctness = 100% **by construction** (a wiring sanity check). For L1–L4, a
+decision is **correct** iff it matches that utterance's frozen oracle decision.
+Defining the oracle on the L0 signal — never on raw `a_true` — is precisely what
+guarantees L0 = 100%; conflating the two would manufacture a spurious sub-100% L0
+and a wasted day debugging a harness that is in fact correct. Per level we report:
 - **governance-correctness rate** = fraction matching oracle;
 - **false-positive rate** = intervened when oracle said don't;
 - **false-negative rate** = allowed when oracle said intervene;
@@ -295,6 +310,33 @@ governance comes from `pgso-core`/`pgso-actuator-local`.
 - **One honest paragraph:** at what signal quality PGSO governs acceptably given
   the non-punitive reaction, and where each real signal candidate falls relative to
   that — i.e., is the library ready, and with which signal.
+
+### 6.1 Required limitations subsection (PRE-STUBBED — must appear in the report)
+
+The report **must** carry a dedicated *Limitations* subsection containing at least
+the following, written now so they cannot be forgotten at writing time. The §6
+"one honest paragraph" must not be read as "L3 works → the real eGeMAPS signal
+works"; these caveats are what prevent that over-claim:
+
+1. **Synthetic noise ≠ real extractor error (the central caveat).** Layer B
+   characterizes the mechanism's robustness to *controlled, stochastic* (Gaussian-
+   copula) degradation. Real extractor error is **structured** — speaker-correlated
+   and non-Gaussian (cf. Phase 1's GoldenGirls, where high-pitch voices pegged the
+   F0-variability term and produced systematic, not random, error). Therefore
+   **L3's tolerance to synthetic ρ = 0.20 does NOT establish tolerance to the real
+   eGeMAPS signal's ρ ≈ 0.206.** Whether governance degrades equivalently under the
+   real signal's *structured* error is **not established here**.
+2. **Noise-free baseline (§3.2).** The engine is handed a perfect, zero-variance
+   `base[spk]` before every test segment. Live operation estimates the baseline
+   from noisy readings, which could **compound** degradation beyond what this curve
+   shows. The clean baseline is the right call for isolating the signal-value axis,
+   but the curve is **not** a real-world-robustness measurement.
+3. **Confidence held fixed (§3.3).** G4 abstention/confidence degradation is a
+   separate axis held constant at 0.9; this experiment varies signal-value quality
+   only.
+4. **Range-restricted, acted, single-corpus ground truth.** Layer B's labels are
+   MUStARD++ acted arousal (sd ≈ 1.14/9), and the operating point is tuned to that
+   distribution; Layer A's eGeMAPS-FULL is the only cross-corpus candidate.
 
 ---
 
