@@ -41,7 +41,24 @@ fn percentile(sorted: &[f64], p: f64) -> f64 {
     sorted[idx]
 }
 
+/// Pin the measuring thread to a single logical processor. On the hybrid
+/// i7-12650H, logical procs 0..=11 are P-core threads and 12..=15 are E-cores
+/// (verified via `GetLogicalProcessorInformationEx`: P-cores report
+/// efficiency_class 1, E-cores 0). Override with `PGSO_BENCH_CORE`; default 2 is
+/// a P-core thread.
+fn pin_to_pcore() {
+    let id: usize = std::env::var("PGSO_BENCH_CORE")
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(2);
+    let ok = core_affinity::set_for_current(core_affinity::CoreId { id });
+    let kind = if id <= 11 { "P-core" } else { "E-core" };
+    eprintln!("pin_to_pcore: logical core {id} ({kind}); set_for_current -> {ok}");
+}
+
 fn main() {
+    pin_to_pcore();
+
     // Built ONCE, outside the timing loop.
     let nominal = SignalReading {
         value: 0.5, // == population_prior == steady-state baseline -> sub-threshold

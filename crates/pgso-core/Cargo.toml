@@ -16,6 +16,9 @@ thiserror = "2"
 [dev-dependencies]
 proptest = "1"
 criterion = { version = "0.5", features = ["html_reports"] }
+# Pin the latency bench/harness thread to a single physical P-core on hybrid
+# CPUs (e.g. i7-12650H) so measurements aren't scheduled onto E-cores.
+core_affinity = "0.8"
 # E2E tests (tests/e2e.rs) wire the generic pipeline to a concrete actuator.
 # This is a DEV-dependency only: it never enters pgso-core's normal build graph,
 # so INV-1 (pure core) holds and the dev-dep cycle (actuator-local -> core,
