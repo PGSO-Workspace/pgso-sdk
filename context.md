@@ -1,7 +1,7 @@
-# PGSO-SDK (Prosody-Gated State Orchestrator) - Technical Context
+# PGSO-SDK (Paralinguistic Governance for State Orchestration) - Technical Context
 
 ## 1. Project Goal
-Build an agnostic, high-performance neuro-symbolic middleware SDK in Rust. Its purpose is to intercept LLM Tool Calling (MCP standard or standard JSON arrays) and prune destructive tools dynamically based on a Multimodal Discrepancy metric (Acoustic vs. Semantic discrepancy) to prevent unsafe Agentic AI executions during acute user stress.
+Build an agnostic, high-performance neuro-symbolic middleware SDK in Rust. Its purpose is to intercept LLM Tool Calling (MCP standard or standard JSON arrays) and govern the agent's tool catalog dynamically — non-punitively (require step-up by default, prune only when warranted) — based on a Multimodal Discrepancy metric (Acoustic vs. Semantic discrepancy). (The earlier "prevent unsafe executions during acute user stress" framing is retired: PGSO governs on paralinguistic incongruence between what is said and how it is said, not on a "user stress" judgement.)
 
 ## 2. Core Architecture & Stack
 * Language: Rust (2021 edition)

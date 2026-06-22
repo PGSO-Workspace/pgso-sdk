@@ -1,0 +1,16 @@
+# Standalone experiment package: NOT a member of the root workspace.
+# The root Cargo.toml excludes `experiments/`, so this builds on its own while
+# still path-depending on the SDK crates it evaluates.
+[package]
+name = "phase1-extract"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+pgso-core = { path = "../../../crates/pgso-core" }
+pgso-signal-egemaps = { path = "../../../crates/pgso-signal-egemaps" }
+hound = "3.5"
+anyhow = "1"
+csv = "1"
+serde = { version = "1", features = ["derive"] }

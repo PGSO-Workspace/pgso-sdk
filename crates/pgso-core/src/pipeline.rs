@@ -151,6 +151,17 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
     pub const fn audit_log(&self) -> &AuditLog {
         &self.audit_log
     }
+
+    /// Borrow the underlying actuator.
+    ///
+    /// Read-only access to the exposure point so callers (and end-to-end tests)
+    /// can inspect actuator-specific state the [`Actuator`] trait does not
+    /// surface — e.g. the injected directive blocks that G1 requires be cleared
+    /// when the catalog is restored to nominal.
+    #[must_use]
+    pub const fn actuator(&self) -> &A {
+        &self.actuator
+    }
 }
 
 /// Builder for [`Pgso`]. Supply each stage, then call [`PgsoBuilder::build`].

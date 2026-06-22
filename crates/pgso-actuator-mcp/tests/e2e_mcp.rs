@@ -152,3 +152,87 @@ fn test_e2e_over_mcp() {
         "REQ-5.6 (G2 over MCP): protected tool must remain in the MCP payload"
     );
 }
+
+/// REQ-4.4 / REQ-5.4 (G1 over MCP): an injected directive is exposed while the
+/// deviation is sustained and is REMOVED on recovery, and it never leaks into
+/// the served `tools/list` payload. Mirrors the LocalActuator G1 directive-clear
+/// e2e test over the MCP transport.
+#[test]
+fn test_e2e_directives_cleared_after_recovery_over_mcp() {
+    let protected = HashSet::from([ToolId::from("escalate")]);
+    let rules = pgso_rules! {
+        rule "high_valence" {
+            axis: Valence,
+            deviation: 0.3,
+            confidence: 0.5,
+            action: Action::Prune(ToolId::from("close_sale")),
+            action: Action::InjectDirective("De-escalate.".into())
+        }
+    };
+
+    // Warm up (calm) -> sustained high (injects directive) -> recovery to calm.
+    let mut readings = Vec::new();
+    for i in 0..5 {
+        readings.push(vec![reading(0.5, Axis::Valence, 0.9, i)]);
+    }
+    for i in 5..8 {
+        readings.push(vec![reading(0.95, Axis::Valence, 0.9, i)]);
+    }
+    for i in 8..12 {
+        readings.push(vec![reading(0.5, Axis::Valence, 0.9, i)]);
+    }
+
+    let actuator = McpActuator::new(test_catalog(), protected.clone());
+    let mut pgso = Pgso::builder()
+        .signal(MockSignal::new(readings))
+        .actuator(actuator)
+        .engine(DecisionEngine::new(default_config()))
+        .rules(RuleEngine::new(rules, protected))
+        .build()
+        .unwrap();
+
+    // While sustained: directive present, and the served tools/list omits the
+    // pruned tool (directives never appear in the tools payload).
+    for i in 0..8 {
+        pgso.process_window(&dummy_window(i)).unwrap();
+    }
+    assert!(
+        !pgso.actuator().directives().is_empty(),
+        "directive block should be present while the deviation is sustained"
+    );
+    let mid_tools = pgso.actuator().tools_list_response();
+    let mid_names: Vec<&str> = mid_tools["tools"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|t| t["name"].as_str().unwrap())
+        .collect();
+    assert!(
+        !mid_names.contains(&"close_sale"),
+        "close_sale should be absent from the MCP payload while sustained"
+    );
+
+    // After recovery: directive set emptied (G1) and the served tools/list is
+    // back to the full nominal catalog with no directive leaking into it.
+    for i in 8..12 {
+        pgso.process_window(&dummy_window(i)).unwrap();
+    }
+    assert!(
+        pgso.actuator().directives().is_empty(),
+        "G1 over MCP: directive blocks must be cleared once the catalog is restored"
+    );
+    let payload = pgso.actuator().tools_list_response();
+    let tools = payload["tools"].as_array().unwrap();
+    let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
+    assert_eq!(tools.len(), 4, "MCP tools/list should be the full nominal catalog after recovery");
+    assert!(
+        names.contains(&"close_sale"),
+        "the pruned tool must be back in the MCP payload after recovery"
+    );
+    // The tools/list result object carries only the tools array — the directive
+    // never rides along in the served payload.
+    assert!(
+        payload.get("directives").is_none() && payload.get("directive").is_none(),
+        "no directive must leak into the MCP tools/list payload"
+    );
+}

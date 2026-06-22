@@ -201,6 +201,78 @@ fn test_e2e_recovery_restores_catalog() {
     );
 }
 
+/// REQ-4.4 (G1 end-to-end): an injected directive block is exposed while the
+/// deviation is sustained and is REMOVED once the catalog is restored to
+/// nominal. The existing `test_e2e_recovery_restores_catalog` proves catalog
+/// restoration and audits the reversal; this test closes G1's thinnest gap by
+/// asserting the exposed directive set itself is empty after recovery.
+#[test]
+fn test_e2e_directives_cleared_after_recovery() {
+    let protected = HashSet::from([ToolId::from("escalate")]);
+    let rules = pgso_rules! {
+        rule "high_valence_prune" {
+            axis: Valence,
+            deviation: 0.3,
+            confidence: 0.5,
+            action: Action::Prune(ToolId::from("close_sale")),
+            action: Action::InjectDirective("De-escalate.".into())
+        }
+    };
+
+    // Warm up (calm) -> sustained high (injects directive) -> recovery to calm.
+    let mut readings = Vec::new();
+    for i in 0..5 {
+        readings.push(vec![reading(0.5, Axis::Valence, 0.9, i)]);
+    }
+    for i in 5..8 {
+        readings.push(vec![reading(0.95, Axis::Valence, 0.9, i)]);
+    }
+    for i in 8..12 {
+        readings.push(vec![reading(0.5, Axis::Valence, 0.9, i)]);
+    }
+
+    let signal = MockSignal::new(readings);
+    let actuator = pgso_actuator_local::LocalActuator::new(test_catalog(), protected.clone());
+
+    let mut pgso = Pgso::builder()
+        .signal(signal)
+        .actuator(actuator)
+        .engine(DecisionEngine::new(default_config()))
+        .rules(RuleEngine::new(rules, protected))
+        .build()
+        .unwrap();
+
+    // Through the sustained-deviation windows: the directive is injected and the
+    // prunable tool is gone.
+    for i in 0..8 {
+        pgso.process_window(&dummy_window(i)).unwrap();
+    }
+    assert!(
+        !pgso.actuator().directives().is_empty(),
+        "directive block should be present while the deviation is sustained"
+    );
+    assert!(
+        !pgso.current_catalog().contains(&ToolId::from("close_sale")),
+        "close_sale should be pruned while the deviation is sustained"
+    );
+
+    // Through recovery: the catalog returns to nominal AND the directive set is
+    // emptied (G1 — the appended block is removable and removed on restore).
+    for i in 8..12 {
+        pgso.process_window(&dummy_window(i)).unwrap();
+    }
+    assert!(
+        pgso.actuator().directives().is_empty(),
+        "G1: directive blocks must be cleared once the catalog is restored to nominal"
+    );
+    let catalog = pgso.current_catalog();
+    assert_eq!(catalog.len(), 4, "catalog should be fully restored after recovery");
+    assert!(
+        catalog.contains(&ToolId::from("close_sale")),
+        "the pruned tool must be back after recovery"
+    );
+}
+
 /// REQ-4.5 (G2 end-to-end): a rule that targets a PROTECTED tool must never
 /// remove it from the served catalog, anywhere in the pipeline.
 #[test]

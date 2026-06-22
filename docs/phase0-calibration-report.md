@@ -2,7 +2,7 @@
 
 ## Validating Computational Measurement of Prosodic-Lexical Incongruence
 
-**Project:** PGSO -- Prosody-Gated State Orchestrator
+**Project:** PGSO -- Paralinguistic Governance for State Orchestration
 **Phase:** 0 (Instrument Calibration Gate)
 **Date:** 31 May 2026
 **Author:** Lucio (principal investigator)

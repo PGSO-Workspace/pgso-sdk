@@ -1,0 +1,5 @@
+# Generated artifacts (decoded audio, manifests, predictions, charts) and build output.
+out/
+extract/target/
+extract/Cargo.lock
+__pycache__/

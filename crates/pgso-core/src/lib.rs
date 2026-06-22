@@ -9,6 +9,10 @@
 //! an [`AuditLog`].
 
 #![deny(missing_docs)]
+// The core is unsafe-free by construction; make that a compiler guarantee, not a
+// review convention. Any `unsafe` introduced anywhere in this crate (including
+// its in-crate `#[cfg(test)]` modules) becomes a hard compile error.
+#![forbid(unsafe_code)]
 
 pub mod action;
 pub mod audit;

@@ -1,6 +1,6 @@
 # Phase 3 — Signal-Quality × Governance-Correctness Curve (Design Spec)
 
-**Project:** PGSO — Prosody-Gated State Orchestrator
+**Project:** PGSO — Paralinguistic Governance for State Orchestration
 **Phase:** 3 (final benchmark — measurement, not demo)
 **Date:** 6 June 2026
 **Author:** Lucio (PI) · design by pairing

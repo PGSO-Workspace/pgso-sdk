@@ -1704,7 +1704,7 @@ The report is filled with real numbers AFTER `run_all.py`. This task creates the
 ````markdown
 # Phase 3 Report — Signal-Quality × Governance-Correctness Curve
 
-**Project:** PGSO — Prosody-Gated State Orchestrator
+**Project:** PGSO — Paralinguistic Governance for State Orchestration
 **Phase:** 3 (final benchmark — measurement)
 **Date:** <fill on completion>
 **Author:** Lucio (PI)

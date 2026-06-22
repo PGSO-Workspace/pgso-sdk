@@ -1,0 +1,3 @@
+# Generated artifacts (decoded/synthetic audio, manifests, predictions, charts) and caches.
+out/
+__pycache__/
