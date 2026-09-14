@@ -26,6 +26,9 @@ pub const RESTORE_NOMINAL_RULE_ID: &str = "restore_nominal";
 /// Audit trail for a governance decision (INV-5).
 #[derive(Debug, Clone)]
 pub struct AuditRecord {
+    /// Action requested by the rule before protected-tool enforcement.
+    /// None for manually constructed or recovery records.
+    pub requested_action: Option<Action>,
     /// Caller-supplied timestamp of the decision in milliseconds.
     pub timestamp_ms: u64,
     /// Raw signal value that drove the decision, if any.
@@ -46,6 +49,7 @@ impl AuditRecord {
     #[must_use]
     pub const fn empty() -> Self {
         Self {
+            requested_action: None,
             timestamp_ms: 0,
             signal_value: None,
             axis: None,
@@ -61,6 +65,7 @@ impl AuditRecord {
     #[must_use]
     pub fn restore(timestamp_ms: u64) -> Self {
         Self {
+            requested_action: None,
             timestamp_ms,
             signal_value: None,
             axis: None,

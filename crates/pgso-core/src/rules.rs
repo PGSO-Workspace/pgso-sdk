@@ -190,6 +190,7 @@ impl RuleEngine {
                 decisions.push(ScopeDecision::with_audit(
                     final_action,
                     AuditRecord {
+                        requested_action: Some(action.clone()),
                         timestamp_ms: output.timestamp_ms,
                         signal_value: Some(output.raw_value),
                         axis: Some(output.axis),

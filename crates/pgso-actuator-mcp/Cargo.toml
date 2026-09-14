@@ -19,3 +19,5 @@ serde_json = "1"
 # proof — an empty `git diff` for crates/pgso-core — holds: the second-signal
 # test reuses LocalActuator, so that crate is a dev-dependency here only.
 pgso-actuator-local = { path = "../pgso-actuator-local" }
+
+proptest = "1"

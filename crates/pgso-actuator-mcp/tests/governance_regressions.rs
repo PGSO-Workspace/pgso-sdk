@@ -297,7 +297,7 @@ fn failed_reconciliation_does_not_advance_engine_or_commit_policy() {
     cfg.ema_alpha = 1.0;
     let mut p = Pgso::builder()
         .signal(Scripted(
-            vec![vec![reading(0.95, 0.9, 1)], vec![reading(0.95, 0.9, 1)]].into(),
+            vec![vec![reading(0.95, 0.9, 20)], vec![reading(0.95, 0.9, 10)]].into(),
         ))
         .engine(DecisionEngine::new(cfg))
         .rules(RuleEngine::new(RuleSet::new(vec![prune()]), HashSet::new()))
@@ -315,10 +315,103 @@ fn failed_reconciliation_does_not_advance_engine_or_commit_policy() {
     assert!(p.process_window(&audio).is_err());
     assert!(p.current_catalog().contains(&ToolId::from("quote")));
     assert!(p.audit_log().transitions().is_empty());
-    // If the failed reading updated the EMA, its identical retry would be nominal.
+    // If the failed commit consumed timestamp 20, timestamp 10 would be rejected.
     assert!(!p
         .process_window(&audio)
         .unwrap()
         .contains(&ToolId::from("quote")));
     assert_eq!(p.audit_log().transitions().len(), 1);
+}
+
+#[test]
+fn sustained_level_keeps_governance_until_actual_nominal_recovery() {
+    let mut windows: Vec<_> = (0..5).map(|t| vec![reading(0.5, 0.9, t)]).collect();
+    windows.extend((5..39).map(|t| vec![reading(0.95, 0.9, t)]));
+    windows.push(vec![reading(0.5, 0.9, 39)]);
+    let mut cfg = config();
+    cfg.ema_alpha = 0.1;
+    cfg.deviation_threshold = 0.3;
+    cfg.hysteresis_window = 3;
+    cfg.warmup_readings = 5;
+    let mut p = Pgso::builder()
+        .signal(Scripted(windows.into()))
+        .engine(DecisionEngine::new(cfg))
+        .rules(RuleEngine::new(
+            RuleSet::new(vec![
+                prune().with_direction(pgso_core::Direction::Rising),
+                directive(),
+            ]),
+            HashSet::new(),
+        ))
+        .actuator(LocalActuator::new(catalog(), HashSet::new()))
+        .build()
+        .unwrap();
+    for _ in 0..7 {
+        assert!(step(&mut p).contains(&ToolId::from("quote")));
+    }
+    for _ in 7..39 {
+        assert!(
+            !step(&mut p).contains(&ToolId::from("quote")),
+            "sustained level unexpectedly restored tool"
+        );
+        assert_eq!(p.actuator().directives(), &["Clarify."]);
+    }
+    assert!(step(&mut p).contains(&ToolId::from("quote")));
+    assert!(p.actuator().directives().is_empty());
+    assert_eq!(p.audit_log().transitions().len(), 2);
+}
+
+#[test]
+fn protected_downgrade_preserves_requested_action() {
+    let requested = Action::Prune(ToolId::from("human"));
+    let mut p = Pgso::builder()
+        .signal(Scripted(vec![vec![reading(0.95, 0.9, 1)]].into()))
+        .engine(DecisionEngine::new(config()))
+        .rules(RuleEngine::new(
+            RuleSet::new(vec![rule("adversarial", 0.2, requested.clone())]),
+            HashSet::from([ToolId::from("human")]),
+        ))
+        .actuator(LocalActuator::new(
+            catalog(),
+            HashSet::from([ToolId::from("human")]),
+        ))
+        .build()
+        .unwrap();
+    let served = p
+        .process_window(&AudioWindow {
+            samples: vec![],
+            sample_rate: 16000,
+            timestamp_ms: 1,
+        })
+        .unwrap();
+    assert!(
+        served
+            .find(&ToolId::from("human"))
+            .unwrap()
+            .requires_step_up
+    );
+    let entry = &p.audit_log().entries()[0];
+    assert_eq!(entry.audit.requested_action, Some(requested));
+    assert_eq!(entry.action, Action::RequireStepUp(ToolId::from("human")));
+}
+
+proptest::proptest! {
+    #![proptest_config(proptest::test_runner::Config::with_cases(512))]
+    #[test]
+    fn protected_catalog_is_nonvacuously_preserved(
+        tail in proptest::collection::vec((0.0f32..1.0,0.0f32..1.0),0..100)
+    ) {
+        let protected=HashSet::from([ToolId::from("human")]);
+        let mut windows=vec![vec![reading(0.95,0.9,0)]];
+        windows.extend(tail.into_iter().enumerate().map(|(i,(v,c))|vec![reading(v,c,i as u64+1)]));
+        let length=windows.len();
+        let mut p=Pgso::builder().signal(Scripted(windows.into()))
+            .engine(DecisionEngine::new(config()))
+            .rules(RuleEngine::new(RuleSet::new(vec![rule("target_protected",0.2,Action::Prune(ToolId::from("human")))]),protected.clone()))
+            .actuator(LocalActuator::new(catalog(),protected)).build().unwrap();
+        for _ in 0..length { proptest::prop_assert!(step(&mut p).contains(&ToolId::from("human"))); }
+        // Forced adversarial prefix guarantees an actual attempted prune in EVERY case.
+        proptest::prop_assert!(!p.audit_log().entries().is_empty());
+        proptest::prop_assert_eq!(&p.audit_log().entries()[0].audit.requested_action,&Some(Action::Prune(ToolId::from("human"))));
+    }
 }

@@ -6,7 +6,7 @@
 
 A Rust SDK that gives an agent **ears**: it perceives **how** something is said — pitch, energy, jitter, rhythm — directly from raw audio (no ASR), and uses that paralinguistic signal to **deterministically govern which tools the agent's catalog exposes**.
 
-[![CI](https://github.com/Kochi-sicem/pgso-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/Kochi-sicem/pgso-sdk/actions/workflows/ci.yml)
+[![CI](https://github.com/PGSO-Workspace/pgso-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/PGSO-Workspace/pgso-sdk/actions/workflows/ci.yml)
 [![Rust](https://img.shields.io/badge/rust-1.83%2B-orange.svg)](#minimum-supported-rust-version)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -301,7 +301,7 @@ If you use PGSO in academic work, please cite the project:
   title  = {PGSO: Paralinguistic Governance for State Orchestration},
   author = {Yen, Lucio},
   year   = {2026},
-  url    = {https://github.com/Kochi-sicem/pgso-sdk},
+  url    = {https://github.com/PGSO-Workspace/pgso-sdk},
   note   = {Better Agents by Listening}
 }
 ```

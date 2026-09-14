@@ -38,7 +38,7 @@ pub struct EngineConfig {
     /// track the signal faster. MUST be in `[0, 1]`; values outside this range
     /// make the baseline diverge or oscillate.
     pub ema_alpha: f32,
-    /// Number of initial readings used to seed a stable personal baseline via a
+    /// Number of initial nominal readings used to seed a personal baseline via a
     /// cumulative mean before switching to EMA.
     pub warmup_readings: u64,
     /// Baseline value assumed at `t = 0`, before any reading for an axis. This is
@@ -106,6 +106,7 @@ struct AxisState {
     readings_count: u64,
     consecutive_above: u32,
     last_timestamp: Option<u64>,
+    rising: bool,
 }
 
 impl AxisState {
@@ -115,13 +116,14 @@ impl AxisState {
             readings_count: 0,
             consecutive_above: 0,
             last_timestamp: None,
+            rising: false,
         }
     }
 
     /// Advance the three-layer baseline with a new value.
     ///
     /// During warm-up (`readings_count <= warmup`) the baseline is the
-    /// cumulative mean of all values seen; afterwards it is an EMA. Both forms
+    /// cumulative mean of nominal values; afterwards it is an EMA. Both forms
     /// are pure functions of prior state and the new value, so the engine is
     /// deterministic (INV-3).
     fn update_baseline(&mut self, value: f32, alpha: f32, warmup: u64) {
@@ -145,6 +147,7 @@ pub struct DecisionEngine {
     config: EngineConfig,
     axes: HashMap<Axis, AxisState>,
     configuration_error: Option<crate::ConfigError>,
+    max_gap_ms: Option<u64>,
 }
 
 impl DecisionEngine {
@@ -160,7 +163,22 @@ impl DecisionEngine {
             configuration_error: config.validate().err(),
             config,
             axes: HashMap::new(),
+            max_gap_ms: None,
         }
+    }
+
+    /// Bound the gap between accepted readings of each axis. Longer gaps reset
+    /// hysteresis, but do not restore permissions or change the baseline.
+    /// Without this setting, consecutiveness is defined by reading order only.
+    ///
+    /// # Errors
+    /// Rejects zero, which cannot describe a positive observation cadence.
+    pub fn with_max_gap_ms(mut self, max_gap_ms: u64) -> Result<Self, crate::ConfigError> {
+        if max_gap_ms == 0 {
+            return Err(crate::ConfigError("max_gap_ms"));
+        }
+        self.max_gap_ms = Some(max_gap_ms);
+        Ok(self)
     }
 
     /// Checked constructor recommended for integrations.
@@ -192,13 +210,15 @@ impl DecisionEngine {
     /// Deviation is measured against the *established* baseline — the value
     /// before this reading is folded in — so the population prior is the genuine
     /// cold-start reference and an anomalous reading is measured against prior
-    /// expectation, not against a baseline already pulled toward it. The baseline
-    /// is then adapted with this reading (three-layer: prior → cumulative mean →
-    /// EMA).
+    /// expectation, not against a baseline already pulled toward it. Only nominal readings
+    /// adapt the baseline (prior → cumulative mean → EMA). Pending and triggered
+    /// deviations freeze it. A persistent offset is therefore not learned away;
+    /// a new speaker or a deliberate recalibration needs a new engine.
     ///
     /// This is **level-triggered**, not edge-triggered: while a deviation stays
     /// sustained it returns `Some` on *every* reading, and `None` as soon as the
-    /// deviation subsides. The end-to-end pipeline (M4) depends on this to keep
+    /// deviation subsides. Direction changes or configured gaps restart the run.
+    /// The end-to-end pipeline (M4) depends on this to keep
     /// governance applied while the signal persists and to restore the catalog
     /// when it returns to nominal.
     pub fn process(&mut self, reading: &SignalReading) -> Option<EngineOutput> {
@@ -230,25 +250,35 @@ impl DecisionEngine {
         {
             return ProcessOutcome::Abstained;
         }
+        if let (Some(last), Some(max_gap)) = (state.last_timestamp, self.max_gap_ms) {
+            if reading.timestamp_ms - last > max_gap {
+                state.consecutive_above = 0;
+            }
+        }
         state.last_timestamp = Some(reading.timestamp_ms);
 
         // Measure against the established baseline BEFORE adapting it.
         let baseline_ref = state.baseline;
         let deviation = (reading.value - baseline_ref).abs();
 
-        // Then fold this reading into the baseline (warm-up mean → EMA).
-        state.update_baseline(
-            reading.value,
-            self.config.ema_alpha,
-            self.config.warmup_readings,
-        );
-
         if deviation >= self.config.deviation_threshold {
+            // Opposite sides of baseline cannot complete each other's run.
+            let rising = reading.value > baseline_ref;
+            if state.consecutive_above > 0 && state.rising != rising {
+                state.consecutive_above = 0;
+            }
+            state.rising = rising;
+            // Freeze from the first above-threshold observation, including pending.
             // saturating: a pathological unbroken stream can't wrap the counter.
             state.consecutive_above = state.consecutive_above.saturating_add(1);
         } else {
             // Sub-threshold window breaks the run (hysteresis reset).
             state.consecutive_above = 0;
+            state.update_baseline(
+                reading.value,
+                self.config.ema_alpha,
+                self.config.warmup_readings,
+            );
             return ProcessOutcome::Nominal;
         }
 
@@ -290,6 +320,24 @@ mod tests {
             warmup_readings: 5,
             population_prior: 0.5,
         }
+    }
+
+    #[test]
+    fn opposite_directions_and_large_gaps_restart_hysteresis() {
+        let mut e = DecisionEngine::new(default_config())
+            .with_max_gap_ms(100)
+            .unwrap();
+        assert!(e.process(&reading(0.95, Axis::Arousal, 0.9, 1)).is_none());
+        assert!(e.process(&reading(0.95, Axis::Arousal, 0.9, 2)).is_none());
+        assert!(e.process(&reading(0.05, Axis::Arousal, 0.9, 3)).is_none());
+        assert!(e.process(&reading(0.05, Axis::Arousal, 0.9, 4)).is_none());
+        assert!(e.process(&reading(0.05, Axis::Arousal, 0.9, 5)).is_some());
+        assert!(e.process(&reading(0.05, Axis::Arousal, 0.9, 200)).is_none());
+        assert!(e.process(&reading(0.05, Axis::Arousal, 0.9, 201)).is_none());
+        assert!(e.process(&reading(0.05, Axis::Arousal, 0.9, 202)).is_some());
+        assert!(DecisionEngine::new(default_config())
+            .with_max_gap_ms(0)
+            .is_err());
     }
 
     #[test]
@@ -395,10 +443,10 @@ mod tests {
     }
 
     #[test]
-    fn test_baseline_adapts_to_signal() {
-        // The baseline must adapt toward a sustained signal far from the prior,
+    fn test_baseline_adapts_to_nominal_signal() {
+        // Nominal observations adapt the baseline within the permitted band,
         // so later readings are measured against the ADAPTED baseline, not the
-        // stale prior. Non-vacuous: asserts both that an at-baseline reading does
+        // stale prior. Only nominal observations calibrate. Non-vacuous: asserts both that an at-baseline reading does
         // NOT trigger and that a far-from-baseline reading DOES, plus the
         // reported baseline reflects adaptation.
         let config = EngineConfig {
@@ -407,10 +455,10 @@ mod tests {
             hysteresis_window: 1,
             ema_alpha: 0.3,
             warmup_readings: 3,
-            population_prior: 0.1,
+            population_prior: 0.5,
         };
         let mut engine = DecisionEngine::new(config);
-        // Converge the baseline near 0.7 (far from prior 0.1).
+        // Converge the baseline near 0.7 (within threshold of prior 0.5).
         for i in 0..15 {
             engine.process(&reading(0.7, Axis::Valence, 0.9, i));
         }
@@ -422,7 +470,7 @@ mod tests {
             "a reading at the adapted baseline must not trigger"
         );
         // A reading FAR from the adapted baseline must trigger, and the reported
-        // baseline must reflect adaptation (≫ the 0.1 prior).
+        // baseline must reflect adaptation (≫ the 0.5 prior).
         let o = engine
             .process(&reading(0.2, Axis::Valence, 0.9, 16))
             .expect("a reading far below the adapted baseline should trigger");

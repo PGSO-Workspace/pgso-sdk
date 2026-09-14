@@ -1,0 +1,426 @@
+{
+  "date": "2026-09-14",
+  "base_commit": "84cfb41f739e8e0c7c74945d9b8a226a1a9da93a",
+  "tool": "cargo-mutants 27.1.0",
+  "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+  "seed": 20260914,
+  "mutation_scope": [
+    "pgso-core/src/engine.rs",
+    "pgso-core/src/rules.rs"
+  ],
+  "command": "PROPTEST_RNG_SEED=20260914 cargo mutants -p pgso-core --file 'crates/pgso-core/src/engine.rs' --file 'crates/pgso-core/src/rules.rs' --test-workspace=true --jobs 2 --timeout 45 --build-timeout 180",
+  "counts": {
+    "generated": 94,
+    "caught": 86,
+    "survived": 1,
+    "unviable": 7,
+    "timeout": 0
+  },
+  "survivor_analysis": "Changing consecutive_above > 0 to >= 0 is observationally equivalent: at zero, its only additional effect is assigning zero to an already-zero counter; the pure comparison has no side effects. This is a manual equivalence classification, not a test kill.",
+  "scope_limit": "No mutation campaign was run on HTTP, audio DSP, pipeline, state reconciliation or audit source; their regression tests are separate evidence.",
+  "initial_counts_before_boundary_tests": {
+    "generated": 94,
+    "caught": 66,
+    "survived": 21,
+    "unviable": 7
+  },
+  "file_sha256": {
+    "Cargo.lock": "6a8dbf9a5bd05be1869df6701a9fde697f8f0041635f339142e6c1ed24b0de16",
+    "crates/pgso-core/src/engine.rs": "fca1d2aa558dcd5b0aa390e145f24e0a1eda46f4fb6e60d37001ba787242e93b",
+    "crates/pgso-core/src/rules.rs": "a3a5641a42b637daaac9f23b62f60da0798b9a125138cf2dc5450f4ee6e5535c",
+    "crates/pgso-core/tests/contract_boundaries.rs": "df46867f43dcfbd5ee84bfb98e22dc623afc29c84e96e6028a0fb221cdbf3984",
+    "crates/pgso-core/tests/e2e.rs": "6ccf26263ef21766809908dcfe20e105dc2c244a7f0cf4ecd19d169103e9c010",
+    "crates/pgso-core/tests/property_tests.rs": "7ad2417508d260973a224b7f56ebe72db64395cac84983abaa927c199fa3fd0f",
+    "crates/pgso-actuator-mcp/tests/governance_regressions.rs": "77b45d905bd07d61c393475f44dc7ce153b9f6cc3662a2143742df31c57b7788",
+    "crates/pgso-core/examples/governance_trace.rs": "6a7d6517267b55419b4916d7fd6b28c1419b27529c204664add78f1b5d8fb321"
+  },
+  "trace": {
+    "command": "cargo run --quiet -p pgso-core --example governance_trace",
+    "variants": [
+      "fresh-process-1",
+      "fresh-process-2",
+      "RUSTFLAGS=-C target-feature=+fma",
+      "RUSTFLAGS=-C target-feature=-fma"
+    ],
+    "sha256": "530095424a988479b0aead46b3dbfedfcd150cf3bee0d925d3143a588ac7eca6",
+    "scope": "512 synthetic observations on x86_64 Linux; all four output hashes equal; NOT an aarch64 or cross-platform verification"
+  },
+  "mutants": [
+    {
+      "name": "crates/pgso-core/src/engine.rs:56:12: delete ! in EngineConfig::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:56:9: replace EngineConfig::validate -> Result<(), crate::ConfigError> with Ok(())",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:59:12: delete ! in EngineConfig::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:62:50: replace || with && in EngineConfig::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:62:12: delete ! in EngineConfig::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:62:78: replace < with == in EngineConfig::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:62:78: replace < with > in EngineConfig::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:65:12: delete ! in EngineConfig::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:62:78: replace < with <= in EngineConfig::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:131:32: replace <= with > in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:130:9: replace AxisState::update_baseline with ()",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:59: replace + with - in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:59: replace + with * in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:55: replace / with * in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:55: replace / with % in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:43: replace * with + in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:43: replace * with / in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:48: replace - with + in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:48: replace - with / in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:67: replace / with * in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:133:67: replace / with % in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:135:55: replace - with / in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:135:55: replace - with + in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:135:70: replace * with + in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:135:70: replace * with / in AxisState::update_baseline",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:177:9: replace DecisionEngine::with_max_gap_ms -> Result<Self, crate::ConfigError> with Ok(Default::default())",
+      "outcome": "Unviable"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:189:9: replace DecisionEngine::try_new -> Result<Self, crate::ConfigError> with Ok(Default::default())",
+      "outcome": "Unviable"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:177:23: replace == with != in DecisionEngine::with_max_gap_ms",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:198:9: replace DecisionEngine::validate -> Result<(), crate::ConfigError> with Ok(())",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:225:9: replace DecisionEngine::process -> Option<EngineOutput> with Some(Default::default())",
+      "outcome": "Unviable"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:225:9: replace DecisionEngine::process -> Option<EngineOutput> with None",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:234:9: replace DecisionEngine::process_outcome -> ProcessOutcome with Default::default()",
+      "outcome": "Unviable"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:226:13: delete match arm ProcessOutcome::Triggered(output) in DecisionEngine::process",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:237:13: replace || with && in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:236:13: replace || with && in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:235:13: replace || with && in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:235:16: delete ! in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:236:16: delete ! in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:237:35: replace < with == in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:237:35: replace < with > in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:237:35: replace < with <= in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:249:54: replace < with > in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:249:54: replace < with == in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:249:54: replace < with <= in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:254:44: replace > with == in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:254:44: replace > with < in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:254:44: replace > with >= in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:254:37: replace - with + in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:254:37: replace - with / in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:262:40: replace - with + in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:262:40: replace - with / in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:264:22: replace >= with < in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:266:40: replace > with == in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:266:40: replace > with < in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:266:40: replace > with >= in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:267:44: replace && with || in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:267:40: replace > with == in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:267:40: replace > with < in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:267:40: replace > with >= in DecisionEngine::process_outcome",
+      "outcome": "MissedMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:267:60: replace != with == in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:285:36: replace < with == in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:285:36: replace < with > in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/engine.rs:285:36: replace < with <= in DecisionEngine::process_outcome",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:54:9: replace RulePredicate::matches -> bool with true",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:54:9: replace RulePredicate::matches -> bool with false",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:54:62: replace && with || in RulePredicate::matches",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:54:27: replace && with || in RulePredicate::matches",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:54:19: replace == with != in RulePredicate::matches",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:54:40: replace >= with < in RulePredicate::matches",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:54:76: replace >= with < in RulePredicate::matches",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:73:9: replace Rule::with_direction -> Self with Default::default()",
+      "outcome": "Unviable"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:115:9: replace RuleSet::rules -> &[Rule] with Vec::leak(vec![Default::default()])",
+      "outcome": "Unviable"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:115:9: replace RuleSet::rules -> &[Rule] with Vec::leak(Vec::new())",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:132:9: replace RuleEngine::validate -> Result<(), crate::ConfigError> with Ok(())",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:134:35: replace || with && in RuleEngine::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:134:38: delete ! in RuleEngine::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:139:17: replace || with && in RuleEngine::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:138:17: replace || with && in RuleEngine::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:137:16: delete ! in RuleEngine::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:138:49: replace < with == in RuleEngine::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:138:49: replace < with > in RuleEngine::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:138:49: replace < with <= in RuleEngine::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:139:20: delete ! in RuleEngine::validate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:161:9: replace RuleEngine::evaluate -> Vec<ScopeDecision> with vec![Default::default()]",
+      "outcome": "Unviable"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:161:9: replace RuleEngine::evaluate -> Vec<ScopeDecision> with vec![]",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:168:17: replace && with || in RuleEngine::evaluate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:170:59: replace > with < in RuleEngine::evaluate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:170:59: replace > with == in RuleEngine::evaluate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:170:59: replace > with >= in RuleEngine::evaluate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:171:60: replace < with == in RuleEngine::evaluate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:171:60: replace < with > in RuleEngine::evaluate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:171:60: replace < with <= in RuleEngine::evaluate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:180:42: replace match guard self.protected.contains(id) with true in RuleEngine::evaluate",
+      "outcome": "CaughtMutant"
+    },
+    {
+      "name": "crates/pgso-core/src/rules.rs:180:42: replace match guard self.protected.contains(id) with false in RuleEngine::evaluate",
+      "outcome": "CaughtMutant"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 //! Single-session execution boundary. Hosts retain exclusive access to policy and approval methods.
+use crate::HostClock;
 use pgso_actuator_mcp::{McpActuator, ToolDefinition};
 use pgso_core::{AudioWindow, Pgso, Signal, ToolId};
 use serde::{Deserialize, Serialize};
@@ -71,6 +72,8 @@ pub struct Runtime<S: Signal> {
     allowed: HashSet<ToolId>,
     approvals: HashMap<String, Approval>,
     revision: u64,
+    last_host_time: Option<u64>,
+    clock: HostClock,
     log: Vec<ExecutionRecord>,
 }
 
@@ -111,6 +114,8 @@ impl<S: Signal> Runtime<S> {
             allowed,
             approvals: HashMap::new(),
             revision: 0,
+            last_host_time: None,
+            clock: HostClock::new()?,
             log: Vec::new(),
         })
     }
@@ -118,6 +123,13 @@ impl<S: Signal> Runtime<S> {
     /// Current session identity.
     pub fn session(&self) -> &str {
         &self.session
+    }
+
+    /// Return trusted host time from the same monotonic clock used by HTTP.
+    /// Hosts approving a request for this runtime should pass this value to
+    /// [`Runtime::approve`] so both APIs share one time domain.
+    pub fn host_time_ms(&self) -> Result<u64, String> {
+        self.clock.now_ms()
     }
 
     /// Active directives for the agent host to include as a distinct context block.
@@ -150,6 +162,17 @@ impl<S: Signal> Runtime<S> {
     fn revoke_approvals(&mut self) {
         self.approvals.clear();
         self.revision = self.revision.saturating_add(1);
+    }
+
+    /// Observe trusted host time and reject a rollback. A rollback revokes all
+    /// approvals before returning, so an old timestamp cannot extend consent.
+    fn observe_host_time(&mut self, now_ms: u64) -> Result<(), String> {
+        if self.last_host_time.is_some_and(|last| now_ms < last) {
+            self.revoke_approvals();
+            return Err("host clock moved backwards".into());
+        }
+        self.last_host_time = Some(now_ms);
+        Ok(())
     }
 
     /// Trusted host audio path. Agent-facing HTTP routes cannot set observations.
@@ -216,7 +239,9 @@ impl<S: Signal> Runtime<S> {
 
     /// Trusted approval channel only: call after independently obtaining user consent.
     /// A caller-provided `confirmed: true` is never accepted by the agent API.
-    /// `now_ms` is trusted host time, not agent input.
+    /// `now_ms` is trusted, monotonic host time, not agent input. The runtime
+    /// rejects observed rollback and revokes outstanding approvals; an
+    /// unobserved rollback cannot be detected through this Rust API alone.
     ///
     /// # Errors
     /// Rejects unauthorized requests, overflow, zero TTL or a full pending-approval queue.
@@ -226,6 +251,7 @@ impl<S: Signal> Runtime<S> {
         now_ms: u64,
         ttl_ms: u64,
     ) -> Result<String, String> {
+        self.observe_host_time(now_ms)?;
         self.check(request)?;
         let expires_at = now_ms
             .checked_add(ttl_ms)
@@ -259,13 +285,20 @@ impl<S: Signal> Runtime<S> {
         let start = Instant::now();
         let mut outcome = "denied";
         let result = (|| {
+            self.observe_host_time(now_ms)?;
+            // A token is single-use even when the presented arguments fail
+            // schema validation. Session identity is checked first so a token
+            // cannot be consumed by a request from another session.
+            if request.session != self.session {
+                return Err("wrong session".into());
+            }
+            let presented = request
+                .confirmation
+                .as_ref()
+                .and_then(|token| self.approvals.remove(token));
             let needs_confirmation = self.check(&request)?;
             if needs_confirmation {
-                let approval = request
-                    .confirmation
-                    .as_ref()
-                    .and_then(|token| self.approvals.remove(token))
-                    .ok_or("confirmation required")?;
+                let approval = presented.ok_or("confirmation required")?;
                 if approval.tool != request.tool
                     || approval.arguments != request.arguments
                     || approval.revision != self.revision

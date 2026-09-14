@@ -24,8 +24,7 @@ use std::f32::consts::PI;
 
 use pgso_actuator_local::LocalActuator;
 use pgso_core::{
-    pgso_rules, Action, AudioWindow, Catalog, DecisionEngine, EngineConfig, Pgso, RuleEngine, Tool,
-    ToolId,
+    Action, AudioWindow, Catalog, DecisionEngine, EngineConfig, Pgso, RuleEngine, Tool, ToolId,
 };
 use pgso_signal_egemaps::EgemapsSignal;
 
@@ -71,15 +70,19 @@ fn main() -> Result<(), Box<dyn Error>> {
     let protected = HashSet::from([ToolId::from("escalate")]);
 
     // "On sustained vocal tension (arousal), stop pushing the close and clarify."
-    let rules = pgso_rules! {
-        rule "tense_arousal" {
-            axis: Arousal,
-            deviation: 0.3,
-            confidence: 0.5,
-            action: Action::Prune(ToolId::from("close_sale")),
-            action: Action::InjectDirective("Tension detected — clarify, don't push.".into())
-        }
-    };
+    let rules = pgso_core::RuleSet::new(vec![pgso_core::Rule::new(
+        "elevated_arousal",
+        pgso_core::Axis::Arousal,
+        0.3,
+        0.5,
+        vec![
+            Action::Prune(ToolId::from("close_sale")),
+            Action::InjectDirective(
+                "Ask whether clarification would help; avoid assuming an emotion.".into(),
+            ),
+        ],
+    )
+    .with_direction(pgso_core::Direction::Rising)]);
 
     let catalog = Catalog::new(vec![
         Tool::new("search", "Web Search"),
@@ -89,14 +92,17 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut pgso = Pgso::builder()
         .signal(EgemapsSignal::new(SR))
-        .engine(DecisionEngine::new(EngineConfig {
-            confidence_threshold: 0.5,
-            deviation_threshold: 0.3,
-            hysteresis_window: 3, // a lone tense window never fires
-            ema_alpha: 0.1,
-            warmup_readings: 5,
-            population_prior: 0.5,
-        }))
+        .engine(
+            DecisionEngine::new(EngineConfig {
+                confidence_threshold: 0.5,
+                deviation_threshold: 0.3,
+                hysteresis_window: 3, // a lone tense window never fires
+                ema_alpha: 0.1,
+                warmup_readings: 5,
+                population_prior: 0.1, // reference for this synthetic quiet fixture only
+            })
+            .with_max_gap_ms(2000)?,
+        )
         .rules(RuleEngine::new(rules, protected.clone()))
         .actuator(LocalActuator::new(catalog, protected))
         .build()?;
