@@ -7,7 +7,7 @@
 //! served catalog as an MCP `tools/list` JSON payload and tracks whether a
 //! `notifications/tools/list_changed` should be emitted. The deterministic
 //! [`pgso_core`] engine, rules, and pipeline drive it **without any change** —
-//! the empty `git diff` for `crates/pgso-core` is the headline result.
+//! its current reconciliation uses the shared core policy state.
 //!
 //! ## MCP shape (verified against the 2025-06-18 MCP spec)
 //!
@@ -36,9 +36,18 @@
 
 #![deny(missing_docs)]
 
-use pgso_core::{Action, Actuator, ActuatorError, Catalog, ScopeDecision, ToolId};
+use pgso_core::{Actuator, ActuatorError, Catalog, GovernanceState, ScopeDecision, ToolId};
 use serde_json::{json, Value};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
+
+/// Host-owned tool metadata; schemas are also validated by the executor.
+#[derive(Debug, Clone)]
+pub struct ToolDefinition {
+    /// Description supplied to the model.
+    pub description: String,
+    /// JSON Schema for the argument object.
+    pub input_schema: Value,
+}
 
 /// An [`Actuator`] that serves the governed catalog as MCP `tools/list`
 /// payloads.
@@ -50,32 +59,47 @@ use std::collections::HashSet;
 /// `notifications/tools/list_changed`.
 #[derive(Debug)]
 pub struct McpActuator {
-    /// The full nominal catalog, restored on [`Action::Allow`].
+    /// The full nominal catalog, restored on [`pgso_core::Action::Allow`].
     base_catalog: Catalog,
     /// The catalog currently served over MCP (after governance).
-    active_catalog: Catalog,
+    state: GovernanceState,
     /// Tool ids that are never pruned (G2 inviolable allowlist).
     protected: HashSet<ToolId>,
     /// Set when the served catalog changes; cleared by
     /// [`McpActuator::acknowledge_change`]. Drives
     /// `notifications/tools/list_changed`.
     changed: bool,
-    /// Appended directive blocks (G1). Not part of the MCP tools payload; kept
-    /// for parity with `LocalActuator` and cleared on [`Action::Allow`].
-    directive_blocks: Vec<String>,
+    definitions: HashMap<ToolId, ToolDefinition>,
 }
 
 impl McpActuator {
+    /// Set metadata for a nominal tool.
+    ///
+    /// # Errors
+    /// Returns an error for unknown tools or schemas without object type.
+    pub fn define(&mut self, id: ToolId, definition: ToolDefinition) -> Result<(), ActuatorError> {
+        if !self.base_catalog.contains(&id) {
+            return Err(ActuatorError::UnknownTool(id));
+        }
+        if definition.input_schema.get("type") != Some(&json!("object")) {
+            return Err(ActuatorError::Internal(
+                "inputSchema must describe an object".into(),
+            ));
+        }
+        self.definitions.insert(id, definition);
+        self.changed = true;
+        Ok(())
+    }
     /// Create an actuator serving `catalog`, treating every id in `protected` as
     /// inviolable (never pruned — G2).
     #[must_use]
     pub fn new(catalog: Catalog, protected: HashSet<ToolId>) -> Self {
         Self {
-            active_catalog: catalog.clone(),
+            state: GovernanceState::nominal(catalog.clone()),
             base_catalog: catalog,
             protected,
             changed: false,
-            directive_blocks: Vec::new(),
+            definitions: HashMap::new(),
         }
     }
 
@@ -93,7 +117,8 @@ impl McpActuator {
     #[must_use]
     pub fn tools_list_response(&self) -> Value {
         let tools: Vec<Value> = self
-            .active_catalog
+            .state
+            .catalog
             .tools()
             .iter()
             .map(|t| {
@@ -104,12 +129,9 @@ impl McpActuator {
                 json!({
                     "name": t.id.as_str(),
                     "title": t.name,
-                    "description": format!("The {} tool.", t.name),
-                    "inputSchema": {
-                        "type": "object",
-                        "properties": {},
-                        "required": []
-                    }
+                    "description": self.definitions.get(&t.id).map_or_else(|| format!("The {} tool.", t.name), |d| d.description.clone()),
+                    "_meta": { "pgso/requiresStepUp": t.requires_step_up },
+                    "inputSchema": self.definitions.get(&t.id).map_or_else(|| json!({"type":"object", "properties":{}, "required":[], "additionalProperties":false}), |d| d.input_schema.clone())
                 })
             })
             .collect();
@@ -121,8 +143,8 @@ impl McpActuator {
     /// `notifications/tools/list_changed` is owed to the client).
     ///
     /// Set **only** when the served catalog actually changed — an
-    /// [`Action::Allow`] on an already-nominal catalog, a no-op `Prune` of an
-    /// absent/protected tool, or an [`Action::InjectDirective`] (which never
+    /// [`pgso_core::Action::Allow`] on an already-nominal catalog, a no-op `Prune` of an
+    /// absent/protected tool, or an [`pgso_core::Action::InjectDirective`] (which never
     /// affects the tools payload) does not flip this flag.
     #[must_use]
     pub const fn has_changed(&self) -> bool {
@@ -139,77 +161,36 @@ impl McpActuator {
     /// Mirrors `LocalActuator::directives`; not part of the MCP tools payload.
     #[must_use]
     pub fn directives(&self) -> &[String] {
-        &self.directive_blocks
+        &self.state.directives
     }
 }
 
 impl Actuator for McpActuator {
-    fn current_catalog(&self) -> Catalog {
-        self.active_catalog.clone()
+    fn current_state(&self) -> GovernanceState {
+        self.state.clone()
     }
-
+    fn current_catalog(&self) -> Catalog {
+        self.state.catalog.clone()
+    }
     fn apply(&mut self, decision: &ScopeDecision) -> Result<Catalog, ActuatorError> {
-        // Snapshot the served catalog so we can detect whether this decision
-        // actually changed what MCP serves (drives the list_changed flag).
-        let prev = self.active_catalog.clone();
-
-        match &decision.action {
-            Action::Allow => {
-                // G1: restore to nominal and drop any directive block. Mirrors
-                // LocalActuator exactly.
-                self.active_catalog = self.base_catalog.clone();
-                self.directive_blocks.clear();
-            }
-            Action::Prune(id) => {
-                // G2: protected tools are never pruned. Pruning an absent tool
-                // (already pruned, or unknown id) is an intentional, idempotent
-                // no-op — the M4 pipeline replays the same decision across
-                // consecutive windows while a deviation is sustained, so this
-                // MUST be safe to apply repeatedly. The decision's intent is
-                // recorded upstream in the AuditLog (G5), so tolerance here does
-                // not lose the audit signal.
-                if !self.protected.contains(id) {
-                    self.active_catalog.remove(id);
-                }
-            }
-            Action::RequireStepUp(id) => {
-                // Idempotent: setting the flag on an absent tool is a no-op (see
-                // the Prune rationale above).
-                self.active_catalog.set_step_up(id, true);
-            }
-            Action::InjectDirective(text) => {
-                self.directive_blocks.push(text.clone());
-            }
-            // `Action` is `#[non_exhaustive]`; a variant added in a later
-            // milestone reaches this arm. Release behavior: leave the catalog
-            // unchanged (governing principle — PGSO fails toward inaction).
-            // Debug/test builds trip this assertion so an unhandled variant is
-            // caught loudly during development rather than silently ignored.
-            _ => {
-                debug_assert!(
-                    false,
-                    "unhandled #[non_exhaustive] Action variant in McpActuator::apply"
-                );
-            }
-        }
-
-        // notifications/tools/list_changed is owed only when the *served*
-        // catalog actually changed. The MCP payload is a pure function of
-        // `active_catalog`, so comparing it before/after is exactly the right
-        // signal: a no-op Prune/RequireStepUp, an already-nominal Allow, or an
-        // InjectDirective (which never touches the tools list) leaves it unset.
-        if self.active_catalog != prev {
-            self.changed = true;
-        }
-
-        Ok(self.active_catalog.clone())
+        let before = self.state.catalog.clone();
+        self.state
+            .apply(&decision.action, &self.base_catalog, &self.protected);
+        self.changed |= before != self.state.catalog;
+        Ok(self.current_catalog())
+    }
+    fn reconcile(&mut self, active: &[ScopeDecision]) -> Result<Catalog, ActuatorError> {
+        let next = GovernanceState::reconcile(&self.base_catalog, &self.protected, active);
+        self.changed |= next.catalog != self.state.catalog;
+        self.state = next;
+        Ok(self.current_catalog())
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pgso_core::Tool;
+    use pgso_core::{Action, Tool};
 
     fn fixture() -> McpActuator {
         let tools = vec![

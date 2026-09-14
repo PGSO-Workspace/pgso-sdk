@@ -224,7 +224,11 @@ fn test_e2e_directives_cleared_after_recovery_over_mcp() {
     let payload = pgso.actuator().tools_list_response();
     let tools = payload["tools"].as_array().unwrap();
     let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
-    assert_eq!(tools.len(), 4, "MCP tools/list should be the full nominal catalog after recovery");
+    assert_eq!(
+        tools.len(),
+        4,
+        "MCP tools/list should be the full nominal catalog after recovery"
+    );
     assert!(
         names.contains(&"close_sale"),
         "the pruned tool must be back in the MCP payload after recovery"

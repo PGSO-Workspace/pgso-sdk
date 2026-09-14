@@ -135,7 +135,7 @@ graph TD
     classDef future stroke-dasharray: 5 5,fill:#f5f5f5,color:#888;
 ```
 
-**Independence.** The reference actuator is owned and minimal (`pgso-actuator-local`). MCP/HTTP are *optional adapters behind the same `Actuator` trait* — you plug them in only if you audit and want them. You never depend on a black box; the trait keeps you sovereign. The same is true for the signal source.
+**Independence.** The reference actuator is owned and minimal (`pgso-actuator-local`). MCP implements `Actuator`; HTTP optionally wraps that actuator with a protected execution runtime — you plug them in only if you audit and want them. You never depend on a black box; the trait keeps you sovereign. The same is true for the signal source.
 
 > **Agnosticism is demonstrated, not asserted:** the MCP adapter and a second mock signal were both added with a **zero-line diff to `pgso-core`**.
 
@@ -232,7 +232,7 @@ cargo run -p pgso-signal-egemaps --example extract
 | **`pgso-actuator-local`** | Reference actuator; in-memory; the G2 backstop. | ✅ |
 | **`pgso-actuator-mcp`** | Model Context Protocol adapter (`tools/list` + `notifications/tools/list_changed`). | ✅ |
 | `pgso-signal-onnx` | wav2vec2 (`ort`) neural extractor — opt-in, for DSP-vs-neural ablation. | ⏳ planned |
-| `pgso-actuator-http` | HTTP/Olive-pattern adapter. | ⏳ planned |
+| `pgso-actuator-http` | Authenticated HTTP/MCP execution, schemas and host-issued confirmations. See [integration guide](crates/pgso-actuator-http/README.md). | implemented; experimental |
 
 ---
 

@@ -85,6 +85,76 @@ const fn default_config() -> EngineConfig {
     }
 }
 
+#[test]
+fn abstention_preserves_policy_until_a_valid_nominal_window() {
+    let uncertain_readings = [
+        reading(0.95, Axis::Valence, 0.1, 2),
+        reading(0.95, Axis::Valence, f32::NAN, 2),
+        reading(0.95, Axis::Valence, f32::INFINITY, 2),
+        reading(0.95, Axis::Valence, 1.1, 2),
+        reading(f32::NAN, Axis::Valence, 0.9, 2),
+        reading(f32::INFINITY, Axis::Valence, 0.9, 2),
+        // Another axis has not yet met the two-reading hysteresis requirement.
+        reading(0.95, Axis::Arousal, 0.9, 2),
+    ];
+    for r in uncertain_readings {
+        for mixed in [false, true] {
+            let mut uncertain = vec![r.clone()];
+            if mixed {
+                uncertain.push(reading(0.5, Axis::Arousal, 0.9, 2));
+            }
+            let rules = pgso_rules! {
+                rule "restrict" {
+                    axis: Valence, deviation: 0.3, confidence: 0.5,
+                    action: Action::Prune(ToolId::from("close_sale")),
+                    action: Action::InjectDirective("Clarify.".into())
+                }
+            };
+            let mut pgso = Pgso::builder()
+                .signal(MockSignal::new(vec![
+                    vec![
+                        reading(0.95, Axis::Valence, 0.9, 0),
+                        reading(0.95, Axis::Valence, 0.9, 1),
+                    ],
+                    uncertain,
+                    vec![],
+                    vec![reading(0.5, Axis::Valence, 0.9, 4)],
+                ]))
+                .engine(DecisionEngine::new(EngineConfig {
+                    hysteresis_window: 2,
+                    ema_alpha: 0.0,
+                    warmup_readings: 0,
+                    ..default_config()
+                }))
+                .rules(RuleEngine::new(rules, HashSet::new()))
+                .actuator(pgso_actuator_local::LocalActuator::new(
+                    test_catalog(),
+                    HashSet::new(),
+                ))
+                .build()
+                .unwrap();
+            let restricted = pgso.process_window(&dummy_window(1)).unwrap();
+            assert!(!restricted.contains(&ToolId::from("close_sale")));
+            let audit_len = pgso.audit_log().entries().len();
+            for timestamp in [2, 3] {
+                assert_eq!(
+                    pgso.process_window(&dummy_window(timestamp)).unwrap(),
+                    restricted,
+                    "abstention/silence changed policy: {r:?}, mixed={mixed}"
+                );
+                assert_eq!(pgso.actuator().directives(), &["Clarify."]);
+                assert_eq!(pgso.audit_log().entries().len(), audit_len);
+            }
+            assert_eq!(
+                pgso.process_window(&dummy_window(4)).unwrap(),
+                test_catalog()
+            );
+            assert!(pgso.actuator().directives().is_empty());
+            assert_eq!(pgso.audit_log().entries().len(), audit_len + 1);
+        }
+    }
+}
+
 /// REQ-4.2 / REQ-4.3: a sustained high-deviation trace drives a prunable tool
 /// out of the served catalog, while a protected tool is untouched.
 #[test]
@@ -266,7 +336,11 @@ fn test_e2e_directives_cleared_after_recovery() {
         "G1: directive blocks must be cleared once the catalog is restored to nominal"
     );
     let catalog = pgso.current_catalog();
-    assert_eq!(catalog.len(), 4, "catalog should be fully restored after recovery");
+    assert_eq!(
+        catalog.len(),
+        4,
+        "catalog should be fully restored after recovery"
+    );
     assert!(
         catalog.contains(&ToolId::from("close_sale")),
         "the pruned tool must be back after recovery"

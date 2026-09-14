@@ -2,6 +2,11 @@
 
 use crate::types::ToolId;
 
+/// Invalid configuration supplied by an integrator.
+#[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[error("invalid configuration: {0}")]
+pub struct ConfigError(pub &'static str);
+
 /// Error surface for [`crate::traits::Actuator`] implementations.
 ///
 /// The in-memory reference actuator (`LocalActuator`) is infallible by design:

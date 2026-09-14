@@ -16,6 +16,15 @@ pub trait Signal {
 
 /// Exposure point where governance decisions mutate the tool catalog.
 pub trait Actuator {
+    /// Full observable state, including active directives.
+    fn current_state(&self) -> crate::GovernanceState;
+
+    /// Atomically replace all transient contributions. On error leave state unchanged.
+    ///
+    /// # Errors
+    /// Returns an error if the complete replacement cannot be applied.
+    fn reconcile(&mut self, active: &[ScopeDecision]) -> Result<Catalog, ActuatorError>;
+
     /// The catalog currently served to the agent.
     fn current_catalog(&self) -> Catalog;
 
