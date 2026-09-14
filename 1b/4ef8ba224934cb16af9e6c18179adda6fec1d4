@@ -1,0 +1,28 @@
+crates/pgso-core/src/engine.rs
+  s_81bf62597beb77::t_8d5b475f126b1a 71-78,176-182,185-189,214,218,221,276-277,285
+  s_81bf62597beb77::t_b10fd98f9406b5 160-161,257-275,279,287
+  s_81bf62597beb77::t_f8e0226c345cb1 278,280-284,286,288-291
+crates/pgso-core/src/pipeline.rs
+  s_81bf62597beb77::t_8d5b475f126b1a 23,29-30,41,108,110-118,123-124,134
+crates/pgso-core/tests/e2e.rs
+  s_81bf62597beb77::t_cf218a143dd521 88-89,91-96,99,101-114,119-123,127-129,136-139,145-147,152-157
+  s_81bf62597beb77::t_a125acb68d0981 90,97-98,100,115-118,124-126,130-135,140-144,148-151,339-343
+crates/pgso-actuator-mcp/tests/e2e_mcp.rs
+  s_81bf62597beb77::t_210164082e96e9 227-231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1b4ef8ba224934cb16af9e6c18179adda6fec1d4",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
