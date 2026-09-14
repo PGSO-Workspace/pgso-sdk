@@ -20,12 +20,14 @@
 //!
 //! - For each reading that triggers, the matching rules' decisions are applied
 //!   to the actuator and recorded in the [`AuditLog`] (G5).
-//! - When a window produced readings but **none** triggered, an
+//! - When a window produced readings and **all** were valid and nominal, an
 //!   [`Action::Allow`] is applied to restore the catalog to nominal and drop any
 //!   directive block (G1).
 //! - When a window produced **no** readings at all (silence / sub-VAD), the
 //!   restore is skipped: silence holds the current state rather than resetting
 //!   it (G4 in spirit — absence of signal is not a signal to act).
+//! - Abstained or pending readings prevent a global restore, including when
+//!   another axis in the same window is nominal. They are not recovery evidence.
 //!
 //! ## No panics (master spec §5)
 //!
@@ -36,7 +38,7 @@
 use crate::{
     action::{Action, AuditRecord, ScopeDecision},
     audit::AuditLog,
-    engine::DecisionEngine,
+    engine::{DecisionEngine, ProcessOutcome},
     error::ActuatorError,
     rules::RuleEngine,
     traits::{Actuator, Signal},
@@ -103,19 +105,23 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
     pub fn process_window(&mut self, window: &AudioWindow) -> Result<Catalog, ActuatorError> {
         let readings = self.signal.extract(window);
 
-        let mut any_triggered = false;
+        let mut all_nominal = !readings.is_empty();
         for reading in &readings {
-            if let Some(output) = self.engine.process(reading) {
-                any_triggered = true;
-                for decision in self.rules.evaluate(&output) {
-                    self.actuator.apply(&decision)?;
-                    self.audit_log.record(&decision);
+            match self.engine.process_outcome(reading) {
+                ProcessOutcome::Nominal => {}
+                ProcessOutcome::Abstained | ProcessOutcome::Pending => all_nominal = false,
+                ProcessOutcome::Triggered(output) => {
+                    all_nominal = false;
+                    for decision in self.rules.evaluate(&output) {
+                        self.actuator.apply(&decision)?;
+                        self.audit_log.record(&decision);
+                    }
                 }
             }
         }
 
-        // Level-triggered restore (G1): a window that carried readings but
-        // triggered nothing means the deviation has subsided — restore the
+        // Level-triggered restore (G1): only an entirely nominal window
+        // establishes that its observed deviations have subsided — restore the
         // catalog to nominal and drop any directive block via Action::Allow.
         // Silence (no readings) is deliberately NOT a restore trigger: absence
         // of signal holds the current state rather than resetting it.
@@ -125,7 +131,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
         // MUST be auditable so the reversal is traceable. We record it only when
         // the catalog truly changed — a no-op Allow on an already-nominal catalog
         // (every calm window) is not a mutation and would only flood the log.
-        if !any_triggered && !readings.is_empty() {
+        if all_nominal {
             let before = self.actuator.current_catalog();
             let timestamp_ms = readings.last().map_or(0, |r| r.timestamp_ms);
             let restore =

@@ -68,6 +68,14 @@ pub struct EngineOutput {
     pub timestamp_ms: u64,
 }
 
+/// Internal outcomes retain the distinction erased by the public Option API.
+pub(crate) enum ProcessOutcome {
+    Abstained,
+    Nominal,
+    Pending,
+    Triggered(EngineOutput),
+}
+
 /// Per-axis running state: adapted baseline, count of readings seen (for the
 /// warm-up/EMA switch), and the hysteresis run-length of above-threshold
 /// windows.
@@ -149,6 +157,8 @@ impl DecisionEngine {
     /// `hysteresis_window` consecutive above-threshold windows. Returns `None`
     /// on abstention (confidence below threshold, G4) or when the deviation is
     /// sub-threshold or not yet sustained.
+    /// Non-finite values and confidence outside `[0, 1]` also abstain without
+    /// changing the baseline or hysteresis. `None` does not imply recovery.
     ///
     /// Deviation is measured against the *established* baseline — the value
     /// before this reading is folded in — so the population prior is the genuine
@@ -163,10 +173,20 @@ impl DecisionEngine {
     /// governance applied while the signal persists and to restore the catalog
     /// when it returns to nominal.
     pub fn process(&mut self, reading: &SignalReading) -> Option<EngineOutput> {
+        match self.process_outcome(reading) {
+            ProcessOutcome::Triggered(output) => Some(output),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn process_outcome(&mut self, reading: &SignalReading) -> ProcessOutcome {
         // G4: abstain on low confidence — hold state, emit nothing, and do not
         // adapt the baseline from a reading we don't trust.
-        if reading.confidence < self.config.confidence_threshold {
-            return None;
+        if !reading.value.is_finite()
+            || !(0.0..=1.0).contains(&reading.confidence)
+            || reading.confidence < self.config.confidence_threshold
+        {
+            return ProcessOutcome::Abstained;
         }
 
         let state = self
@@ -191,14 +211,14 @@ impl DecisionEngine {
         } else {
             // Sub-threshold window breaks the run (hysteresis reset).
             state.consecutive_above = 0;
-            return None;
+            return ProcessOutcome::Nominal;
         }
 
         if state.consecutive_above < self.config.hysteresis_window {
-            return None;
+            return ProcessOutcome::Pending;
         }
 
-        Some(EngineOutput {
+        ProcessOutcome::Triggered(EngineOutput {
             axis: reading.axis,
             raw_value: reading.value,
             deviation,
@@ -231,6 +251,41 @@ mod tests {
             ema_alpha: 0.1,
             warmup_readings: 5,
             population_prior: 0.5,
+        }
+    }
+
+    #[test]
+    fn invalid_readings_preserve_baseline_and_hysteresis() {
+        for invalid in [
+            reading(f32::NAN, Axis::Arousal, 0.9, 2),
+            reading(f32::INFINITY, Axis::Arousal, 0.9, 2),
+            reading(0.95, Axis::Arousal, f32::NAN, 2),
+            reading(0.95, Axis::Arousal, f32::INFINITY, 2),
+            reading(0.95, Axis::Arousal, -0.1, 2),
+            reading(0.95, Axis::Arousal, 1.1, 2),
+        ] {
+            let mut engine = DecisionEngine::new(EngineConfig {
+                hysteresis_window: 2,
+                ema_alpha: 0.0,
+                warmup_readings: 0,
+                ..default_config()
+            });
+            assert!(matches!(
+                engine.process_outcome(&reading(0.95, Axis::Arousal, 0.9, 1)),
+                ProcessOutcome::Pending
+            ));
+            assert!(matches!(
+                engine.process_outcome(&invalid),
+                ProcessOutcome::Abstained
+            ));
+            let output = engine
+                .process(&reading(0.95, Axis::Arousal, 0.9, 3))
+                .unwrap();
+            assert_eq!(output.baseline, 0.5);
+            assert!(matches!(
+                engine.process_outcome(&reading(0.5, Axis::Arousal, 0.9, 4)),
+                ProcessOutcome::Nominal
+            ));
         }
     }
 
