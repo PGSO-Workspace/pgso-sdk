@@ -1,0 +1,43 @@
+Cargo.lock
+  s_81bf62597beb77::t_350503dd8f8149 905
+crates/pgso-actuator-mcp/Cargo.toml
+  s_81bf62597beb77::t_4e96b1b921fa7f 22-23
+crates/pgso-actuator-mcp/tests/governance_regressions.rs
+  s_81bf62597beb77::t_08daed7ef9f10a 300,318,325-417
+crates/pgso-core/src/action.rs
+  s_36df1c0224c0ef::t_822587879ca3dc 29-31,52,68
+crates/pgso-core/src/engine.rs
+  s_81bf62597beb77::t_0981874e835100 41,109,119,126,150,166,170-183,213-216,220-221,253-257,265-271,277-281,325-342,446-447,449,458,461,473
+crates/pgso-core/src/rules.rs
+  s_36df1c0224c0ef::t_e2684d95eebf6f 193
+crates/pgso-core/tests/property_tests.rs
+  s_36df1c0224c0ef::t_497ea0f3837312 155
+crates/pgso-signal-egemaps/examples/governance.rs
+  s_81bf62597beb77::t_9c7ec5908f07b6 27,73-85,95-105
+docs/governance-contract.md
+  s_81bf62597beb77::t_b7e4c694516ee0 1-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "84cfb41f739e8e0c7c74945d9b8a226a1a9da93a",
+  "prompts": {},
+  "sessions": {
+    "s_36df1c0224c0ef": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0a18a-37ae-7103-87c6-69803f6b9679",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    },
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
