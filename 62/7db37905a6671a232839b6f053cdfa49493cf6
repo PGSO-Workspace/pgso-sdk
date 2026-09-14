@@ -1,0 +1,21 @@
+crates/pgso-actuator-http/README.md
+  s_da2f0df848dc0e::t_080eb35f5fac3e 48
+crates/pgso-actuator-http/examples/server.rs
+  s_da2f0df848dc0e::t_cd4b2cbc09ea61 48-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "627db37905a6671a232839b6f053cdfa49493cf6",
+  "prompts": {},
+  "sessions": {
+    "s_da2f0df848dc0e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08d31-4f14-7472-9560-1695b693547b",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
