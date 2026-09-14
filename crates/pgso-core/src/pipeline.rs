@@ -11,29 +11,21 @@
 //! dependency and INV-1 (pure core) still holds — R6 explicitly permits this
 //! generic builder in core.
 //!
-//! ## Recovery semantics (level-triggered)
+//! ## Recovery semantics
 //!
-//! The [`DecisionEngine`] is *level-triggered* (see [`DecisionEngine::process`]):
-//! while a deviation stays sustained it returns `Some` on every reading, and
-//! `None` the moment the deviation subsides. [`Pgso::process_window`] turns that
-//! into catalog governance:
-//!
-//! - For each reading that triggers, the matching rules' decisions are applied
-//!   to the actuator and recorded in the [`AuditLog`] (G5).
-//! - When a window produced readings and **all** were valid and nominal, an
-//!   [`Action::Allow`] is applied to restore the catalog to nominal and drop any
-//!   directive block (G1).
-//! - When a window produced **no** readings at all (silence / sub-VAD), the
-//!   restore is skipped: silence holds the current state rather than resetting
-//!   it (G4 in spirit — absence of signal is not a signal to act).
-//! - Abstained or pending readings prevent a global restore, including when
-//!   another axis in the same window is nominal. They are not recovery evidence.
+//! Each valid observation replaces the contributions of its own axis. Nominal
+//! observations retire that axis; abstention/pending/silence hold its state.
+//! Other axes survive. Readings are processed in input order independently of
+//! batch boundaries. The complete resulting policy is reconciled atomically.
+//! Trusted hosts may explicitly expire stale policies with `expire_before`.
 //!
 //! ## No panics (master spec §5)
 //!
 //! Nothing in this module panics. [`PgsoBuilder::build`] returns a typed
 //! [`PgsoBuildError`] rather than unwrapping missing stages, and
 //! [`Pgso::process_window`] propagates [`ActuatorError`] with `?`.
+
+use std::collections::BTreeMap;
 
 use crate::{
     action::{Action, AuditRecord, ScopeDecision},
@@ -42,7 +34,7 @@ use crate::{
     error::ActuatorError,
     rules::RuleEngine,
     traits::{Actuator, Signal},
-    types::{AudioWindow, Catalog},
+    types::{AudioWindow, Axis, Catalog, SignalReading},
 };
 
 /// Error returned by [`PgsoBuilder::build`] when a required stage was not
@@ -54,6 +46,9 @@ use crate::{
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum PgsoBuildError {
+    /// Engine or rule configuration is invalid.
+    #[error(transparent)]
+    InvalidConfig(#[from] crate::ConfigError),
     /// No [`Signal`] source was supplied via [`PgsoBuilder::signal`].
     #[error("Pgso builder is missing a Signal source")]
     MissingSignal,
@@ -80,6 +75,7 @@ pub struct Pgso<S: Signal, A: Actuator> {
     rules: RuleEngine,
     actuator: A,
     audit_log: AuditLog,
+    active: BTreeMap<Axis, Vec<ScopeDecision>>,
 }
 
 impl<S: Signal, A: Actuator> Pgso<S, A> {
@@ -105,44 +101,78 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
     pub fn process_window(&mut self, window: &AudioWindow) -> Result<Catalog, ActuatorError> {
         let readings = self.signal.extract(window);
 
-        let mut all_nominal = !readings.is_empty();
         for reading in &readings {
-            match self.engine.process_outcome(reading) {
-                ProcessOutcome::Nominal => {}
-                ProcessOutcome::Abstained | ProcessOutcome::Pending => all_nominal = false,
+            // Stage the engine as well as policy: failed actuator commits must
+            // not consume a reading or advance hysteresis/baselines.
+            let mut engine = self.engine.clone();
+            let mut next = self.active.clone();
+            match engine.process_outcome(reading) {
+                ProcessOutcome::Abstained | ProcessOutcome::Pending => {
+                    self.engine = engine;
+                    continue;
+                }
+                ProcessOutcome::Nominal => {
+                    next.remove(&reading.axis);
+                }
                 ProcessOutcome::Triggered(output) => {
-                    all_nominal = false;
-                    for decision in self.rules.evaluate(&output) {
-                        self.actuator.apply(&decision)?;
-                        self.audit_log.record(&decision);
+                    let decisions = self.rules.evaluate(&output);
+                    if decisions.is_empty() {
+                        next.remove(&reading.axis);
+                    } else {
+                        next.insert(reading.axis, decisions);
                     }
                 }
             }
-        }
-
-        // Level-triggered restore (G1): only an entirely nominal window
-        // establishes that its observed deviations have subsided — restore the
-        // catalog to nominal and drop any directive block via Action::Allow.
-        // Silence (no readings) is deliberately NOT a restore trigger: absence
-        // of signal holds the current state rather than resetting it.
-        //
-        // G5/REQ-4.6: a restore that actually changes the served catalog
-        // (pruned -> full, directive cleared) is itself a catalog mutation and
-        // MUST be auditable so the reversal is traceable. We record it only when
-        // the catalog truly changed — a no-op Allow on an already-nominal catalog
-        // (every calm window) is not a mutation and would only flood the log.
-        if all_nominal {
-            let before = self.actuator.current_catalog();
-            let timestamp_ms = readings.last().map_or(0, |r| r.timestamp_ms);
-            let restore =
-                ScopeDecision::with_audit(Action::Allow, AuditRecord::restore(timestamp_ms));
-            let after = self.actuator.apply(&restore)?;
-            if after != before {
-                self.audit_log.record(&restore);
-            }
+            self.commit_policy(next, reading.timestamp_ms, Some(reading.clone()))?;
+            self.engine = engine;
         }
 
         Ok(self.actuator.current_catalog())
+    }
+
+    fn commit_policy(
+        &mut self,
+        next: BTreeMap<Axis, Vec<ScopeDecision>>,
+        timestamp_ms: u64,
+        reading: Option<SignalReading>,
+    ) -> Result<(), ActuatorError> {
+        let active: Vec<_> = next.values().flatten().cloned().collect();
+        let before = self.actuator.current_state();
+        self.actuator.reconcile(&active)?;
+        let after = self.actuator.current_state();
+        if before != after {
+            if active.is_empty() {
+                self.audit_log.record(&ScopeDecision::with_audit(
+                    Action::Allow,
+                    AuditRecord::restore(timestamp_ms),
+                ));
+            } else {
+                for decision in &active {
+                    self.audit_log.record(decision);
+                }
+            }
+            self.audit_log.transition(crate::audit::PolicyTransition {
+                timestamp_ms,
+                reading,
+                before,
+                after,
+                active,
+            });
+        }
+        self.active = next;
+        Ok(())
+    }
+
+    /// Retire contributions older than the trusted host's cutoff. Silence alone
+    /// never grants permissions. Call this under the same lock as dispatch.
+    ///
+    /// # Errors
+    /// Leaves policy unchanged if reconciliation fails.
+    pub fn expire_before(&mut self, cutoff_ms: u64) -> Result<Catalog, ActuatorError> {
+        let mut next = self.active.clone();
+        next.retain(|_, decisions| decisions.iter().any(|d| d.audit.timestamp_ms >= cutoff_ms));
+        self.commit_policy(next, cutoff_ms, None)?;
+        Ok(self.current_catalog())
     }
 
     /// The catalog currently served by the actuator.
@@ -229,12 +259,21 @@ impl<S: Signal, A: Actuator> PgsoBuilder<S, A> {
     /// not supplied. This never panics, so a wiring mistake cannot crash the
     /// host process (master spec §5).
     pub fn build(self) -> Result<Pgso<S, A>, PgsoBuildError> {
+        self.engine
+            .as_ref()
+            .ok_or(PgsoBuildError::MissingEngine)?
+            .validate()?;
+        self.rules
+            .as_ref()
+            .ok_or(PgsoBuildError::MissingRules)?
+            .validate()?;
         Ok(Pgso {
             signal: self.signal.ok_or(PgsoBuildError::MissingSignal)?,
             engine: self.engine.ok_or(PgsoBuildError::MissingEngine)?,
             rules: self.rules.ok_or(PgsoBuildError::MissingRules)?,
             actuator: self.actuator.ok_or(PgsoBuildError::MissingActuator)?,
             audit_log: AuditLog::new(),
+            active: BTreeMap::new(),
         })
     }
 }

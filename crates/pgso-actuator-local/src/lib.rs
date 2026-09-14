@@ -1,99 +1,49 @@
-//! `pgso-actuator-local`: the in-memory reference [`Actuator`].
-//!
-//! Holds the tool catalog in memory and applies governance decisions
-//! deterministically and infallibly (no I/O). It enforces the inviolable
-//! allowlist (G2 — protected tools are never pruned), restores to nominal on
-//! `Allow` (G1 — including clearing injected directives), and applies
-//! `Prune`/`RequireStepUp` idempotently so the pipeline may replay a decision
-//! across windows while a deviation is sustained.
-
+//! In-memory policy actuator using the shared deterministic state implementation.
 #![deny(missing_docs)]
-
-use pgso_core::{Action, Actuator, ActuatorError, Catalog, ScopeDecision, ToolId};
+use pgso_core::{Actuator, ActuatorError, Catalog, GovernanceState, ScopeDecision, ToolId};
 use std::collections::HashSet;
-
-/// In-memory [`Actuator`]: applies governance decisions to a tool catalog held
-/// in memory, honouring a set of protected (never-pruned) tools.
+/// In-memory reference actuator; reconciliation commits one complete state.
+#[derive(Debug, Clone)]
 pub struct LocalActuator {
     base_catalog: Catalog,
-    active_catalog: Catalog,
+    state: GovernanceState,
     protected: HashSet<ToolId>,
-    directive_blocks: Vec<String>,
 }
-
 impl LocalActuator {
-    /// Create an actuator serving `catalog`, treating tool ids in `protected` as
-    /// inviolable (never pruned, per G2).
-    #[must_use]
+    /// Create a nominal actuator with tools that cannot be withdrawn.
     pub fn new(catalog: Catalog, protected: HashSet<ToolId>) -> Self {
         Self {
-            active_catalog: catalog.clone(),
+            state: GovernanceState::nominal(catalog.clone()),
             base_catalog: catalog,
             protected,
-            directive_blocks: Vec::new(),
         }
     }
-
-    /// Borrow the directive blocks currently injected into the agent's context
-    /// (in injection order); cleared when the catalog is restored to nominal.
-    #[must_use]
+    /// Active context blocks.
     pub fn directives(&self) -> &[String] {
-        &self.directive_blocks
+        &self.state.directives
     }
 }
-
 impl Actuator for LocalActuator {
-    fn current_catalog(&self) -> Catalog {
-        self.active_catalog.clone()
+    fn current_state(&self) -> GovernanceState {
+        self.state.clone()
     }
-
+    fn current_catalog(&self) -> Catalog {
+        self.state.catalog.clone()
+    }
     fn apply(&mut self, decision: &ScopeDecision) -> Result<Catalog, ActuatorError> {
-        match &decision.action {
-            Action::Allow => {
-                // Restore to nominal (G1: remove directives too)
-                self.active_catalog = self.base_catalog.clone();
-                self.directive_blocks.clear();
-            }
-            Action::Prune(id) => {
-                // G2: protected tools are never pruned. Pruning a tool that is
-                // absent (already pruned, or unknown id) is an intentional,
-                // idempotent no-op — the end-to-end pipeline (M4) replays the
-                // same decision across consecutive windows while a deviation is
-                // sustained, so this MUST be safe to apply repeatedly. The
-                // decision's *intent* is recorded upstream in the AuditLog (G5),
-                // so tolerance here does not lose the audit signal.
-                if !self.protected.contains(id) {
-                    self.active_catalog.remove(id);
-                }
-            }
-            Action::RequireStepUp(id) => {
-                // Idempotent: setting the flag on an absent tool is a no-op
-                // (see the Prune rationale above).
-                self.active_catalog.set_step_up(id, true);
-            }
-            Action::InjectDirective(text) => {
-                self.directive_blocks.push(text.clone());
-            }
-            // `Action` is `#[non_exhaustive]`; a variant added in a later
-            // milestone reaches this arm. Release behavior: leave the catalog
-            // unchanged (governing principle — PGSO fails toward inaction).
-            // Debug/test builds trip this assertion so an unhandled variant is
-            // caught loudly during development rather than silently ignored.
-            _ => {
-                debug_assert!(
-                    false,
-                    "unhandled #[non_exhaustive] Action variant in LocalActuator::apply"
-                );
-            }
-        }
-        Ok(self.active_catalog.clone())
+        self.state
+            .apply(&decision.action, &self.base_catalog, &self.protected);
+        Ok(self.current_catalog())
+    }
+    fn reconcile(&mut self, active: &[ScopeDecision]) -> Result<Catalog, ActuatorError> {
+        self.state = GovernanceState::reconcile(&self.base_catalog, &self.protected, active);
+        Ok(self.current_catalog())
     }
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pgso_core::Tool;
+    use pgso_core::{Action, Tool};
 
     fn fixture() -> (LocalActuator, ToolId, ToolId, ToolId, ToolId) {
         let tools = vec![

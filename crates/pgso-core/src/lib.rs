@@ -20,6 +20,7 @@ pub mod engine;
 pub mod error;
 pub mod pipeline;
 pub mod rules;
+pub mod state;
 pub mod traits;
 pub mod types;
 
@@ -28,6 +29,7 @@ pub use audit::AuditLog;
 pub use engine::{DecisionEngine, EngineConfig, EngineOutput};
 pub use error::*;
 pub use pipeline::{Pgso, PgsoBuildError, PgsoBuilder};
-pub use rules::{Rule, RuleEngine, RulePredicate, RuleSet};
+pub use rules::{Direction, Rule, RuleEngine, RulePredicate, RuleSet};
+pub use state::GovernanceState;
 pub use traits::*;
 pub use types::*;

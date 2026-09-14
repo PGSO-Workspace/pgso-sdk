@@ -7,14 +7,31 @@
 
 use crate::action::ScopeDecision;
 
+/// A committed state transition, including removals and their triggering input.
+#[derive(Debug, Clone)]
+pub struct PolicyTransition {
+    /// Caller-supplied observation or expiry time.
+    pub timestamp_ms: u64,
+    /// Observation; None denotes explicit expiry by the trusted host.
+    pub reading: Option<crate::SignalReading>,
+    /// State before reconciliation.
+    pub before: crate::GovernanceState,
+    /// State after reconciliation.
+    pub after: crate::GovernanceState,
+    /// All surviving contributions, including their rule identifiers.
+    pub active: Vec<ScopeDecision>,
+}
+
 /// An append-only, in-memory log of governance decisions.
 ///
 /// Holds clones of every recorded [`ScopeDecision`] in insertion order, giving a
-/// complete, replayable audit trail (G5). Pure in-memory: no I/O, consistent
+/// transition trail. It omits no-op observations and failed attempts; it is not
+/// a complete input replay dataset. Pure in-memory: no I/O, consistent
 /// with INV-1.
 #[derive(Debug, Clone, Default)]
 pub struct AuditLog {
     entries: Vec<ScopeDecision>,
+    transitions: Vec<PolicyTransition>,
 }
 
 impl AuditLog {
@@ -23,6 +40,7 @@ impl AuditLog {
     pub const fn new() -> Self {
         Self {
             entries: Vec::new(),
+            transitions: Vec::new(),
         }
     }
 
@@ -37,9 +55,19 @@ impl AuditLog {
         &self.entries
     }
 
+    /// Committed complete-state transitions; duplicate/no-op updates are omitted.
+    pub fn transitions(&self) -> &[PolicyTransition] {
+        &self.transitions
+    }
+
+    pub(crate) fn transition(&mut self, transition: PolicyTransition) {
+        self.transitions.push(transition);
+    }
+
     /// Remove all recorded decisions.
     pub fn clear(&mut self) {
         self.entries.clear();
+        self.transitions.clear();
     }
 }
 

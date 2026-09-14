@@ -105,7 +105,7 @@ impl Catalog {
 
 /// The paralinguistic axis being measured.
 /// Dominance is excluded in v1 (Phase 0 discarded it).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum Axis {
     /// Pleasantness axis (negative to positive affect).
     Valence,

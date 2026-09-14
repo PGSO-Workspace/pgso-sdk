@@ -1,4 +1,5 @@
-//! Tail-latency percentiles for the DECISION STEP ONLY.
+//! Percentiles of BATCH-MEAN cost for the DECISION STEP ONLY.
+//! These are not individual-call tail latencies or end-to-end agent latency.
 //!
 //! Criterion reports mean + CI; this reports p50/p95/p99/p99.9/max. It measures
 //! the SAME operation as the `decision_nominal` criterion benchmark: one
@@ -52,8 +53,9 @@ fn pin_to_pcore() {
         .and_then(|s| s.parse().ok())
         .unwrap_or(2);
     let ok = core_affinity::set_for_current(core_affinity::CoreId { id });
-    let kind = if id <= 11 { "P-core" } else { "E-core" };
-    eprintln!("pin_to_pcore: logical core {id} ({kind}); set_for_current -> {ok}");
+    eprintln!(
+        "CPU affinity: logical core {id}; set_for_current -> {ok}; core type is host-dependent"
+    );
 }
 
 fn main() {
@@ -101,7 +103,7 @@ fn main() {
     let p999 = percentile(&ns_per_call, 99.9);
     let max = *ns_per_call.last().expect("non-empty");
 
-    println!("decision-step latency (nominal sub-threshold path)");
+    println!("decision-step batch-mean cost (not individual-call tail latency)");
     println!(
         "BATCH={BATCH}  SAMPLES={SAMPLES}  WARMUP={WARMUP}  (one Instant::now() per batch, divided by BATCH)"
     );

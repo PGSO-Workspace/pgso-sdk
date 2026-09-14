@@ -20,9 +20,8 @@ use std::collections::HashMap;
 /// Configuration for the [`DecisionEngine`]. All thresholds are caller-supplied
 /// so the decision path stays free of magic constants and ambient state.
 ///
-/// These values are set by the SDK integrator in code (not from untrusted
-/// input). [`DecisionEngine::new`] `debug_assert!`s the ranges below so a
-/// misconfiguration is caught loudly in dev/test builds.
+/// Validate integrator input with [`DecisionEngine::try_new`]. The pipeline
+/// builder also validates the configuration before accepting an engine.
 #[derive(Debug, Clone)]
 pub struct EngineConfig {
     /// Minimum [`SignalReading::confidence`] to act on a reading. Below this the
@@ -46,6 +45,28 @@ pub struct EngineConfig {
     /// the cold-start reference the first reading's deviation is measured against
     /// (see [`DecisionEngine::process`]). Expected in the signal's value range.
     pub population_prior: f32,
+}
+
+impl EngineConfig {
+    /// Validate configuration in every build profile.
+    ///
+    /// # Errors
+    /// Returns the invalid field instead of relying on debug assertions.
+    pub fn validate(&self) -> Result<(), crate::ConfigError> {
+        if !(0.0..=1.0).contains(&self.confidence_threshold) {
+            return Err(crate::ConfigError("confidence_threshold"));
+        }
+        if !(0.0..=1.0).contains(&self.ema_alpha) {
+            return Err(crate::ConfigError("ema_alpha"));
+        }
+        if !self.deviation_threshold.is_finite() || self.deviation_threshold < 0.0 {
+            return Err(crate::ConfigError("deviation_threshold"));
+        }
+        if !self.population_prior.is_finite() {
+            return Err(crate::ConfigError("population_prior"));
+        }
+        Ok(())
+    }
 }
 
 /// Output of the [`DecisionEngine`] when a sustained deviation is detected.
@@ -79,10 +100,12 @@ pub(crate) enum ProcessOutcome {
 /// Per-axis running state: adapted baseline, count of readings seen (for the
 /// warm-up/EMA switch), and the hysteresis run-length of above-threshold
 /// windows.
+#[derive(Clone)]
 struct AxisState {
     baseline: f32,
     readings_count: u64,
     consecutive_above: u32,
+    last_timestamp: Option<u64>,
 }
 
 impl AxisState {
@@ -91,6 +114,7 @@ impl AxisState {
             baseline: prior,
             readings_count: 0,
             consecutive_above: 0,
+            last_timestamp: None,
         }
     }
 
@@ -101,7 +125,7 @@ impl AxisState {
     /// are pure functions of prior state and the new value, so the engine is
     /// deterministic (INV-3).
     fn update_baseline(&mut self, value: f32, alpha: f32, warmup: u64) {
-        self.readings_count += 1;
+        self.readings_count = self.readings_count.saturating_add(1);
         if self.readings_count <= warmup {
             let n = self.readings_count as f32;
             self.baseline = self.baseline * (n - 1.0) / n + value / n;
@@ -116,39 +140,44 @@ impl AxisState {
 /// Construct with [`DecisionEngine::new`] and feed readings via
 /// [`DecisionEngine::process`]. State is held per [`Axis`]; the engine reads no
 /// clock and uses no randomness.
+#[derive(Clone)]
 pub struct DecisionEngine {
     config: EngineConfig,
     axes: HashMap<Axis, AxisState>,
+    configuration_error: Option<crate::ConfigError>,
 }
 
 impl DecisionEngine {
     /// Create an engine with the given configuration. No per-axis state exists
     /// until the first reading for that axis arrives.
     ///
-    /// In debug/test builds the configuration ranges documented on
-    /// [`EngineConfig`] are asserted, so a misconfiguration surfaces loudly
-    /// rather than silently corrupting the baseline.
+    /// For compatibility this constructor returns an engine even for invalid
+    /// configuration; such an engine always abstains. Prefer [`Self::try_new`]
+    /// to receive an explicit error. Pipeline construction rejects invalid engines.
     #[must_use]
     pub fn new(config: EngineConfig) -> Self {
-        debug_assert!(
-            (0.0..=1.0).contains(&config.ema_alpha),
-            "EngineConfig.ema_alpha must be in [0, 1], got {}",
-            config.ema_alpha
-        );
-        debug_assert!(
-            config.confidence_threshold.is_finite()
-                && config.deviation_threshold.is_finite()
-                && config.population_prior.is_finite(),
-            "EngineConfig thresholds and prior must be finite"
-        );
-        debug_assert!(
-            config.deviation_threshold >= 0.0,
-            "EngineConfig.deviation_threshold must be non-negative"
-        );
         Self {
+            configuration_error: config.validate().err(),
             config,
             axes: HashMap::new(),
         }
+    }
+
+    /// Checked constructor recommended for integrations.
+    ///
+    /// # Errors
+    /// Returns invalid configuration in debug and release alike.
+    pub fn try_new(config: EngineConfig) -> Result<Self, crate::ConfigError> {
+        config.validate()?;
+        Ok(Self::new(config))
+    }
+
+    /// Validate this engine's configuration; invalid legacy instances abstain.
+    ///
+    /// # Errors
+    /// Returns the error cached at construction.
+    pub fn validate(&self) -> Result<(), crate::ConfigError> {
+        self.configuration_error.clone().map_or(Ok(()), Err)
     }
 
     /// Process one reading.
@@ -182,7 +211,8 @@ impl DecisionEngine {
     pub(crate) fn process_outcome(&mut self, reading: &SignalReading) -> ProcessOutcome {
         // G4: abstain on low confidence — hold state, emit nothing, and do not
         // adapt the baseline from a reading we don't trust.
-        if !reading.value.is_finite()
+        if self.configuration_error.is_some()
+            || !reading.value.is_finite()
             || !(0.0..=1.0).contains(&reading.confidence)
             || reading.confidence < self.config.confidence_threshold
         {
@@ -193,6 +223,14 @@ impl DecisionEngine {
             .axes
             .entry(reading.axis)
             .or_insert_with(|| AxisState::new(self.config.population_prior));
+
+        if state
+            .last_timestamp
+            .is_some_and(|last| reading.timestamp_ms < last)
+        {
+            return ProcessOutcome::Abstained;
+        }
+        state.last_timestamp = Some(reading.timestamp_ms);
 
         // Measure against the established baseline BEFORE adapting it.
         let baseline_ref = state.baseline;

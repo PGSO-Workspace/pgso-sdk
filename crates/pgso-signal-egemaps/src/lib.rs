@@ -99,24 +99,10 @@ impl EgemapsSignal {
 
     /// Like [`Self::new`] but with an explicit [`EgemapsConfig`].
     ///
-    /// Caller-trust boundary: `config` is assumed well-formed. A nonsensical
-    /// config does not error but degrades gracefully toward abstention — e.g.
-    /// `min_f0 >= max_f0` yields an empty lag window so every frame reads as
-    /// unvoiced (no readings). The `debug_assert`s below catch the common
-    /// mistakes in dev/test builds.
+    /// Legacy constructor: invalid parameters cause extraction to abstain.
+    /// Prefer [`Self::try_with_config`] to receive a typed configuration error.
     #[must_use]
     pub fn with_config(sample_rate: u32, config: EgemapsConfig) -> Self {
-        debug_assert!(
-            config.min_f0 < config.max_f0,
-            "EgemapsConfig.min_f0 must be < max_f0"
-        );
-        debug_assert!(
-            config.window_size > 0
-                && config.window_hop > 0
-                && config.frame_size > 0
-                && config.frame_hop > 0,
-            "EgemapsConfig window/frame sizes and hops must be non-zero"
-        );
         Self {
             config,
             sample_rate,
@@ -126,20 +112,65 @@ impl EgemapsSignal {
         }
     }
 
+    /// Validate a configuration before accepting a stream.
+    ///
+    /// # Errors
+    /// Returns a field error for invalid sample rate or extraction parameters.
+    pub fn try_with_config(
+        sample_rate: u32,
+        config: EgemapsConfig,
+    ) -> Result<Self, pgso_core::ConfigError> {
+        let signal = Self::with_config(sample_rate, config);
+        signal.validate()?;
+        Ok(signal)
+    }
+
+    fn validate(&self) -> Result<(), pgso_core::ConfigError> {
+        let c = &self.config;
+        if self.sample_rate == 0
+            || c.window_size == 0
+            || c.window_hop == 0
+            || c.frame_size < 2
+            || c.frame_hop == 0
+            || c.frame_size > c.window_size
+            || !c.min_f0.is_finite()
+            || !c.max_f0.is_finite()
+            || c.min_f0 <= 0.0
+            || c.min_f0 >= c.max_f0
+            || c.max_f0 > self.sample_rate as f32 / 2.0
+            || !(0.0..=1.0).contains(&c.voicing_threshold)
+            || !(0.0..=1.0).contains(&c.min_voiced_fraction)
+            || !c.energy_floor.is_finite()
+            || c.energy_floor < 0.0
+        {
+            return Err(pgso_core::ConfigError("audio extraction configuration"));
+        }
+        Ok(())
+    }
+
     /// Extract readings AND their interpretable features (auditability, REQ-3.6).
     ///
     /// `window.samples` MUST already be at the construction `sample_rate`; the
     /// per-window `window.sample_rate` field is not used to resample (a mismatch
-    /// silently misreads F0). The `debug_assert` flags a mismatch in dev/test.
+    /// causes abstention). Invalid/non-normalized PCM also abstains before state changes.
     pub fn extract_explained(&mut self, window: &AudioWindow) -> Vec<ExplainedReading> {
-        debug_assert_eq!(
-            window.sample_rate, self.sample_rate,
-            "AudioWindow.sample_rate must match the signal's construction rate"
-        );
+        if self.validate().is_err()
+            || window.sample_rate != self.sample_rate
+            || window
+                .samples
+                .iter()
+                .any(|x| !x.is_finite() || x.abs() > 1.0)
+        {
+            return Vec::new();
+        }
         let cfg = &self.config;
         let mut out = Vec::new();
 
-        for sub in windowing::sliding_windows(&window.samples, cfg.window_size, cfg.window_hop) {
+        for (index, sub) in
+            windowing::sliding_windows(&window.samples, cfg.window_size, cfg.window_hop)
+                .into_iter()
+                .enumerate()
+        {
             let frames = windowing::frames(sub, cfg.frame_size, cfg.frame_hop);
             if frames.is_empty() {
                 continue;
@@ -211,7 +242,13 @@ impl EgemapsSignal {
                 value: arousal,
                 axis: Axis::Arousal,
                 confidence,
-                timestamp_ms: window.timestamp_ms,
+                timestamp_ms: window.timestamp_ms.saturating_add(
+                    u64::try_from(
+                        (index as u128 * cfg.window_hop as u128 * 1000)
+                            / u128::from(self.sample_rate),
+                    )
+                    .unwrap_or(u64::MAX),
+                ),
             };
 
             out.push(ExplainedReading {
@@ -248,6 +285,25 @@ mod tests {
             sample_rate: sr,
             timestamp_ms: ts,
         }
+    }
+
+    #[test]
+    fn validates_audio_and_preserves_subwindow_time() {
+        let mut signal = EgemapsSignal::new(16000);
+        let audio = sine_window(180.0, 0.4, 25600, 16000, 100);
+        let readings = signal.extract(&audio);
+        assert!(readings.len() >= 2);
+        assert_eq!(readings[0].timestamp_ms, 100);
+        assert_eq!(readings[1].timestamp_ms, 500);
+        let mut wrong = audio.clone();
+        wrong.sample_rate = 8000;
+        assert!(signal.extract(&wrong).is_empty());
+        wrong = audio;
+        wrong.samples[0] = f32::NAN;
+        assert!(signal.extract(&wrong).is_empty());
+        let mut config = EgemapsConfig::for_sample_rate(16000);
+        config.window_hop = 0;
+        assert!(EgemapsSignal::try_with_config(16000, config).is_err());
     }
 
     #[test]

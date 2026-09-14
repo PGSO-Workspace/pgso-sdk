@@ -8,9 +8,12 @@ pub fn sliding_windows(samples: &[f32], window_size: usize, hop_size: usize) -> 
         return out;
     }
     let mut start = 0;
-    while start + window_size <= samples.len() {
+    while start <= samples.len() && window_size <= samples.len() - start {
         out.push(&samples[start..start + window_size]);
-        start += hop_size;
+        let Some(next) = start.checked_add(hop_size) else {
+            break;
+        };
+        start = next;
     }
     out
 }

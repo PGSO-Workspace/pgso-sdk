@@ -20,10 +20,24 @@ use crate::{
 };
 use std::collections::HashSet;
 
+/// Direction of a deviation relative to the established baseline.
+#[derive(Debug, Clone, Copy, Default)]
+pub enum Direction {
+    /// Either side of baseline (legacy behavior).
+    #[default]
+    Either,
+    /// Above baseline.
+    Rising,
+    /// Below baseline.
+    Falling,
+}
+
 /// The match condition of a [`Rule`]: an axis plus minimum deviation and
 /// confidence thresholds. All three must hold for the rule to fire.
 #[derive(Debug, Clone)]
 pub struct RulePredicate {
+    /// Required sign of the deviation.
+    pub direction: Direction,
     /// The axis this rule applies to.
     pub axis: Axis,
     /// Minimum deviation (inclusive) required to match.
@@ -54,6 +68,11 @@ pub struct Rule {
 }
 
 impl Rule {
+    /// Restrict this rule to increases or decreases relative to baseline.
+    pub fn with_direction(mut self, direction: Direction) -> Self {
+        self.predicate.direction = direction;
+        self
+    }
     /// Construct a rule from its parts. Used by the [`pgso_rules!`](crate::pgso_rules)
     /// macro and in tests/property generators.
     #[must_use]
@@ -67,6 +86,7 @@ impl Rule {
         Self {
             id: id.to_string(),
             predicate: RulePredicate {
+                direction: Direction::Either,
                 axis,
                 min_deviation,
                 min_confidence,
@@ -104,6 +124,25 @@ pub struct RuleEngine {
 }
 
 impl RuleEngine {
+    /// Check unique rule identities and finite, meaningful thresholds.
+    ///
+    /// # Errors
+    /// Returns an invalid rule configuration.
+    pub fn validate(&self) -> Result<(), crate::ConfigError> {
+        let mut ids = HashSet::new();
+        for rule in self.rules.rules() {
+            if rule.id.is_empty() || !ids.insert(&rule.id) {
+                return Err(crate::ConfigError("duplicate or empty rule id"));
+            }
+            if !rule.predicate.min_deviation.is_finite()
+                || rule.predicate.min_deviation < 0.0
+                || !(0.0..=1.0).contains(&rule.predicate.min_confidence)
+            {
+                return Err(crate::ConfigError("rule thresholds"));
+            }
+        }
+        Ok(())
+    }
     /// Construct an engine from a rule set and the set of protected tool ids.
     /// Protected ids can never be pruned by [`RuleEngine::evaluate`].
     #[must_use]
@@ -126,6 +165,11 @@ impl RuleEngine {
         let matching = self.rules.rules().iter().filter(|r| {
             r.predicate
                 .matches(output.axis, output.deviation, output.confidence)
+                && match r.predicate.direction {
+                    Direction::Either => true,
+                    Direction::Rising => output.raw_value > output.baseline,
+                    Direction::Falling => output.raw_value < output.baseline,
+                }
         });
 
         for rule in matching {
