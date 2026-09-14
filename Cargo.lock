@@ -902,6 +902,7 @@ version = "0.1.0"
 dependencies = [
  "pgso-actuator-local",
  "pgso-core",
+ "proptest",
  "serde_json",
 ]
 

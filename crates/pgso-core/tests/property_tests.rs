@@ -152,7 +152,7 @@ proptest! {
         // (only 1 reading above threshold)
         // Note: spike AT position might trigger if it happens to be 3rd consecutive, but that
         // would mean the calm readings before also were above threshold, contradicting the setup
-        let _ = triggered_at_spike;
+        prop_assert!(!triggered_at_spike, "isolated spike reached hysteresis");
     }
 
     /// Low confidence always abstains.
