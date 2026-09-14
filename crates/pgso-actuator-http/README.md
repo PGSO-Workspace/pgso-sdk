@@ -21,10 +21,14 @@ boundary. This is a service-to-service adapter. MCP uses JSON responses, protoco
 
 The trusted host alone calls `observe`, `expire_before`, `set_permissions` and
 `approve`. There are no network routes to mint approvals or alter policy. After
-independent consent, `approve(request, host_time_ms, ttl_ms)` returns a random
+independent consent, read `runtime.host_time_ms()` under the session lock and pass
+that value to `approve(request, host_time_ms, ttl_ms)`. It returns a random
 256-bit token bound to the session, tool, exact arguments, policy revision and
-expiry. It is consumed before dispatch, including callback failures. Policy
-changes revoke outstanding tokens. Host time must be trusted and kept accurate.
+expiry. It is consumed before dispatch, including malformed arguments and callback failures after session validation. Policy
+changes revoke outstanding tokens. HTTP and trusted-host approvals share one monotonic clock anchored to UTC once.
+Explicit-time Rust callers must use the same clock domain. Observed backwards
+time revokes approvals and is rejected; an unobserved rollback in an external
+clock cannot be detected by comparing supplied timestamps alone.
 
 Cryptographic signatures of tool descriptions would not replace this execution
 boundary. Server-held opaque confirmations provide binding without a separate

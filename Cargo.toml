@@ -11,4 +11,4 @@ edition = "2021"
 rust-version = "1.83"
 authors = ["Lucio Yen"]
 license = "MIT"
-repository = "https://github.com/Kochi-sicem/pgso-sdk"
+repository = "https://github.com/PGSO-Workspace/pgso-sdk"

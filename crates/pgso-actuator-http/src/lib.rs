@@ -18,12 +18,43 @@ use axum::{
 use pgso_core::Signal;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Instant, SystemTime, UNIX_EPOCH};
 use subtle::ConstantTimeEq;
 
 struct HttpState<S: Signal> {
     runtime: Arc<Mutex<Runtime<S>>>,
     bearer: String,
+}
+
+#[derive(Clone, Copy)]
+pub(crate) struct HostClock {
+    epoch_ms: u64,
+    started: Instant,
+}
+
+impl HostClock {
+    pub(crate) fn new() -> Result<Self, String> {
+        let duration = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map_err(|_| "invalid host clock")?;
+        Ok(Self {
+            epoch_ms: u64::try_from(duration.as_millis())
+                .map_err(|_| "host clock overflow".to_string())?,
+            started: Instant::now(),
+        })
+    }
+
+    pub(crate) fn now_ms(self) -> Result<u64, String> {
+        self.epoch_ms
+            .checked_add(
+                self.started
+                    .elapsed()
+                    .as_millis()
+                    .try_into()
+                    .map_err(|_| "host clock overflow".to_string())?,
+            )
+            .ok_or_else(|| "host clock overflow".into())
+    }
 }
 
 fn authorized<S: Signal>(state: &HttpState<S>, headers: &HeaderMap) -> bool {
@@ -36,13 +67,6 @@ fn authorized<S: Signal>(state: &HttpState<S>, headers: &HeaderMap) -> bool {
         .and_then(|h| h.to_str().ok())
         .and_then(|h| h.strip_prefix("Bearer "))
         .is_some_and(|token| bool::from(token.as_bytes().ct_eq(state.bearer.as_bytes())))
-}
-
-fn now_ms() -> Result<u64, String> {
-    let duration = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map_err(|_| "invalid host clock")?;
-    u64::try_from(duration.as_millis()).map_err(|_| "host clock overflow".into())
 }
 
 async fn with_runtime<S, F>(state: Arc<HttpState<S>>, action: F) -> Result<Value, String>
@@ -100,7 +124,13 @@ async fn call<S: Signal + Send + 'static>(
     if !authorized(&state, &headers) {
         return StatusCode::UNAUTHORIZED.into_response();
     }
-    response(with_runtime(state, move |runtime| runtime.call(request, now_ms()?)).await)
+    response(
+        with_runtime(state, move |runtime| {
+            let now = runtime.host_time_ms()?;
+            runtime.call(request, now)
+        })
+        .await,
+    )
 }
 
 async fn mcp<S: Signal + Send + 'static>(
@@ -146,6 +176,7 @@ async fn mcp<S: Signal + Send + 'static>(
                     .and_then(Value::as_str)
                     .map(str::to_owned);
                 let result = with_runtime(state, move |runtime| {
+                    let now = runtime.host_time_ms()?;
                     runtime.call(
                         CallRequest {
                             session: runtime.session().into(),
@@ -153,7 +184,7 @@ async fn mcp<S: Signal + Send + 'static>(
                             arguments,
                             confirmation,
                         },
-                        now_ms()?,
+                        now,
                     )
                 })
                 .await;

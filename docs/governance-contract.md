@@ -54,7 +54,10 @@ Exactly two effective transitions are expected (activation and recovery).
 The protected-catalog property executes 512 generated cases, each with an explicit
 adversarial prune attempt; every served catalog must contain the protected tool.
 This is sampled property testing, not an inductive proof or a mutation score.
-Same-build repeatability tests are not cross-platform bitwise determinism evidence.
+The completed mutation and four-build trace checks are recorded in
+[the verification ledger](validation/2026-09-14-verification.json). The protected
+catalog has a separate [conditional inductive argument](protected-catalog-argument.md).
+Same-host trace agreement is not cross-platform bitwise determinism evidence.
 
 ## Still required before paper-level validation
 
@@ -62,7 +65,7 @@ Slow ramps may remain below the moving threshold: freezing outlying observations
 does not solve cumulative change detection. Baseline choice, timestamp gap and
 expiry policies require development-only selection and sensitivity analysis.
 Failed commits surface as errors but are not persisted as policy transitions;
-the host must record failed attempts separately. Full mutation testing,
-cross-platform traces, independent experimental manifests and recovery of
+the host must record failed attempts separately. Mutation testing beyond the
+engine/rules scope, cross-platform traces, independent experimental manifests and recovery of
 historical paper result artifacts remain outstanding. No historical experiment
 or numerical result has been rerun or relabeled by this patch.
