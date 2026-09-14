@@ -45,7 +45,7 @@ Run the local echo example with `PGSO_BEARER` set in your environment:
 cargo run -p pgso-actuator-http --example server
 ```
 
-It binds to 127.0.0.1:3000 and provides only an echo tool. It does not perform a
+It defaults to 127.0.0.1:3000 (`PGSO_BIND` overrides the address) and provides only an echo tool. It does not perform a
 sales action or claim to infer emotion.
 
 ## Adapter migration

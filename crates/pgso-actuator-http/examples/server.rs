@@ -45,7 +45,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         HashSet::from([ToolId::from("echo")]),
     )?;
     let app = router(Arc::new(Mutex::new(runtime)), secret)?;
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await?;
+    let bind = std::env::var("PGSO_BIND").unwrap_or_else(|_| "127.0.0.1:3000".into());
+    let listener = tokio::net::TcpListener::bind(bind).await?;
     axum::serve(listener, app).await?;
     Ok(())
 }
