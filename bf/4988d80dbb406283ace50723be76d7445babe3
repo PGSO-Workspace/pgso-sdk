@@ -1,0 +1,47 @@
+crates/pgso-actuator-http/src/runtime.rs
+  s_81bf62597beb77::t_eabf6d6eaee737 76,118,128-132
+  s_81bf62597beb77::t_55124635e5fe16 75,117,133,167-177,242-244,254,288-298,301
+  s_81bf62597beb77::t_89be2170d7b976 2,134
+crates/pgso-actuator-http/src/lib.rs
+  s_81bf62597beb77::t_eabf6d6eaee737 30,36,47,127-131
+  s_81bf62597beb77::t_bd2872ea4cebed 49-55
+  s_81bf62597beb77::t_55124635e5fe16 21,29,31-35,37-46,48,56-59,132
+  s_81bf62597beb77::t_5791117deaa8bd 133,179,187
+crates/pgso-actuator-http/tests/execution.rs
+  s_81bf62597beb77::t_bd2872ea4cebed 283-284,287-289
+  s_81bf62597beb77::t_eabf6d6eaee737 214-219
+  s_81bf62597beb77::t_b7fab50f264179 106-111,115,117,120,122,131-170
+  s_81bf62597beb77::t_48e9a12fd99e79 228,301-302
+Cargo.toml
+  s_81bf62597beb77::t_93d1edd3057c81 14
+README.md
+  s_81bf62597beb77::t_03783ea9a39429 9,304
+crates/pgso-actuator-http/README.md
+  s_81bf62597beb77::t_4959c6f4bad4dd 24-25,27-31
+crates/pgso-core/examples/governance_trace.rs
+  s_81bf62597beb77::t_b8019758a8836e 1-80
+crates/pgso-core/tests/contract_boundaries.rs
+  s_81bf62597beb77::t_79e8404cd791a1 1-116
+docs/governance-contract.md
+  s_81bf62597beb77::t_8eb310994a9780 57-60,68-69
+docs/protected-catalog-argument.md
+  s_81bf62597beb77::t_57233e88ebe6d8 1-44
+docs/validation/2026-09-14-verification.json
+  s_81bf62597beb77::t_6ece1785466e95 1-426
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "bf4988d80dbb406283ace50723be76d7445babe3",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
