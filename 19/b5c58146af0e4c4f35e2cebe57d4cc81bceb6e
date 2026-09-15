@@ -1,0 +1,35 @@
+experiments/public_voice/pilot.py
+  s_81bf62597beb77::t_3fb72a607072f6 221-222,405,407-410,418,421,511-512
+  s_81bf62597beb77::t_5981976c2b6a7b 71-72,148-151,188-189,400-402,404,417,513
+  s_81bf62597beb77::t_a71c1af3bcc063 4-6,146,152,155-156,158-161,406
+  s_81bf62597beb77::t_43d668c15dd426 142-145,147,153-154,157,162-187,190-220
+experiments/public_voice/test_pilot.py
+  s_81bf62597beb77::t_961d04aa09f30f 58-93,95-102,104-106,108-128
+  s_81bf62597beb77::t_c51affd47b14ee 94
+  s_81bf62597beb77::t_15373b9632a5f9 103,107
+  s_81bf62597beb77::t_79f2b54eec5081 136-137,139-140
+  s_81bf62597beb77::t_4b26ad0a9547dd 129-135,138,141-155
+  s_81bf62597beb77::t_e9b45671177fc4 326
+  s_81bf62597beb77::t_7f5b7a6d4ca909 205,236-237,281-289,320-325
+experiments/public_voice/README.md
+  s_81bf62597beb77::t_17840facf4dae0 131
+  s_81bf62597beb77::t_d1fedde4254464 127-130
+  s_81bf62597beb77::t_bf65476935d9c1 112-123,132-139
+  s_81bf62597beb77::t_d59f733db8979b 124-126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "19b5c58146af0e4c4f35e2cebe57d4cc81bceb6e",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": null
+    }
+  }
+}
