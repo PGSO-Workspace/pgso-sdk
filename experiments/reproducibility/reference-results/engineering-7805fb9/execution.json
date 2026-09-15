@@ -1,0 +1,301 @@
+[
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "actual_receipt": {
+      "outcome": "completed",
+      "policy_transition_count": 0,
+      "reason": "completed",
+      "revision": 0,
+      "session": "allowed",
+      "timestamp_ms": 1,
+      "tool": "quote"
+    },
+    "callback_count": 1,
+    "case": "allowed_call",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "expected_reason": "completed",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "tool currently unavailable"
+    },
+    "actual_receipt": {
+      "outcome": "denied",
+      "policy_transition_count": 1,
+      "reason": "tool_unavailable",
+      "revision": 1,
+      "session": "pruned",
+      "timestamp_ms": 2,
+      "tool": "quote"
+    },
+    "callback_count": 0,
+    "case": "pruned_quote",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "tool currently unavailable"
+    },
+    "expected_reason": "tool_unavailable",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "actual_receipt": {
+      "outcome": "denied",
+      "policy_transition_count": 1,
+      "reason": "confirmation_missing",
+      "revision": 1,
+      "session": "missing",
+      "timestamp_ms": 2,
+      "tool": "human"
+    },
+    "callback_count": 0,
+    "case": "protected_human_step_up_missing",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "expected_reason": "confirmation_missing",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "actual_receipt": {
+      "outcome": "completed",
+      "policy_transition_count": 1,
+      "reason": "completed",
+      "revision": 1,
+      "session": "single-use",
+      "timestamp_ms": 3,
+      "tool": "human"
+    },
+    "callback_count": 1,
+    "case": "granted_token",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "expected_reason": "completed",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "confirmation required"
+    },
+    "actual_receipt": {
+      "outcome": "denied",
+      "policy_transition_count": 1,
+      "reason": "confirmation_missing",
+      "revision": 1,
+      "session": "single-use",
+      "timestamp_ms": 4,
+      "tool": "human"
+    },
+    "callback_count": 1,
+    "case": "token_replay",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "confirmation required"
+    },
+    "expected_reason": "confirmation_missing",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "invalid arguments"
+    },
+    "actual_receipt": {
+      "outcome": "denied",
+      "policy_transition_count": 1,
+      "reason": "invalid_arguments",
+      "revision": 1,
+      "session": "wrong-args",
+      "timestamp_ms": 3,
+      "tool": "human"
+    },
+    "callback_count": 0,
+    "case": "wrong_arguments",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "invalid arguments"
+    },
+    "expected_reason": "invalid_arguments",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "actual_receipt": {
+      "outcome": "denied",
+      "policy_transition_count": 1,
+      "reason": "confirmation_missing",
+      "revision": 1,
+      "session": "wrong-args",
+      "timestamp_ms": 4,
+      "tool": "human"
+    },
+    "callback_count": 0,
+    "case": "wrong_arguments_consumes_token",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "expected_reason": "confirmation_missing",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "actual_receipt": {
+      "outcome": "denied",
+      "policy_transition_count": 3,
+      "reason": "confirmation_missing",
+      "revision": 3,
+      "session": "recovery",
+      "timestamp_ms": 4,
+      "tool": "human"
+    },
+    "callback_count": 0,
+    "case": "policy_transition_sequence_revokes_token",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "expected_reason": "confirmation_missing",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "invalid or expired confirmation"
+    },
+    "actual_receipt": {
+      "outcome": "denied",
+      "policy_transition_count": 1,
+      "reason": "invalid_or_expired_confirmation",
+      "revision": 1,
+      "session": "expired",
+      "timestamp_ms": 12,
+      "tool": "human"
+    },
+    "callback_count": 0,
+    "case": "expired_token",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "invalid or expired confirmation"
+    },
+    "expected_reason": "invalid_or_expired_confirmation",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "wrong session"
+    },
+    "actual_receipt": {
+      "outcome": "denied",
+      "policy_transition_count": 1,
+      "reason": "wrong_session",
+      "revision": 1,
+      "session": "isolated",
+      "timestamp_ms": 3,
+      "tool": "human"
+    },
+    "callback_count": 0,
+    "case": "session_isolation",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "wrong session"
+    },
+    "expected_reason": "wrong_session",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "actual_receipt": {
+      "outcome": "completed",
+      "policy_transition_count": 1,
+      "reason": "completed",
+      "revision": 1,
+      "session": "isolated",
+      "timestamp_ms": 4,
+      "tool": "human"
+    },
+    "callback_count": 1,
+    "case": "session_isolation_preserves_token",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "expected_reason": "completed",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "injected callback failure"
+    },
+    "actual_receipt": {
+      "outcome": "failed",
+      "policy_transition_count": 1,
+      "reason": "callback_failed",
+      "revision": 1,
+      "session": "callback-failure",
+      "timestamp_ms": 3,
+      "tool": "human"
+    },
+    "callback_count": 1,
+    "case": "callback_failure",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "injected callback failure"
+    },
+    "expected_reason": "callback_failed",
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "confirmation required"
+    },
+    "actual_receipt": {
+      "outcome": "denied",
+      "policy_transition_count": 1,
+      "reason": "confirmation_missing",
+      "revision": 1,
+      "session": "callback-failure",
+      "timestamp_ms": 4,
+      "tool": "human"
+    },
+    "callback_count": 1,
+    "case": "callback_failure_consumes_token",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "confirmation required"
+    },
+    "expected_reason": "confirmation_missing",
+    "pass": true
+  }
+]

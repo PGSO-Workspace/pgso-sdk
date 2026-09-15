@@ -17,6 +17,9 @@ establish software behavior within specified boundaries. They do not establish
 emotion recognition, improved empathy, comparative agent performance, or safety
 in deployment. Experimental provenance and reproduction instructions are collected
 in the [reproducibility package](experiments/reproducibility/README.md).
+The [operational measurement report](experiments/reproducibility/operational-results-7805fb9.md)
+compares four persistent integrations on one host and reports diagnostic receipt
+checks; developer effort and human interaction outcomes remain unmeasured.
 
 ## Architecture
 

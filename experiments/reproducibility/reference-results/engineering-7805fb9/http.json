@@ -1,0 +1,222 @@
+[
+  {
+    "actual_body": null,
+    "actual_status": 401,
+    "body_validation": "empty body",
+    "case": "no_bearer",
+    "expected_status": 401,
+    "pass": true
+  },
+  {
+    "actual_body": null,
+    "actual_status": 401,
+    "body_validation": "empty body",
+    "case": "wrong_bearer",
+    "expected_status": 401,
+    "pass": true
+  },
+  {
+    "actual_body": null,
+    "actual_status": 401,
+    "body_validation": "empty body",
+    "case": "browser_origin",
+    "expected_status": 401,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "tools": [
+        {
+          "_meta": {
+            "pgso/requiresStepUp": false
+          },
+          "description": "Echo a message",
+          "inputSchema": {
+            "additionalProperties": false,
+            "properties": {
+              "message": {
+                "maxLength": 1000,
+                "type": "string"
+              }
+            },
+            "required": [
+              "message"
+            ],
+            "type": "object"
+          },
+          "name": "echo",
+          "title": "Echo"
+        }
+      ]
+    },
+    "actual_status": 200,
+    "body_validation": "one echo tool with object input schema",
+    "case": "authorized_tools",
+    "expected_status": 200,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "directives": []
+    },
+    "actual_status": 200,
+    "body_validation": "empty directives array",
+    "case": "context",
+    "expected_status": 200,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "message": "wire"
+    },
+    "actual_status": 200,
+    "body_validation": "echoes the message argument",
+    "case": "call_valid",
+    "expected_status": 200,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "error": "invalid arguments"
+    },
+    "actual_status": 400,
+    "body_validation": "invalid arguments error",
+    "case": "call_invalid_arguments",
+    "expected_status": 400,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "error": "wrong session"
+    },
+    "actual_status": 400,
+    "body_validation": "wrong session error",
+    "case": "call_wrong_session",
+    "expected_status": 400,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "error": "permission denied"
+    },
+    "actual_status": 400,
+    "body_validation": "permission denied error",
+    "case": "call_unknown_tool",
+    "expected_status": 400,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "tools": {
+            "listChanged": false
+          }
+        },
+        "protocolVersion": "2025-06-18",
+        "serverInfo": {
+          "name": "pgso",
+          "version": "0.1.0"
+        }
+      }
+    },
+    "actual_status": 200,
+    "body_validation": "JSON-RPC result advertises protocol 2025-06-18 and pgso server",
+    "case": "mcp_initialize",
+    "expected_status": 200,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {
+        "tools": [
+          {
+            "_meta": {
+              "pgso/requiresStepUp": false
+            },
+            "description": "Echo a message",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "message": {
+                  "maxLength": 1000,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "type": "object"
+            },
+            "name": "echo",
+            "title": "Echo"
+          }
+        ]
+      }
+    },
+    "actual_status": 200,
+    "body_validation": "JSON-RPC result lists echo",
+    "case": "mcp_tools_list",
+    "expected_status": 200,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "content": [
+          {
+            "text": "{\"message\":\"mcp\"}",
+            "type": "text"
+          }
+        ],
+        "isError": false
+      }
+    },
+    "actual_status": 200,
+    "body_validation": "JSON-RPC tool result isError=false and contains echoed JSON text",
+    "case": "mcp_tools_call",
+    "expected_status": 200,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "content": [
+          {
+            "text": "invalid arguments",
+            "type": "text"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "actual_status": 200,
+    "body_validation": "JSON-RPC tool result isError=true with validation error",
+    "case": "mcp_invalid_tool_arguments",
+    "expected_status": 200,
+    "pass": true
+  },
+  {
+    "actual_body": {
+      "error": {
+        "code": -32601,
+        "message": "Method not found"
+      },
+      "id": 5,
+      "jsonrpc": "2.0"
+    },
+    "actual_status": 200,
+    "body_validation": "JSON-RPC -32601 Method not found error",
+    "case": "mcp_unknown_method",
+    "expected_status": 200,
+    "pass": true
+  }
+]

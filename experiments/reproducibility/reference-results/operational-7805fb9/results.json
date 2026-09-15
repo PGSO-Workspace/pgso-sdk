@@ -1,0 +1,97 @@
+{
+  "attempted_blocks": 48,
+  "calls_per_batch": 96,
+  "controllers": {
+    "host_policy": {
+      "block_bootstrap_p50_median_ci95_ms": [
+        0.6038635,
+        0.60787125
+      ],
+      "measured_batches": 1200,
+      "median_block_p50_batch_ms": 0.60479875,
+      "median_block_p95_batch_ms": 0.626031275,
+      "median_block_p99_batch_ms": 0.6420868700000005,
+      "median_cpu_ms_per_batch": 0.5651706,
+      "median_end_rss_mib": 12.322265625,
+      "median_process_hwm_mib": 12.322265625,
+      "median_startup_through_first_batch_ms": 23.938411,
+      "median_warm_rss_mib": 12.310546875,
+      "process_blocks": 12
+    },
+    "invariant": {
+      "block_bootstrap_p50_median_ci95_ms": [
+        23.0232955,
+        23.17151575
+      ],
+      "measured_batches": 1200,
+      "median_block_p50_batch_ms": 23.0866465,
+      "median_block_p95_batch_ms": 23.400311775,
+      "median_block_p99_batch_ms": 25.311175045000113,
+      "median_cpu_ms_per_batch": 23.22469154,
+      "median_end_rss_mib": 62.958984375,
+      "median_process_hwm_mib": 62.958984375,
+      "median_startup_through_first_batch_ms": 567.2907205,
+      "median_warm_rss_mib": 62.77734375,
+      "process_blocks": 12
+    },
+    "nemo": {
+      "block_bootstrap_p50_median_ci95_ms": [
+        425.373111,
+        427.07973375
+      ],
+      "measured_batches": 1200,
+      "median_block_p50_batch_ms": 425.849599,
+      "median_block_p95_batch_ms": 451.322712425,
+      "median_block_p99_batch_ms": 453.01018092000004,
+      "median_cpu_ms_per_batch": 430.36265527999996,
+      "median_end_rss_mib": 68.431640625,
+      "median_process_hwm_mib": 68.431640625,
+      "median_startup_through_first_batch_ms": 1068.7188355,
+      "median_warm_rss_mib": 68.345703125,
+      "process_blocks": 12
+    },
+    "pgso": {
+      "block_bootstrap_p50_median_ci95_ms": [
+        0.512073,
+        0.518055
+      ],
+      "measured_batches": 1200,
+      "median_block_p50_batch_ms": 0.515425,
+      "median_block_p95_batch_ms": 0.53678225,
+      "median_block_p99_batch_ms": 0.5561930500000001,
+      "median_cpu_ms_per_batch": 0.47704265,
+      "median_end_rss_mib": 13.15234375,
+      "median_process_hwm_mib": 13.15234375,
+      "median_startup_through_first_batch_ms": 10.3393945,
+      "median_warm_rss_mib": 13.126953125,
+      "process_blocks": 12
+    }
+  },
+  "episodes_per_batch": 23,
+  "failed_blocks": 0,
+  "paired_ratios": {
+    "host_policy": {
+      "median_paired_pgso_over_comparator_ratio": 0.8516987751128707,
+      "paired_block_bootstrap_ci95": [
+        0.846205663943199,
+        0.855259443860922
+      ]
+    },
+    "invariant": {
+      "median_paired_pgso_over_comparator_ratio": 0.02228457567172084,
+      "paired_block_bootstrap_ci95": [
+        0.022197232482058314,
+        0.02240793101172551
+      ]
+    },
+    "nemo": {
+      "median_paired_pgso_over_comparator_ratio": 0.0012117003063151026,
+      "paired_block_bootstrap_ci95": [
+        0.0011973459312452478,
+        0.001216321937533565
+      ]
+    }
+  },
+  "scope": "Exploratory single-host persistent integration-path measurement; fresh logical sessions per batch, not per-call latency or human productivity",
+  "status": "passed"
+}

@@ -1,6 +1,6 @@
 //! Thirteen direct Runtime::call checks, not an HTTP transport test.
 //! Callback counts are cumulative within each shared-runtime sequence.
-use pgso_actuator_http::{CallRequest, Runtime, ToolBinding};
+use pgso_actuator_http::{CallRequest, ExecutionReason, ExecutionRecord, Runtime, ToolBinding};
 use pgso_actuator_mcp::{McpActuator, ToolDefinition};
 use pgso_core::{
     Action, AudioWindow, Axis, Catalog, DecisionEngine, EngineConfig, Pgso, Rule, RuleEngine,
@@ -122,24 +122,56 @@ fn restrict(runtime: &mut Runtime<ReadingSignal>, timestamp_ms: u64) {
         .expect("restriction observation accepted");
 }
 
-fn outcome(result: Result<Value, String>) -> String {
-    match result {
+fn outcome(
+    result: Result<Value, String>,
+    runtime: &mut Runtime<ReadingSignal>,
+) -> (String, ExecutionRecord) {
+    let mut receipts = runtime.drain_execution_log();
+    assert_eq!(receipts.len(), 1, "one receipt per attempted call");
+    let text = match result {
         Ok(_) => "completed".into(),
         Err(error) => error,
-    }
+    };
+    (text, receipts.pop().expect("one receipt"))
 }
 
 fn record(
     cases: &mut Vec<Value>,
     name: &str,
     expected: &str,
-    actual: String,
+    actual: (String, ExecutionRecord),
     expected_callbacks: usize,
     callback_count: usize,
 ) {
-    let pass = actual == expected && callback_count == expected_callbacks;
+    let expected_reason = match name {
+        "allowed_call" | "granted_token" | "session_isolation_preserves_token" => {
+            ExecutionReason::Completed
+        }
+        "pruned_quote" => ExecutionReason::ToolUnavailable,
+        "wrong_arguments" => ExecutionReason::InvalidArguments,
+        "expired_token" => ExecutionReason::InvalidOrExpiredConfirmation,
+        "session_isolation" => ExecutionReason::WrongSession,
+        "callback_failure" => ExecutionReason::CallbackFailed,
+        "protected_human_step_up_missing"
+        | "token_replay"
+        | "wrong_arguments_consumes_token"
+        | "policy_transition_sequence_revokes_token"
+        | "callback_failure_consumes_token" => ExecutionReason::ConfirmationMissing,
+        _ => panic!("undeclared diagnostic case"),
+    };
+    let (actual, receipt) = actual;
+    let pass = actual == expected
+        && callback_count == expected_callbacks
+        && receipt.reason == expected_reason;
+    let mut diagnostic = serde_json::to_value(receipt).expect("serializable receipt");
+    diagnostic
+        .as_object_mut()
+        .expect("receipt object")
+        .remove("duration_us");
     cases.push(json!({
         "case": name,
+        "expected_reason": expected_reason,
+        "actual_receipt": diagnostic,
         "expected": {"outcome": expected, "callback_count": expected_callbacks},
         "actual": {"outcome": actual, "callback_count": callback_count},
         "callback_count": callback_count,
@@ -151,7 +183,10 @@ fn main() {
     let mut cases = Vec::new();
 
     let (mut runtime, count) = setup("allowed");
-    let actual = outcome(runtime.call(request("allowed", "quote", 1), 1));
+    let actual = outcome(
+        runtime.call(request("allowed", "quote", 1), 1),
+        &mut runtime,
+    );
     record(
         &mut cases,
         "allowed_call",
@@ -163,7 +198,7 @@ fn main() {
 
     let (mut runtime, count) = setup("pruned");
     restrict(&mut runtime, 1);
-    let actual = outcome(runtime.call(request("pruned", "quote", 1), 2));
+    let actual = outcome(runtime.call(request("pruned", "quote", 1), 2), &mut runtime);
     record(
         &mut cases,
         "pruned_quote",
@@ -175,7 +210,10 @@ fn main() {
 
     let (mut runtime, count) = setup("missing");
     restrict(&mut runtime, 1);
-    let actual = outcome(runtime.call(request("missing", "human", 1), 2));
+    let actual = outcome(
+        runtime.call(request("missing", "human", 1), 2),
+        &mut runtime,
+    );
     record(
         &mut cases,
         "protected_human_step_up_missing",
@@ -189,7 +227,7 @@ fn main() {
     restrict(&mut runtime, 1);
     let mut approved = request("single-use", "human", 1);
     approved.confirmation = Some(runtime.approve(&approved, 2, 100).expect("approval issued"));
-    let actual = outcome(runtime.call(approved.clone(), 3));
+    let actual = outcome(runtime.call(approved.clone(), 3), &mut runtime);
     record(
         &mut cases,
         "granted_token",
@@ -198,7 +236,7 @@ fn main() {
         1,
         count.load(Ordering::SeqCst),
     );
-    let actual = outcome(runtime.call(approved, 4));
+    let actual = outcome(runtime.call(approved, 4), &mut runtime);
     record(
         &mut cases,
         "token_replay",
@@ -214,7 +252,7 @@ fn main() {
     let token = runtime.approve(&valid, 2, 100).expect("approval issued");
     let mut invalid = request("wrong-args", "human", 0);
     invalid.confirmation = Some(token.clone());
-    let actual = outcome(runtime.call(invalid, 3));
+    let actual = outcome(runtime.call(invalid, 3), &mut runtime);
     record(
         &mut cases,
         "wrong_arguments",
@@ -225,7 +263,7 @@ fn main() {
     );
     let mut replay = valid;
     replay.confirmation = Some(token);
-    let actual = outcome(runtime.call(replay, 4));
+    let actual = outcome(runtime.call(replay, 4), &mut runtime);
     record(
         &mut cases,
         "wrong_arguments_consumes_token",
@@ -243,7 +281,7 @@ fn main() {
     restrict(&mut runtime, 3);
     let mut stale = base;
     stale.confirmation = Some(token);
-    let actual = outcome(runtime.call(stale, 4));
+    let actual = outcome(runtime.call(stale, 4), &mut runtime);
     record(
         &mut cases,
         "policy_transition_sequence_revokes_token",
@@ -257,7 +295,7 @@ fn main() {
     restrict(&mut runtime, 1);
     let mut expired = request("expired", "human", 1);
     expired.confirmation = Some(runtime.approve(&expired, 2, 10).expect("approval issued"));
-    let actual = outcome(runtime.call(expired, 12));
+    let actual = outcome(runtime.call(expired, 12), &mut runtime);
     record(
         &mut cases,
         "expired_token",
@@ -273,7 +311,7 @@ fn main() {
     approved.confirmation = Some(runtime.approve(&approved, 2, 100).expect("approval issued"));
     let mut foreign = approved.clone();
     foreign.session = "other".into();
-    let actual = outcome(runtime.call(foreign, 3));
+    let actual = outcome(runtime.call(foreign, 3), &mut runtime);
     record(
         &mut cases,
         "session_isolation",
@@ -282,7 +320,7 @@ fn main() {
         0,
         count.load(Ordering::SeqCst),
     );
-    let actual = outcome(runtime.call(approved, 4));
+    let actual = outcome(runtime.call(approved, 4), &mut runtime);
     record(
         &mut cases,
         "session_isolation_preserves_token",
@@ -296,7 +334,7 @@ fn main() {
     restrict(&mut runtime, 1);
     let mut failing = request("callback-failure", "human", 13);
     failing.confirmation = Some(runtime.approve(&failing, 2, 100).expect("approval issued"));
-    let actual = outcome(runtime.call(failing.clone(), 3));
+    let actual = outcome(runtime.call(failing.clone(), 3), &mut runtime);
     record(
         &mut cases,
         "callback_failure",
@@ -305,7 +343,7 @@ fn main() {
         1,
         count.load(Ordering::SeqCst),
     );
-    let actual = outcome(runtime.call(failing, 4));
+    let actual = outcome(runtime.call(failing, 4), &mut runtime);
     record(
         &mut cases,
         "callback_failure_consumes_token",

@@ -243,3 +243,87 @@ incident-diagnosis accuracy, developer effort, or comparative auditability.
 Those require independent tasks and equivalent competitor instrumentation as
 specified in the research protocol. Complete event replay and durable audit
 storage remain host responsibilities.
+
+## Operational measurement
+
+`measure_operations.py` is an exploratory Linux measurement of the **configured
+integration path**. It reuses the actual PGSO, NeMo and Invariant implementations
+from the functional comparison and includes `host_policy`, a minimal Python
+reference with the same authored temporal contract. That reference is not a
+full-featured alternative SDK.
+
+```bash
+python3 experiments/reproducibility/measure_operations.py \
+  --nemo-python /path/to/nemo-environment/bin/python \
+  --invariant-python /path/to/invariant-environment/bin/python
+```
+
+The fixed default design uses 12 paired process blocks per implementation, five
+warm-up batches after the first complete batch, and 100 measured batches in
+each process. Each batch contains all 23 scenarios and 96 candidate calls.
+Controller order is balanced by cyclic rotation of a seeded random order;
+scenario order is shuffled once per block and shared by its implementations.
+The default seed is `20260915`. `--runs` must be divisible by four. A new output
+directory is required. Calibration runs with fewer batches are not substituted
+for the declared main measurement.
+
+Workers remain alive, while every scenario starts a fresh logical session.
+The measured batch includes parsing, logical-session construction, temporal
+policy processing, callback authorization/execution, normalized response
+serialization and local pipe transport. PGSO constructs its runtime and tool
+validators per session; external frameworks retain a loaded policy engine and
+create fresh host lifecycle state. These are the implemented integration paths,
+not equivalent isolated algorithms or a steady ongoing voice session. PGSO
+also performs schema, permission and receipt work absent from the minimal host
+reference. No LLM, acoustic extraction or network service is timed.
+
+A parent process and the worker are pinned to different allowed CPUs. Thread
+CPU affinities and absence of child processes are checked at warm-window
+boundaries. CPU use is the difference in summed Linux per-thread `schedstat`
+runtimes for an unchanged observed thread population. Coarse `/proc/<pid>/stat` CPU
+ticks are retained as a cross-check. Snapshot checks cannot exclude transient
+threads/children between snapshots. Neither these counters nor affinity remove
+hypervisor scheduling and shared-machine contention.
+
+The parent measures a full request/response round trip with its monotonic clock.
+Response validation happens outside that latency interval; all timed responses
+must retain the authored decisions and callback receipts. First-batch latency
+and process-start-through-first-batch duration are reported separately. The
+readiness message occurs at different initialization stages in the languages;
+its timestamp is not interpreted as comparable framework initialization time.
+
+Memory records contain warm and final process RSS and process-lifetime peak RSS,
+including startup. They are neither incremental core allocation nor memory per
+request. Framework packages, interpreter builds, source files, compiler settings,
+input schedule, host metadata and result files are hashed or recorded. Missing
+host frequency/governor metadata is explicit. Default garbage collection is
+unchanged. The worker filters only the exact expected no-main-model message
+from `nemoguardrails.rails.llm.llmrails`; other stderr remains available.
+
+Summaries use the median of process-block p50 batch latencies and paired
+PGSO/comparator block ratios, with 2,000 seeded block-bootstrap draws for
+pointwise 95% intervals. Calls and repeated batches are not resampled as
+independent experiments. Per-block p95/p99 and maxima are descriptive; this
+sample does not certify tail-latency service levels. These intervals describe
+repeatability on this host, not uncertainty across deployment environments.
+Failures retain their phase, batch index, raw response and stderr. Timeouts are
+identical across arms and worker process groups are terminated on cleanup.
+Failed blocks prevent a successful aggregate report; no outlier is discarded.
+
+The execution example additionally records deterministic diagnostic receipt
+fields and predeclared expected reasons for its existing 13 cases. Its
+`duration_us` field is intentionally omitted from that functional replay so
+repeated outputs remain comparable. The number of distinguishable recorded
+reason categories is an information-availability measurement, not human
+classification accuracy or faster diagnosis.
+
+Developer integration effort and human diagnostic effectiveness remain
+unmeasured without participant observations. Source length and an agent's
+implementation time are not substitutes for those endpoints. The human
+procedure must use counterbalanced tasks, equal assistance, a fixed budget,
+and retain incomplete attempts and failures, as described in the research
+protocol.
+
+The [SDK7805fb9 measurement report](operational-results-7805fb9.md) contains the
+first frozen operational run, full raw results, calibration history, and diagnostic
+information checks. Its conclusions are limited to the configured integration paths.
