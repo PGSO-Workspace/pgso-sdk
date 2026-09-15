@@ -1,0 +1,38 @@
+experiments/public_voice/bridge.py
+  s_81bf62597beb77::t_5226fda382c485 101,103-109,125-130
+experiments/public_voice/test_pilot.py
+  s_81bf62597beb77::t_bd1597d631e689 175
+  s_81bf62597beb77::t_93e3bce0d50295 145-149,172-174,176-177
+experiments/public_voice/README.md
+  s_81bf62597beb77::t_d517c0c01bacd7 53-65,171-187,215-217
+  s_81bf62597beb77::t_bd1597d631e689 218-219
+  s_81bf62597beb77::t_fd26bbd0e773d9 220
+experiments/public_voice/framework_sidecar.py
+  s_81bf62597beb77::t_5226fda382c485 9,12,72-73,82-89,97-145,149-156,158-164,167-168,170,177-179,181-184,246-250,252-253,259-260,269-272,275-281,283-286,289,300-304
+  s_81bf62597beb77::t_e0b490a32a2aa9 11,146-148,157,282,294-296
+  s_81bf62597beb77::t_b1c47b76eb53dd 165-166,169,171-176,180
+  s_81bf62597beb77::t_d517c0c01bacd7 2
+experiments/public_voice/test_framework_comparators.py
+  s_81bf62597beb77::t_93e3bce0d50295 21-71
+  s_81bf62597beb77::t_dd89e276a9779f 72-83
+experiments/public_voice/pilot.py
+  s_81bf62597beb77::t_bd1597d631e689 24,312
+  s_81bf62597beb77::t_dd89e276a9779f 429,440
+  s_81bf62597beb77::t_590cefb59bc7c1 75-78,167,169,175,223,241,245,299,301,304,306-311,313-314,352-354,387-388,390,393-394
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fc85a3636b06b3df5ae53b4ebfbc700bf3b1c784",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
