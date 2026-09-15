@@ -1,0 +1,79 @@
+{
+  "falling_negative_control": {
+    "labeled_steps": 22,
+    "mismatches": 0,
+    "restricted_steps": 0,
+    "steps": 22,
+    "transitions": 0
+  },
+  "gap_boundary": {
+    "labeled_steps": 11,
+    "mismatches": 0,
+    "restricted_steps": 1,
+    "steps": 11,
+    "transitions": 2
+  },
+  "gap_reset": {
+    "labeled_steps": 13,
+    "mismatches": 0,
+    "restricted_steps": 1,
+    "steps": 13,
+    "transitions": 2
+  },
+  "isolated_spike": {
+    "labeled_steps": 11,
+    "mismatches": 0,
+    "restricted_steps": 0,
+    "steps": 11,
+    "transitions": 0
+  },
+  "low_confidence_hold": {
+    "labeled_steps": 19,
+    "mismatches": 0,
+    "restricted_steps": 9,
+    "steps": 19,
+    "transitions": 2
+  },
+  "shifted_baseline_challenge": {
+    "labeled_steps": 0,
+    "mismatches": 0,
+    "restricted_steps": 0,
+    "steps": 55,
+    "transitions": 0
+  },
+  "sign_reversal_pending": {
+    "labeled_steps": 15,
+    "mismatches": 0,
+    "restricted_steps": 1,
+    "steps": 15,
+    "transitions": 2
+  },
+  "silence_hold": {
+    "labeled_steps": 19,
+    "mismatches": 0,
+    "restricted_steps": 9,
+    "steps": 19,
+    "transitions": 2
+  },
+  "slow_ramp_challenge": {
+    "labeled_steps": 0,
+    "mismatches": 0,
+    "restricted_steps": 0,
+    "steps": 215,
+    "transitions": 0
+  },
+  "steady_nominal": {
+    "labeled_steps": 30,
+    "mismatches": 0,
+    "restricted_steps": 0,
+    "steps": 30,
+    "transitions": 0
+  },
+  "sustained": {
+    "labeled_steps": 44,
+    "mismatches": 0,
+    "restricted_steps": 32,
+    "steps": 44,
+    "transitions": 2
+  }
+}

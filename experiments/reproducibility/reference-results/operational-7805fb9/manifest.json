@@ -1,0 +1,1763 @@
+{
+  "binary_sha256": "de43e57b81842f11d6d8a906ebb8566d8499ca1c440d83a702f07254674461e7",
+  "build_command": [
+    "cargo",
+    "build",
+    "--locked",
+    "--release",
+    "-p",
+    "pgso-actuator-http",
+    "--example",
+    "lifecycle_comparison",
+    "--message-format=json"
+  ],
+  "clock_info": {
+    "implementation": "clock_gettime(CLOCK_MONOTONIC)",
+    "resolution": 1e-09
+  },
+  "compiler_environment": {},
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  16\nOn-line CPU(s) list:                     0-15\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9R14\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      16\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5200.00\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               512 KiB (16 instances)\nL1i cache:                               512 KiB (16 instances)\nL2 cache:                                16 MiB (16 instances)\nL3 cache:                                64 MiB (2 instances)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-15\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP disabled; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Mitigation; Clear CPU buffers\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "environments": {
+    "invariant": {
+      "distributions": [
+        [
+          "Pygments",
+          "2.21.0"
+        ],
+        [
+          "aiohappyeyeballs",
+          "2.7.1"
+        ],
+        [
+          "aiohttp",
+          "3.14.3"
+        ],
+        [
+          "aiosignal",
+          "1.4.0"
+        ],
+        [
+          "annotated-types",
+          "0.8.0"
+        ],
+        [
+          "anyio",
+          "4.15.1"
+        ],
+        [
+          "attrs",
+          "26.1.0"
+        ],
+        [
+          "beautifulsoup4",
+          "4.15.0"
+        ],
+        [
+          "certifi",
+          "2026.7.22"
+        ],
+        [
+          "charset-normalizer",
+          "3.5.1"
+        ],
+        [
+          "click",
+          "8.5.0"
+        ],
+        [
+          "cloudpickle",
+          "3.1.2"
+        ],
+        [
+          "defusedxml",
+          "0.7.1"
+        ],
+        [
+          "diskcache",
+          "5.6.3"
+        ],
+        [
+          "distro",
+          "1.9.0"
+        ],
+        [
+          "frozenlist",
+          "1.8.0"
+        ],
+        [
+          "h11",
+          "0.16.0"
+        ],
+        [
+          "httpcore",
+          "1.0.9"
+        ],
+        [
+          "httpx",
+          "0.28.1"
+        ],
+        [
+          "idna",
+          "3.19"
+        ],
+        [
+          "iniconfig",
+          "2.3.0"
+        ],
+        [
+          "invariant-ai",
+          "0.3.5"
+        ],
+        [
+          "invariant-sdk",
+          "0.0.11"
+        ],
+        [
+          "jiter",
+          "0.17.0"
+        ],
+        [
+          "joblib",
+          "1.6.0"
+        ],
+        [
+          "lark",
+          "1.3.1"
+        ],
+        [
+          "markdown-it-py",
+          "4.2.0"
+        ],
+        [
+          "mdurl",
+          "0.1.2"
+        ],
+        [
+          "multidict",
+          "6.8.0"
+        ],
+        [
+          "nltk",
+          "3.10.3"
+        ],
+        [
+          "openai",
+          "1.109.1"
+        ],
+        [
+          "packaging",
+          "26.3"
+        ],
+        [
+          "pexpect",
+          "4.9.0"
+        ],
+        [
+          "pillow",
+          "10.4.0"
+        ],
+        [
+          "pip",
+          "26.2.1"
+        ],
+        [
+          "pluggy",
+          "1.6.0"
+        ],
+        [
+          "propcache",
+          "0.5.2"
+        ],
+        [
+          "ptyprocess",
+          "0.7.0"
+        ],
+        [
+          "pydantic",
+          "2.13.5"
+        ],
+        [
+          "pydantic_core",
+          "2.46.5"
+        ],
+        [
+          "pytesseract",
+          "0.3.13"
+        ],
+        [
+          "pytest",
+          "9.1.1"
+        ],
+        [
+          "regex",
+          "2026.9.10"
+        ],
+        [
+          "requests",
+          "2.34.2"
+        ],
+        [
+          "rich",
+          "15.0.0"
+        ],
+        [
+          "sniffio",
+          "1.3.1"
+        ],
+        [
+          "soupsieve",
+          "2.9.2"
+        ],
+        [
+          "termcolor",
+          "3.3.0"
+        ],
+        [
+          "tqdm",
+          "4.70.1"
+        ],
+        [
+          "typing-inspection",
+          "0.4.4"
+        ],
+        [
+          "typing_extensions",
+          "4.16.0"
+        ],
+        [
+          "urllib3",
+          "2.7.0"
+        ],
+        [
+          "yarl",
+          "1.24.5"
+        ]
+      ],
+      "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+      "source_sha256": {
+        "__init__.py": "8ec8d6b5787dc8f5f1e07ad5bd496c96199c35833f8e51b526ab8618f3d1ab28",
+        "__main__.py": "404b6efe805f649fd7b185a60633ad5544deb097807d92d4ad07037a26d96159",
+        "analyzer/__init__.py": "88194830901e4c29c4580e8686342426c6b44a74d03e084828b49595b7d7b7a3",
+        "analyzer/base_policy.py": "7459353ff4a298a8b407ba7d0113ffb8b5909511ac80440c5f5a495be19704a5",
+        "analyzer/examples/agent_bugs/traceset.py": "ebc978cd9177ffd1f61b21e200f85578bbc3d95a667dccecb06db1363948899a",
+        "analyzer/examples/agent_flan/run.py": "698170a9ea926b7ec2dff7a784829244427cdfc49350417f81026bdb9cd3ac8f",
+        "analyzer/examples/openai_agent_example.py": "220a38c9c6fb3c10be5af65e5caf1df24a263ec11d75242d10b920d11ac758cd",
+        "analyzer/examples/traces_example.py": "212eebe5d6fb0771db7a3ab8a7092fc022f4eba528009c853bc28b5adbcf9e6f",
+        "analyzer/extras.py": "0ef7480e8cb2528d564de2a9aa9ebad14247cd940f7422a627c187f026e367da",
+        "analyzer/language/ast.py": "65ee0a93aa41e6a856b6be83626439d3da89b28fa2d2a89ba68529d565802a4d",
+        "analyzer/language/linking.py": "63c676f71beb8ddc7db4dac6f82fa445c45769b9887d10fa8787d3205612ad5d",
+        "analyzer/language/optimizer.py": "4b8dc97b507b5b6806f898add6adcd33779896fee6607f9092b2fb336b6022d7",
+        "analyzer/language/parser.py": "bd806f387197717ecd514172b885e8cd6a9a451e579b149ef4c0ca78ee27e903",
+        "analyzer/language/scope.py": "78160e863189aa8fa52925686929fa31bf41ae336c049823bf4a8a18e783620e",
+        "analyzer/language/types.py": "5f815184f96a644cea3132f36cb3dad9d78ce96b733e4e725655565bd4611ed7",
+        "analyzer/language/typing.py": "73036f315c744f445e9d474e2fdb9f0d2c6fc86bdd55a569567560f3485ee64d",
+        "analyzer/monitor.py": "5f2aae13f502aeab340cd7a9dd3e80761282d9f8bb389c7c61676d3041f85627",
+        "analyzer/policy.py": "2367bd6d52e90213b725ada5cb16528fe1355f9ee0ecf9d5622f4332b4531cd9",
+        "analyzer/remote_policy.py": "3b36b83570bc71dcca77e9c70799224370e3be5877a315227080d38c5d79f199",
+        "analyzer/result.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "analyzer/runtime/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "analyzer/runtime/evaluation.py": "de341979e2c73fe88ed27b98bd0e81fb5ba28a1166d75e535cb92638f4c21ff2",
+        "analyzer/runtime/evaluation_context.py": "d783c8583bf640a901fcba498916ac97c6979dbfeeab329564e6973ceaa2e2e8",
+        "analyzer/runtime/function_cache.py": "c15ca622c03702576e38cb76b8f12c45eadb20ee1a1224bf24f4c185824d3e97",
+        "analyzer/runtime/functions.py": "365d97ccbf0ea5d6dbd27aa04fd345ed0046721ad56e974d9ea28d7f336a6b81",
+        "analyzer/runtime/input.py": "9bc4e1c8f02d1af68c8da8ae54de0e5904c72bd8c762d7671d5c0209f1add760",
+        "analyzer/runtime/interface/primitives.py": "e05f19db062c308ff316fe8551ba20d1ff688cba502c23b56c41aecde31ac5bf",
+        "analyzer/runtime/nodes.py": "4320bff64b76245f6447944b48f2945237674abe996894ef0d5412b1ef69ca8c",
+        "analyzer/runtime/patterns.py": "521d3b6e3b78d1f6246efbab2d31830097139de544fac50db2c3af24c8df3695",
+        "analyzer/runtime/quantifier.py": "04f40fcd359d5f85eae92f0b1fdd46cb2d9beaf74246ec34d4d88474fdc7f867",
+        "analyzer/runtime/range.py": "015c431bccd0f4fe1af8c88df498203361caf87d98cd03d328351d6c1a95e25f",
+        "analyzer/runtime/rule.py": "18f2ba4e7bf98c1df16d859483e505e773ca21f7e895b3b5b86f9f9af32234aa",
+        "analyzer/runtime/runtime_errors.py": "54c6e963b85cfa73d1e568f55c25d5cf72104a08eb3a4c46a265011d08f40591",
+        "analyzer/runtime/span.py": "f0e32bfb1d01df25190dbfd2b3490fc4bf7223e84fe96df4911696cb92bf8158",
+        "analyzer/runtime/symbol_table.py": "35e3bd05a72f3137b50a0da111f9b832343c90a6353b8507a53a785ecf76c784",
+        "analyzer/runtime/utils/base.py": "a408e6f3646d89af0b041148a8e7525b6f8d2266492211b75927ce773783f21e",
+        "analyzer/runtime/utils/batching.py": "bc24a83cb0486c2ecc1db4f3f97e3496ea6a71bdf539a8c86ab382da95efe7e7",
+        "analyzer/runtime/utils/code.py": "63553120827a6f8dbca59a03e11cef9f7df2bb7690e6030685b1174cf9ab0793",
+        "analyzer/runtime/utils/copyright/copyright.py": "807152efed0ff937a6f02cf8477238600cace09a4940e7e9ead67af890ce83ab",
+        "analyzer/runtime/utils/copyright/software_licenses.py": "4308924f4a9105861ca1929adb22b2d29fefb50e79e75c7bd51731c0f6ca5161",
+        "analyzer/runtime/utils/invariant_attributes.py": "3afc57c194cb5242232d9ace7705b74ec8863f3658912960899509ef778573fd",
+        "analyzer/runtime/utils/moderation.py": "cb52dec0e2b37b26320f8f47c0c3eba5e82ba8cdd49118f6528d54af11bff1d2",
+        "analyzer/runtime/utils/ocr.py": "cece4e7c1d81d31ded58bc31702637799c67958371648d2af31a7648eaa82de9",
+        "analyzer/runtime/utils/pii.py": "c3a9278a4417bb89ba6e0daaf3fd02d29dfa5a322a6aac488c39771236509980",
+        "analyzer/runtime/utils/prompt_injections.py": "787fdbd12bc5a7dcbe9e492217afb4a422c5e3b4ee2e266a425344207dcc380f",
+        "analyzer/runtime/utils/secrets.py": "3fd21cb03fa80378dabf2de7b5d26531889103c4a45cd1b9d524101d04963247",
+        "analyzer/runtime/utils/sentence_similarity.py": "0f5099a9f596e13d5f085408bc628055cde69057b39e277f8cf102fe2b77eb61",
+        "analyzer/stdlib/invariant/__init__.py": "8910cea7d8d36e4e3890b7be494bff2467700c7e12d58e8debe3407e556cb030",
+        "analyzer/stdlib/invariant/access_control.py": "6f42e30a95aacc5ce23d8c744c7234df99164b8f78ab915b9d78a83919aa1e0a",
+        "analyzer/stdlib/invariant/builtins.py": "461d8529b258c60129140363809bae8ad2294e71afadcffd9040666dd900e21a",
+        "analyzer/stdlib/invariant/detectors/__init__.py": "aa8a05de70fd2262346743292d6fa7aa0699b4c933a1180723e5a2dc63ecbcf6",
+        "analyzer/stdlib/invariant/detectors/code.py": "0695741e25cfbffb7b36cfb43cfce0423d5067331041bcd3bbddffd25774918b",
+        "analyzer/stdlib/invariant/detectors/copyright.py": "ee9a854172ee7b835dd3da9b1808a4431baac4248c90495743864ce22d0dc519",
+        "analyzer/stdlib/invariant/detectors/fuzzy_matching.py": "c8430ecd42455ff34e12fce54f873ee5f0f7e8fb371225ae4c76f3e9d035c06d",
+        "analyzer/stdlib/invariant/detectors/moderation.py": "ec970adcd672a967e13b23192350e5c2835657d90fde4ac057d34503a3affe2c",
+        "analyzer/stdlib/invariant/detectors/pii.py": "00c7121a9aa9bfe4c4162721ec7157af15b117d76c25a2a0a00c2de2f43e3869",
+        "analyzer/stdlib/invariant/detectors/prompt_injection.py": "22a68066b0c114b086b57c0e03dd61001eac3953d2869abd283b29901ae64cd9",
+        "analyzer/stdlib/invariant/detectors/secrets.py": "a5f3fc4bb9f4f5c6f8b1ee0dbe58be6d7071de9ae641c3c6e4d5cf4144184cc8",
+        "analyzer/stdlib/invariant/detectors/sentence_similarity.py": "01fc133919767e527a3048cca45c8d6409f65df6860dbde1d2f9c69028565e09",
+        "analyzer/stdlib/invariant/errors.py": "0f32a1a519ae3659b6c47e790b07da1fd199ffa2b8e947b372969d580dd60a9f",
+        "analyzer/stdlib/invariant/files.py": "d51a4352c4efd09d6018b7be95819cede13f64f1b5d9ca745d4930114137ba4c",
+        "analyzer/stdlib/invariant/llm.py": "7f40450d37c2b5dd60a530311f0f939c32a359e1542d9f727e18fd03d4141bf3",
+        "analyzer/stdlib/invariant/message.py": "4e613426b693f33f0caa5a44cfebc0e688de2a669f37e8771b747ff787c95bda",
+        "analyzer/stdlib/invariant/nodes.py": "8cd3c20e65c8cb502fd957dcf2ea0ac3d4d46303fbfde11bf36b639461d47a40",
+        "analyzer/stdlib/invariant/parsers/__init__.py": "f183340833a7b87632d8817ee9da7587c3a316e6a22f0767c4cbbdc6e518c4b9",
+        "analyzer/stdlib/invariant/parsers/html.py": "4033eeafec2a93d07df63390840115a2fd64b5c8a3f9b1b0c48fe478f75651fe",
+        "analyzer/stdlib/invariant/parsers/ocr.py": "3ed23ba52bf72a920ec26308d4a7a9b47143f2f3c72464070fdc70eb6b80a95a",
+        "analyzer/stdlib/invariant/quantifiers.py": "f5ffffb58fdd583c41378c6668edd1b1d6e00b9995415ee6d2eb8ea8103cc159",
+        "analyzer/traces.py": "0b0ecb09bd3c5fb0fb22d0ea67e240f9b89763f6936b11d78c457d524451b360",
+        "explorer/launch.py": "4a42d365882a844fe395d6125e572d5e08621522b448cf08ac0e718d981945a6",
+        "tests/analyzer/custom_checker_project/checker.py": "28e27d76d82e4603c7fc153c8e687e2c2a718df8e606e945a04908c43ac36465",
+        "tests/analyzer/test_builtins.py": "d043404950c77d9b3e03578700dbdb314e1be243c0d6d3d39da6b75711cfbf81",
+        "tests/analyzer/test_chunked.py": "36695535a35f6a6f633936452d597d18043fa26582ca00107550d4bb4cf598a1",
+        "tests/analyzer/test_constants.py": "faf79f4105c9207fefe3d690ffe88e64fd6d10f668b1fe5bcc6156318869ae6d",
+        "tests/analyzer/test_derived_variables.py": "9c7181c86bacdcbbecac620ad6801b8209afbad83c366538efc6ed906b99bf24",
+        "tests/analyzer/test_flow.py": "f12e73f0501b1cbc2071c94ccad9c679d278bec8a2988feaededde97f8a597b2",
+        "tests/analyzer/test_guarding.py": "39e3883d0f457d93d2035bc1e1217913cf7fc46dc909f7eb52c700e00dcdfe6c",
+        "tests/analyzer/test_html_parsing.py": "d4d2a898a9e366bc3dc9d970f89aec60a55a2707beee8a58f18f902e2736eeca",
+        "tests/analyzer/test_images.py": "cfd46f2b98b72447f22ed6520fbf7e3311e9ef7abf5b73a7609a4191aa6efc83",
+        "tests/analyzer/test_input.py": "4570df2f0dc90bf88d4d0f68acb4891bf2fb9cc370de7990fd4e6feae77d5a6f",
+        "tests/analyzer/test_list_comprehensions.py": "3ffe996161b23fafe0da76e0fb0e7bd84318bcf3542419699b3fa57a97a792e1",
+        "tests/analyzer/test_monitor.py": "3187d79f82e6c91314c32abaff9fe0d370c7f730a40046e9ce134237b5ed7891",
+        "tests/analyzer/test_parser.py": "2e61887909c7ae6120b4abbaddeb0fb6e0e3b835932932bc5a0f8c05b6641247",
+        "tests/analyzer/test_parser_errors.py": "174bf6a3f79ac2d8c1e39545bac1e45f4678ea40630be478f9777c124209c493",
+        "tests/analyzer/test_parser_semantic_patterns.py": "8eb33f302eec5f659ea868b9d535f2ab05326b73bae88b7ae2dc0a21f97bf816",
+        "tests/analyzer/test_policy_parameters.py": "e0b3b39016a0c379aff4673927f2580f055f50aaadef484c2af89c5e85af8a8e",
+        "tests/analyzer/test_predicates.py": "f7af34f960ffef861b56a9739edc7186aa16e56a1e72dde198fb9df2a6eea4f7",
+        "tests/analyzer/test_quantifiers.py": "76d3814f5adef62afc7bfc5282bf42effaffa63612a9805c8ce6a0cfe5abfd2e",
+        "tests/analyzer/test_ranges.py": "d5a1ba2539882511f507a7cd1c899b4ad0d4dbf5b855daee46cf9800bdb1eefb",
+        "tests/analyzer/test_readme_examples.py": "c8f2acd0f4e1c6b16c6fe7d7153ad17a276884092ed7ecacfcd39142e3ce1395",
+        "tests/analyzer/test_semantic_patterns.py": "aa757a18db62178792e0ba150ca6ca275bdfd94925ee7f8c01f4f9049bd2c1f0",
+        "tests/analyzer/test_stdlib_functions.py": "f4afa8dbf54038923ff4f74718039677c8cfae3b4d0ee63646c75a98b36ce55f",
+        "tests/analyzer/test_ternary_operator.py": "863e1cd47a6c3eab585b730d9744cb096176a5b937d6e8400a2512667c549fef",
+        "tests/analyzer/test_tools.py": "19dae5fd3952d4157810c11173c4234bd2f47539911496f365663035cd5f7375",
+        "tests/analyzer/test_utils.py": "aae1e2909cff7382eaf3b29c6df3971d74bcc929b899d188904e49c03d23bf75",
+        "tests/analyzer/utils.py": "c7fb5c37f7e8e5833322eeea1d70a4d59eccbcf70158c60185b607f1642f6bbd",
+        "tests/conftest.py": "348021b0af6d8c80e18f0f85115b460cd478232297da62f5f05887587dd5b57a"
+      }
+    },
+    "nemo": {
+      "distributions": [
+        [
+          "Jinja2",
+          "3.1.6"
+        ],
+        [
+          "MarkupSafe",
+          "3.0.3"
+        ],
+        [
+          "PyYAML",
+          "6.0.3"
+        ],
+        [
+          "Pygments",
+          "2.21.0"
+        ],
+        [
+          "aiohappyeyeballs",
+          "2.7.1"
+        ],
+        [
+          "aiohttp",
+          "3.14.3"
+        ],
+        [
+          "aiohttp-retry",
+          "2.9.1"
+        ],
+        [
+          "aioresponses",
+          "0.7.9"
+        ],
+        [
+          "aiosignal",
+          "1.4.0"
+        ],
+        [
+          "annotated-doc",
+          "0.0.5"
+        ],
+        [
+          "annotated-types",
+          "0.8.0"
+        ],
+        [
+          "anyio",
+          "4.15.1"
+        ],
+        [
+          "attrs",
+          "26.1.0"
+        ],
+        [
+          "certifi",
+          "2026.7.22"
+        ],
+        [
+          "charset-normalizer",
+          "3.5.1"
+        ],
+        [
+          "click",
+          "8.5.0"
+        ],
+        [
+          "dataclasses-json",
+          "0.6.7"
+        ],
+        [
+          "fastembed",
+          "0.8.0"
+        ],
+        [
+          "filelock",
+          "3.32.6"
+        ],
+        [
+          "flatbuffers",
+          "25.12.19"
+        ],
+        [
+          "frozenlist",
+          "1.8.0"
+        ],
+        [
+          "fsspec",
+          "2026.7.0"
+        ],
+        [
+          "h11",
+          "0.16.0"
+        ],
+        [
+          "hf-xet",
+          "1.6.0"
+        ],
+        [
+          "httpcore",
+          "1.0.9"
+        ],
+        [
+          "httpx",
+          "0.28.1"
+        ],
+        [
+          "huggingface_hub",
+          "1.31.0"
+        ],
+        [
+          "idna",
+          "3.19"
+        ],
+        [
+          "iniconfig",
+          "2.3.0"
+        ],
+        [
+          "jsonschema",
+          "4.26.0"
+        ],
+        [
+          "jsonschema-specifications",
+          "2025.9.1"
+        ],
+        [
+          "lark",
+          "1.3.1"
+        ],
+        [
+          "loguru",
+          "0.7.3"
+        ],
+        [
+          "markdown-it-py",
+          "4.2.0"
+        ],
+        [
+          "marshmallow",
+          "3.26.2"
+        ],
+        [
+          "mdurl",
+          "0.1.2"
+        ],
+        [
+          "mmh3",
+          "5.3.0"
+        ],
+        [
+          "multidict",
+          "6.8.0"
+        ],
+        [
+          "mypy_extensions",
+          "1.1.0"
+        ],
+        [
+          "nemoguardrails",
+          "0.24.0"
+        ],
+        [
+          "nest-asyncio",
+          "1.6.0"
+        ],
+        [
+          "numpy",
+          "2.5.3"
+        ],
+        [
+          "onnxruntime",
+          "1.30.0"
+        ],
+        [
+          "packaging",
+          "26.3"
+        ],
+        [
+          "pillow",
+          "12.3.0"
+        ],
+        [
+          "pluggy",
+          "1.6.0"
+        ],
+        [
+          "prompt_toolkit",
+          "3.0.53"
+        ],
+        [
+          "propcache",
+          "0.5.2"
+        ],
+        [
+          "protobuf",
+          "7.36.1"
+        ],
+        [
+          "py_rust_stemmers",
+          "0.1.8"
+        ],
+        [
+          "pydantic",
+          "2.13.5"
+        ],
+        [
+          "pydantic_core",
+          "2.46.5"
+        ],
+        [
+          "pytest",
+          "9.1.1"
+        ],
+        [
+          "pytest-asyncio",
+          "1.4.0"
+        ],
+        [
+          "referencing",
+          "0.37.0"
+        ],
+        [
+          "requests",
+          "2.34.2"
+        ],
+        [
+          "rich",
+          "15.0.0"
+        ],
+        [
+          "rpds-py",
+          "2026.6.3"
+        ],
+        [
+          "shellingham",
+          "1.5.4"
+        ],
+        [
+          "simpleeval",
+          "1.0.8"
+        ],
+        [
+          "tokenizers",
+          "0.23.2"
+        ],
+        [
+          "tqdm",
+          "4.70.1"
+        ],
+        [
+          "typer",
+          "0.27.2"
+        ],
+        [
+          "typing-inspect",
+          "0.9.0"
+        ],
+        [
+          "typing-inspection",
+          "0.4.4"
+        ],
+        [
+          "typing_extensions",
+          "4.16.0"
+        ],
+        [
+          "urllib3",
+          "2.7.0"
+        ],
+        [
+          "wcwidth",
+          "0.8.3"
+        ],
+        [
+          "yarl",
+          "1.24.5"
+        ]
+      ],
+      "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+      "source_sha256": {
+        "__init__.py": "11ae5dd25818076f6941ef54031e551ba17d2cf5212842084c8a43ba51174741",
+        "__main__.py": "d79630c882227f2b5c4c9605b0c85a095740e98af796eaeb91b1f7dbc18c1adb",
+        "_compat/__init__.py": "2fd9ac54ae33025a0a1841db1895f5d565f870a79841974e990f972c866279a6",
+        "_compat/langchain_kwargs.py": "f1143077fdfe1cb8ef28ca78b9396ecb9ad2bcb35fd3f718560c90537f96bfee",
+        "actions/__init__.py": "2e952f826593e182bef11eb41ac3a7caffdbe78f1af02cbf1cbac2557a73c617",
+        "actions/action_dispatcher.py": "845c3ba2f3cddf3d3fda70fdae416c46e85a407581e330e6b7edf059c23f1971",
+        "actions/actions.py": "2378c2b078aacdb39e66853e6ec15bcd081006b39725ae804c78b5090ba95c82",
+        "actions/core.py": "e02966fc78bba7a2516447afaead19ce49f582a4812a170d859b2aadc2c47cef",
+        "actions/llm/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "actions/llm/generation.py": "16e65ca468c26b93a612743885a9ed5e5e225e118c802824e25e104edcb57d71",
+        "actions/llm/utils.py": "b231d76d604dcbbfd14808e4c93c79c6d463eec750bb47404af32d949a7709b3",
+        "actions/math.py": "ae03c61dd50fb43d3a430c210da584043f49c345adb8225c6668d218b827e327",
+        "actions/rail_outcome.py": "d2f81fcc01102c34edfe3671afaff5c9d70b6f7eb5e8f8fe463b5bb43a764acb",
+        "actions/retrieve_relevant_chunks.py": "e22942678ba996172bf39b53caac5acdbd3a1c2b5c8c2556b72c62cb0a30b1a3",
+        "actions/v2_x/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "actions/v2_x/generation.py": "0f4f9d5ac1f07289c89321c28c27624b826917e9071e5eeae87f1d8af40d14aa",
+        "actions/validation/__init__.py": "5ea3dc4421fa9ec458206730f4c61fdf55b3ecebddcafd8f60286f1bc55d4e92",
+        "actions/validation/base.py": "634d90535a4515d9f4691664de2bf3aabc4a7a77dbcb34215b689a0883658007",
+        "actions/validation/filter_secrets.py": "719eafbb953d1a09b700a6ecf45c76efdc7985b5bd8e24582fc35cdb65d6e7f6",
+        "actions_server/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "actions_server/actions_server.py": "4e7d494ae451eaba8c2f12bebc223354ec738a09548b756d52ed559c4e572b23",
+        "base_guardrails.py": "c30587543362db2157adedd170d122a19ab72e8623acc6a6e3dee6fcef1d8032",
+        "cli/__init__.py": "d7af207cacb8d9566025bef2e96bf95e8b3d1178388ef5358199e7f0601f6f5d",
+        "cli/chat.py": "e9030ee495be41c466d3fbe748b2f3298afd005916d4b0563379514ad07b1545",
+        "cli/debugger.py": "b38d9e3d51b191aa34744de79569faaef8380f13a777291e555f8b82fba48545",
+        "cli/migration.py": "64d1dff87dae524f4306b4c859d3eede0a2935e6d8dbdac3516df5f7fb05a764",
+        "cli/providers.py": "5c0640f320cfae867ef7790063d302e36cce8f8bcb492694dbde000cac75e0e3",
+        "colang/__init__.py": "1de1dea86d21ea4be0a1fa0b850fa4a48b32cee98d868e929f5a97b3647c6ce0",
+        "colang/runtime.py": "0c95c19cf7362c82dd161ef257f16d0e33ae13249934d2fe1a8d5c27ba56abe6",
+        "colang/v1_0/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "colang/v1_0/lang/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "colang/v1_0/lang/colang_parser.py": "62d1b7e503da5af168b4be02aed1a4507d04436a3e58bd614e28eb407a2430ac",
+        "colang/v1_0/lang/comd_parser.py": "5c1393f04d9339e0d3ff20be3349794bdc9440e696d3c1dff5216a944090527d",
+        "colang/v1_0/lang/coyml_parser.py": "b05ed82264a9d25c1e2d832ff6d5bcf5d1f1bb67a003190f0e6ba0ad40c5bda2",
+        "colang/v1_0/lang/parser.py": "127eb0eea451762dfa409985ced32f4a31e240fc951aaa54256c9b4408559f7a",
+        "colang/v1_0/lang/utils.py": "9e71dadec18ee879f5ae2e7ade15da680d61c4d6d654072279153c50151e7f03",
+        "colang/v1_0/runtime/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "colang/v1_0/runtime/eval.py": "1fbf3edb71efee552ccb8405682a863113ee7f9b69de939ab77f4bea2dce96a7",
+        "colang/v1_0/runtime/flows.py": "c0d2149436704e99791beb05d2117ed68b6bfc8e6d231879d958b26c066d3777",
+        "colang/v1_0/runtime/runtime.py": "366a21e77314ac96906497a39314f72ffdf09f0283a4666711ec393dd0177ad9",
+        "colang/v1_0/runtime/sliding.py": "8671c6587643026ca967fbebf00645a48c55d3675e8962d56a87417c420dee5f",
+        "colang/v1_0/runtime/utils.py": "03272b64a84bb0b4719efde7878e5430b82b416f78f0d001d5fafa4a75840ee7",
+        "colang/v2_x/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "colang/v2_x/lang/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "colang/v2_x/lang/colang_ast.py": "5c4daa3ce0ecf8299b647b2593189e87841bfa5a64cdbead468960c46617a081",
+        "colang/v2_x/lang/expansion.py": "d499c3dc3bccafdf7f1576f622083cb7c613baa97318be15e43bd6b42c60b397",
+        "colang/v2_x/lang/grammar/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "colang/v2_x/lang/grammar/load.py": "4ed5d82e172629adbd903ec43234374f09e7bd06a45de278ecaa6f3309d70d8e",
+        "colang/v2_x/lang/parser.py": "6ab71cb04c692ac2a2b4038e89ed216919b006af21b5d779e3b54db4db06dc49",
+        "colang/v2_x/lang/transformer.py": "c1399399e79b61db33c38966a4e1beab37e0f089e63267d3e458b3588afeb058",
+        "colang/v2_x/lang/utils.py": "d7b36020e0132a314f62498c4815f98ff906b6d5c171982a3a5480d5072eb32f",
+        "colang/v2_x/library/attention.co": "9f99edeef9ea60ccc4a6add2cb9d6443cb6d2c67287de900525217742a0f423f",
+        "colang/v2_x/library/avatars.co": "2faea868b4012432964bf8b6631855c3221b928df6c4d336b7615337c6e94865",
+        "colang/v2_x/library/core.co": "ddf1748f650bf723c0befc075399c28249a7e31ea6140cacf69fd18fdd0a8a2a",
+        "colang/v2_x/library/guardrails.co": "c38e01e71a3fadad9aefdd0ed234c3a131e67c1722687276bb442c8eb1ad77fc",
+        "colang/v2_x/library/llm.co": "0ae86f689d1f705547f18c8e6af344c8082de67d24a46a5ec1a30d10e39b16cd",
+        "colang/v2_x/library/passthrough.co": "3c498246afba30d8af9cd51febb020dc8b5e2475b2b6db036159cdcc65704be6",
+        "colang/v2_x/library/timing.co": "3b3c49b59ae05061e48177cb7ac5cfeb5775ac310805bc957394773d09ee4546",
+        "colang/v2_x/runtime/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "colang/v2_x/runtime/errors.py": "52cc6b981c328bb79e6871c2545ebdfabdf3baaaf3afb136e00ba9070ffc3d93",
+        "colang/v2_x/runtime/eval.py": "cd1be93cc5c0d0c03f1e49feb352ff5b95f8f32d300b0f6aff25cb6e4083648f",
+        "colang/v2_x/runtime/flows.py": "ab6fbf08772b8190b9bda8af85a31f4de5edc196c09876bed4e2daeafb4b2957",
+        "colang/v2_x/runtime/runtime.py": "2a197afa7d47d33ec10a13ada83fa56d1e208b39ad8fecc4333f682c3b2b6fdc",
+        "colang/v2_x/runtime/serialization.py": "3599529513d9e67d81e4ef81176e1ac153d44d68ce87a8b52c866ab5ef9c89d1",
+        "colang/v2_x/runtime/statemachine.py": "35d049df355eee945aed0ee4fab999fd6a0abe949b5bbd7dfa26608527f7a89b",
+        "colang/v2_x/runtime/system_functions.py": "572dec07480f4889831fbdce1a019702574da8e725474c95b49258a4fa8b97cb",
+        "colang/v2_x/runtime/utils.py": "67f32a8686c6a661cbf5e44dac676398b9c74fff9ddd46a8d2651fdc4cf66d94",
+        "context.py": "46feacd6cded21015ed4c18ce3fb220bbcf2fbcf3a8d71a0d0adbb5cd3bbae1b",
+        "embeddings/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "embeddings/basic.py": "97128928a05149e5056dc604ea5e6325f189cedfc1c97d94822feb0d66b1ceb2",
+        "embeddings/cache.py": "09e19d98f24dee254dfc66491c4b640de7866d76d58d35ed1cb8f8ab0abe12f3",
+        "embeddings/index.py": "4da2d912bc7f6567b03c0fe8e42741233668f36c65bc4a3e64d18b46f59a910a",
+        "embeddings/providers/__init__.py": "3c3e1ea945578b46c52d397a6729838ff3904167c80ea716ca127a97d7f44ac0",
+        "embeddings/providers/azureopenai.py": "ec4cd58761ef9df56a85eabfb8e6262a9287e88f70595193fb070bd06202606e",
+        "embeddings/providers/base.py": "bacedfb85f3f7641aa5e62dbfacc5fdc8ba4d18332ff41fcd897b7dca9aa88d4",
+        "embeddings/providers/cohere.py": "d1c551a062dc0ab76b9c0b0e12bac1c5b1ebfaac7e47adf38884dcd3e7707de6",
+        "embeddings/providers/fastembed.py": "d1aa3b792b798a22e0914807f3545df2f3b76c8bf1186bd4d1560d0844f68cb6",
+        "embeddings/providers/google.py": "71d14876a424c116c7c48ff173fd53ed18ce3205392a422739e418858315cfc8",
+        "embeddings/providers/nim.py": "8c6983cb6ad811dad4d4439811c1a52a9b5868acf363846c65424f4ac23558d8",
+        "embeddings/providers/openai.py": "7a9029b01e1228e374171d3f4723918361cecff953520e54fb3376cc31428019",
+        "embeddings/providers/registry.py": "9841f8a4cd6c34dd2042f23eefc58f70dec1aa505dd4ef804d6d5c86e9ead5fc",
+        "embeddings/providers/sentence_transformers.py": "66240a0ce63836becb25ec2b85e4abaf28df9111b1f3dc09b09d0131d4f636b9",
+        "eval/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "eval/check.py": "557892735659de29cf67b486e943b371b8cc27dba618a942f330ffa0ff5a013d",
+        "eval/cli.py": "042020dfed4588ad7d536906fa15a581df8f4d4a54593ab6abced3fd8ff30696",
+        "eval/eval.py": "de3dd1ad4a59443cc6b3fe972c0ca2954116b2a628b608636c6391668e2681ea",
+        "eval/models.py": "8fba5bd8c8bf67d03f80fcc0bc8d0490d6cec6d43cc5ae39980853134883bc49",
+        "eval/ui/README.py": "ca6dd401d0753e1a67876fdfc3e9ad86bc56ad2d687fda45ce9d1f345bbef1c9",
+        "eval/ui/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "eval/ui/chart_utils.py": "1323a14704478a71f7d529a62e61c4ff99141991a8fe13aa3b8d588c03744664",
+        "eval/ui/common.py": "37e70e14ec8beacd8453b14cbb750fbfbadcb84f8e2d8133c2e41e643a7a8c71",
+        "eval/ui/pages/0_Config.py": "4e22c9d1eb73aa9d67b18e84d5b493417a53d99fc2ddcc893c4ffe3b615d0fdc",
+        "eval/ui/pages/1_Review.py": "1b2a80b02596d47d03889bb5bab49e5738d53db215716b2d08b70fb81357a19b",
+        "eval/ui/pages/2_Summary - Short.py": "0c6e193d0ea0ecaa8e1d6655632f94f48aa6ba95de86d4d51c249bde0e389375",
+        "eval/ui/pages/3_Summary - Detailed.py": "b134170a7f07f8627184fefd7bf6526698ab68c4d8e741883f82194fa6dde572",
+        "eval/ui/streamlit_utils.py": "8a98ed2b4bbacc511a3982c42b72ccbe0a54afc0f89d70498d64a6efbec219c4",
+        "eval/ui/utils.py": "0f46c85f1c4aacc045e7a5efb9f359bdc73c01298a114f6b373f5eb8b6fe1328",
+        "eval/utils.py": "230690dbdd9f3ff93ec2727c6635e4887a79fdb4397497804504d1bbc8db0260",
+        "evaluate/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "evaluate/cli/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "evaluate/cli/evaluate.py": "9d9ff95d8bf1a4018155af6b869be041ac4095f8230c9cc90d6b2c8838879ae2",
+        "evaluate/cli/simplify_formatter.py": "5a10318ca3218cba04e8586426c6977d5b624f32ec9d007a813e9e67a07eb7bf",
+        "evaluate/data/factchecking/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "evaluate/data/factchecking/process_msmarco_data.py": "e4f2ab54ccd8a7459269b88a34a6f516b79805c1419ce0ac4dbb0bcdfeb25f49",
+        "evaluate/data/factchecking/sample.json": "7eebca791c92e1307bcf992eab1454e90c8e9ac0fab29963aeb0a71b8da6016d",
+        "evaluate/data/hallucination/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "evaluate/data/moderation/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "evaluate/data/moderation/process_anthropic_dataset.py": "76ecadebf37c9141b0409b767c17f2b6781f77f706d3dedc35b63c321b86dcba",
+        "evaluate/data/topical/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "evaluate/data/topical/banking/categories_canonical_forms.json": "4e577922bb0ed16e46d8142aa233712b5d42abf382224af799afcc0cdc8002b7",
+        "evaluate/data/topical/banking/config.yml": "caad88e1f091f668e061b88bfdef62bc01df2d6275075b4cbacf85a91522ecbc",
+        "evaluate/data/topical/banking/flows.co": "dba21781f2f3bd9b17854308121e210c39196c641d9eeffb78eee1ad0ccb7acc",
+        "evaluate/data/topical/chitchat/bot.co": "f087efaf414091d26261de0183b0cb7eb9fda1fb7e5402f0aa13dfb24f435dd5",
+        "evaluate/data/topical/chitchat/config.yml": "05badf7749272c6c0d5fdd6e5d0b0589a8ae3b057a164fd8c2aa4943b79695de",
+        "evaluate/data/topical/chitchat/flows.co": "b40f61e58bd01e4a0073a2e16b74e5c567d142cb773eaa3c874a16c6d9ce278f",
+        "evaluate/data/topical/chitchat/intent_canonical_forms.json": "0104d5a58309e4d613ca772006d71364aa3196e21fa0b81f03fa74421ce5b276",
+        "evaluate/data/topical/chitchat/user-other.co": "5bc89119bf51fd44a2fe6b6398623cacdf8e96034d9744360f1df3f9258cc534",
+        "evaluate/data/topical/create_colang_intent_file.py": "b383cf1b341f1d2d2d3545b9b16595fc43d07def45ff39c6f9eb40ab764d0126",
+        "evaluate/data/topical/dataset_tools.py": "2fec6abcd38b95014164086f33347b635681b98e347fad4e92b19db236d5f3f1",
+        "evaluate/evaluate_factcheck.py": "6a661fc90beea199a28309785ec7fa3e7b87f828a8cb56ff1a9a090d921f99cf",
+        "evaluate/evaluate_hallucination.py": "5e221c2a66c82d71168461e55a2f2ce6471b163a71280a0779182f35f6c9479e",
+        "evaluate/evaluate_moderation.py": "6cfc70806af4a2d05746a2303922ddb5aeb60faf270bb0070e3078e5b77621ee",
+        "evaluate/evaluate_topical.py": "53a6e144db809eec9b254c435b699c0abded049db96215eeaaf3409bf337126e",
+        "evaluate/utils.py": "e5bd2ae59a52b921200d25ee5189dd43bc6a6802aac43ee9c7eaaa91844021e3",
+        "exceptions.py": "c165f75839c478e71def9d715d1c6c99232b1099fb50e53e97040ba8bce03bf3",
+        "guardrails/__init__.py": "788e18abd2aaff7efd2d420c162dbd3c37754b300913601e22958109c10b7480",
+        "guardrails/_http.py": "280e0069cb0e30d80d31a6dab62395f24b894245348b7e92e20a5d65015651aa",
+        "guardrails/actions/tool_call_action.py": "42bb23e376ae179ce0dbb2151f524f08352b72a983b53b30798352a3100ff413",
+        "guardrails/actions/tool_result_action.py": "8a3d8e5ed559a352f003d6431ccb35694d9f04dc0c85843013c6f07e52f6079d",
+        "guardrails/async_work_queue.py": "2ca9d42f96561f3caee2003b9310c88dc73eee0831dc3192786487208902135e",
+        "guardrails/base_engine.py": "624e26eb79e99a9d64bb32b5ae80783c3c9f71d55a94a88b786c35f1ccecdbbb",
+        "guardrails/compiled_rail.py": "6cf3a86dc080a39fc684dea3c94dce93efe482f4f3fca56525409f472935fcbc",
+        "guardrails/engine_registry.py": "7ff9817b396a8d0ffe48e8fd450d7eaf18ebf0b3e0d2b1a9f7ab03f9297dcc0f",
+        "guardrails/guardrails.py": "3bb994a19655f6c5996c7231374bb39516f5f96eee7724922f5ed9ea0b21f3ed",
+        "guardrails/guardrails_types.py": "c31f6b762d35ddff6c8bc090d1841c93f33d41f77d2f67d153398b9fd7651c64",
+        "guardrails/iorails.py": "cc70f84cdf3512bfc8df8d4d58ec33367a3c1ac970ccf182a8c375a021918d78",
+        "guardrails/model_engine.py": "1eb906f7dc8a362ab6fec5430922959d042a4116cce5bd028812e236acbdcdc8",
+        "guardrails/rail_guard.py": "bf5ed49cb517e9e79e85bbdcf72fca2b194400aaa4f8edb0541040fd58ea49fb",
+        "guardrails/rails_manager.py": "d82856fc68a55479d7c6d3a1cfbf6953cd982305704d62dce94be5e0ee7d125a",
+        "guardrails/telemetry.py": "ac4c7899fb62bc3cd012f5439d398ae958d8ec640c0c33ef1b31861d2acf0a17",
+        "guardrails/tool_rail_action.py": "ca5036d5b4c8e33b1643bb487180945291bbb3ed03f8cb34a3fb27e5793066fc",
+        "guardrails/tool_schema.py": "654bacb3e082bfbe6c975d3803da70a2a3dd2401c970e3a62dfb54b8bae44493",
+        "http/__init__.py": "118cd67ec84d3a561cbe34b7752b630d35309827d5309460d876c2bb7f0d0b65",
+        "http/_url.py": "48154c08b415c8370528c380b911cd42f9c18c4f61d81da9185c7e2d065c6424",
+        "http/client.py": "4548b7719935cdd6a7efac98bac2cd39339a198e0e7ba15c24db08ae7ae1b1a1",
+        "http/composition.py": "8bac49e095f2eab062565acb62b91abb064c9d1b7c53e677a2bc59ab793e1c86",
+        "http/errors.py": "cbc990e00dfafc1ff937504bf579fa42a405b180cae51a8f295ef528b6ae42be",
+        "http/instrumented.py": "005e45f9779a35e9340c24ba083f2c8474a1abdf1d97961c6a872915aa8a15c9",
+        "http/request.py": "12d0ae17d273e817d2a132ea687f0b85ca91ed5ebe368437f1512ea7436e30d5",
+        "http/retry.py": "bab19bd8bab933440f0c25b5830370910fd7055d8687eda85ade88b5ad9a5d8d",
+        "http/runtime.py": "26a2ef44ab11e64bf912ca73ebc5141db0e95f7ac3b97312c3e9d39942142c53",
+        "http/telemetry.py": "7a7ed0d865b5a2e7f8011d7fd169b2ea34cc9c6889fa992fc106b07fc37ed274",
+        "http/transport.py": "759d9c6809715defe3556860f39aabf2662681d484c61949dbc01a24464dbfe3",
+        "http/types.py": "7191fe1a19a9a7c693e0e4f088780c6d09306af50573137da0142defd59bfb42",
+        "imports.py": "bb583cc9dd3e1a4737e13e7e205053eaea6d5954d6279d705fd170eba43bff8b",
+        "integrations/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "integrations/langchain/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "integrations/langchain/actions/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "integrations/langchain/actions/actions.py": "999ac7e4abf9c542ff209405a79d837438e12907a0c50a1a8d7a4d1c39d09f62",
+        "integrations/langchain/actions/safetools.py": "9d8d6fd92aa5a669a5c30d0cd5126d7267b622a4c15cb95204574ea381982b56",
+        "integrations/langchain/exceptions.py": "edb6201c1e56592171ef08aaa1399df13de61df65712abded6b2e7bd4bbad59e",
+        "integrations/langchain/helpers.py": "71b51a7dd08c70a9cd19f6826b35f6a3387f85a1ec1f0058224a17de39e29be3",
+        "integrations/langchain/langchain_initializer.py": "20b8a62b81b7f76ae939cf7b44937d142edc28d5c62505540115b49dba194d20",
+        "integrations/langchain/llm_adapter.py": "33cd3aa3a03483e6e0a6d7fd8e4bffcec32054a983725ae84d19df89cebeeb97",
+        "integrations/langchain/message_utils.py": "3782353046a3d032feba2a083eb3dc803a88d647f7c8877f468c2cc0365aef4a",
+        "integrations/langchain/middleware.py": "2731831368c9cda498a598bb229e829bf3a403e853d2648ed88e9e8603209d43",
+        "integrations/langchain/providers/__init__.py": "87a5238f05b08ea7e25bd8e1dfbcd795f74953357d8aa3bf05e8987090383cad",
+        "integrations/langchain/providers/huggingface/__init__.py": "dcc784ff50c168e9dfb231764e5390c1f6fb73507513a87ba79836d9721ed547",
+        "integrations/langchain/providers/huggingface/pipeline.py": "ea372e40ebca3bfb6d5d38e8a55e4dbda5c699f3adef652034bb5597dcb3a02f",
+        "integrations/langchain/providers/huggingface/streamers.py": "b2ee7ea9794d51e1ac08f38b9c4b7773e36bad1fbe373eba06800fec3ec2a3a5",
+        "integrations/langchain/providers/providers.py": "e639348a2ff5766c251854e2c9ffab7ec6ec290f48042e09da443fb8eae3ec3c",
+        "integrations/langchain/providers/trtllm/__init__.py": "cd21ac632834f717834ca020ccc23f42c59e3f3a3b5de1844c0453dc1ebd1f07",
+        "integrations/langchain/providers/trtllm/client.py": "83813c732b04e5986790e96d068bb76cb3bbf0a261c7489abc7d8b8fa362272f",
+        "integrations/langchain/providers/trtllm/llm.py": "f6540726a06956d43f43e05c1acfe813ffcfa77f1ecda4ab4b60904714aaddd1",
+        "integrations/langchain/runnable_rails.py": "99ac14121b4451f59cc5cb67d2a0898ef80f14a88bcc4352e023022a10b64fdf",
+        "integrations/langchain/utils.py": "effbe9b789762052d78764d05bc84125f7bed2576c8f454cb5bd2cde8a06e4d9",
+        "kb/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "kb/kb.py": "f0a40f3107064ca127adbac2555bc04ae6b9a7457fe05789f045e76cc32096b0",
+        "kb/utils.py": "68665cda402cbb073d001fadd22c5d49b93a7895e85fdc5004e525c8d0c96e85",
+        "library/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/activefence/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/activefence/actions.py": "b7d0c83ba07fd23fb3b5b0b1746dedfae57fdc9caa363784a27347c3c9ab0404",
+        "library/activefence/flows.co": "e2960460efeab74d406bc25a7a056678b8d14bb6fc7b85f7a3963da98608a8c2",
+        "library/activefence/flows.v1.co": "b4e11cb617c807cb5170e5589a642166e4e4d44e745026d4cbd4190f8a134321",
+        "library/activefence/rail.py": "6dfacc4151ce8011e62a3e0e285acca89b2940682f06aff38f6b5ee56b213c8e",
+        "library/ai_defense/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/ai_defense/actions.py": "a9f1546cef3e59bb93eeb6224f15671debf3e74dc6c0deaa441d0a589fcad2ef",
+        "library/ai_defense/flows.co": "6adbbbce2a6b964ea1615f9350a0207528e9fd22c1d9cde7140111ebd5aceef1",
+        "library/ai_defense/flows.v1.co": "892ae49a3fd7f97ec0c9a2a23ee453327146776793436bcf7dd1cc4e9c7856d5",
+        "library/ai_defense/rail.py": "ef656dec252b5fdddfa177bc190b05b1f02d073702ff055ba296026a69f91e2e",
+        "library/ai_defense/rail_config.py": "3ad86abdaaf2919387ca7787f13cdb1dfa87aaa9f709424d0ed32f736ecf37be",
+        "library/attention/actions.py": "5d80831959e7a5bc84bcfbc0c1bafd224b30acb937afc7dc07b529f665d82736",
+        "library/autoalign/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/autoalign/actions.py": "1e740e90cef45361ebeaa2d86c81d3a1481a2fe72bdf3aa75f6b172b36cbc219",
+        "library/autoalign/flows.co": "f34f739d08177dc44a196e5878db4daf5e116b399e5c006e921f959c19b64947",
+        "library/autoalign/flows.v1.co": "023b0939911166aa2b2cb501718b5a98269dec007d1b07f49331a1b3070d611b",
+        "library/autoalign/rail.py": "5f4a7d2fc9ea61944f6d2a885517c04b23d626f4896ba9dcf6dd552e5e9ae15b",
+        "library/autoalign/rail_config.py": "3d8499b97d9d5bf5eeb6e4def4c14684c128f08c43660a58c771cfac1cde8a3f",
+        "library/clavata/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/clavata/actions.py": "74dc7b62e587722f896b696f0898645928eb2f8894f31c80eeee3530bb4f13a8",
+        "library/clavata/errs.py": "fef792ff605c9750c3b7d2bf29fc2fa25f1bf91db2bc05ab530f2917124901b2",
+        "library/clavata/flows.co": "825690494536368f3450fa305e45da43eebfa6a0a9189234577632e45c3796cb",
+        "library/clavata/flows.v1.co": "f70762a341238e870077a694a967a1310545487ff78d333afacf95751e978d99",
+        "library/clavata/rail.py": "3f8055efb26eb283c9e425ae82ce997334613174a7d93705738b37a01531f9b5",
+        "library/clavata/rail_config.py": "a191ee013011d7c6094ab87b2c49a844a24423e66d87f784619244ee7e24a518",
+        "library/clavata/request.py": "b6c6f3301837563160fcb317882de0b778f082f1ed5c4bb1e3cfbfcc02bbb418",
+        "library/cleanlab/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/cleanlab/actions.py": "22fadcee25fa44c81749f8a369587691d03c70d428fa4018df082ae0fe5b683d",
+        "library/cleanlab/flows.co": "b262ebacc3dfd7d2ce6c4e5803ec14bce6ffd7d7abc2606cf9805c0d73353075",
+        "library/cleanlab/flows.v1.co": "5dc2a367058e0b6b2e6d2fd53ed479629a98be74d743a497c1469fb2f4afa28d",
+        "library/cleanlab/rail.py": "8050598875eed8ae1dfbac31f9464f4a1992d97a52089d4ed934e1d1af64ec9a",
+        "library/content_safety/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/content_safety/actions.py": "65550c0d77b75c24f32ffd7bb01a600c00c9bc497d19f63d6c94fad74fdbeda1",
+        "library/content_safety/flows.co": "2edc705398026150970d1d0afa2dd8d7bf4e520901acd6e841eb73ed42f3ed20",
+        "library/content_safety/flows.v1.co": "57b0a2da728fb242aff42df5ddbfe4896281de77edb1e9d5ff09e408f9c3f1d4",
+        "library/content_safety/rail.py": "4d34812f7e1f399534db40a92a337cd67738d3a693fe590456d44571d7eb1dab",
+        "library/content_safety/rail_config.py": "95931c78124e6cd5e1fc990bdb3e9fe66d86619a04ee6a7dde52152e75981073",
+        "library/context_bloat_detection/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/context_bloat_detection/actions.py": "f8a88c1c57ed41ce2cef111eb5e6f31443e2acce026bb370293860d776264889",
+        "library/context_bloat_detection/flows.co": "96bf3831a532f16b0a0307f914d1f6ad81f5b8d8f055ffe896b4b5d43ea0f15c",
+        "library/context_bloat_detection/flows.v1.co": "a77f41ff40281c7c2096f9a77632c9887ccec5475e06a16ee563b7fc6729d278",
+        "library/context_bloat_detection/rail.py": "33c3429fa7ba4abbef868649a2d5c808bba50cf6cb9c34bc104d79d517f16e96",
+        "library/context_bloat_detection/rail_config.py": "5e49aa6424e571c54c464c4d042619bd5a1ba4489ac607e3cf7c3c65aab88362",
+        "library/crowdstrike_aidr/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/crowdstrike_aidr/actions.py": "c4d04e45c49c3758a750d28c4c444a6c88ac2de2df8283a13dcaff67113c9041",
+        "library/crowdstrike_aidr/flows.co": "4f9c6afeba05a4c986aa682467b44fc36f2028b11c3c67cebfb8a7941124283b",
+        "library/crowdstrike_aidr/flows.v1.co": "3313dd929ad53e80b322af5385609f3fcd58f2815b18937f1121ef3559ea547e",
+        "library/crowdstrike_aidr/rail.py": "f82d95528df5b2b20184148aad4ebb6fa30350936b2857ffd8b09e2f22613dea",
+        "library/crowdstrike_aidr/rail_config.py": "b1ea5ff5e3709daf2ae47d7a6d51f91bd7c5bfaed71057dbe6ca3c92dd9c79eb",
+        "library/f5/__init__.py": "c4dc0cf54a15db963e684ed996a7ceb38a3737390327929f05930ac903f33514",
+        "library/f5/actions.py": "aaf56ff19d33ba7fc48526ec366f57fd65aca8064dc2e182cf02cd61876acb0f",
+        "library/f5/flows.co": "3b1236f540d59b885ac8dd645494954bd7afea351ebf6bd27ab820dfea6b2c72",
+        "library/f5/flows.v1.co": "c50b19c345e5496bfdbd66f4d82b8b0e9163400d71ce64944fd5c7e03e32f1e3",
+        "library/f5/rail.py": "e554bb3ed859b24dcee0d8447f67632e6d655216ace6afb9fc8a06d90d64c42f",
+        "library/f5/rail_config.py": "ae36c0e0ea19bb157fbcf7cec28b6c743a19b0a50ff97cbbafb223c3a9d4818f",
+        "library/factchecking/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/factchecking/align_score/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/factchecking/align_score/actions.py": "e479add18affbc4b7c648ea797ea759b6878ac3b7e0c5ab4730ce36c52a251e3",
+        "library/factchecking/align_score/flows.co": "8cfedc56094355613247789f0a015d841e92a219cfaff50d6f8dcdfe6306414b",
+        "library/factchecking/align_score/flows.v1.co": "fa72d9c786aef6f1b84932d271ee444ed4d22d88cd53d552fe491022c8b037c9",
+        "library/factchecking/align_score/rail.py": "6e807cf5e90fce1b3f590c47c742e02542c1bed733d7a67676feab59a759772d",
+        "library/factchecking/align_score/request.py": "137abf3aa78eac2f3d790a5fa7d1c5cab2c7649c960c638a6e1c0522543c8640",
+        "library/factchecking/align_score/server.py": "96f5a1bcf1f95f51bddb77f7259626fa32f43be8bf72ff5225d38b873c746ff0",
+        "library/factchecking/rail.py": "77ccafc09f4ef5fd881009187c253a1a993572e3c4264c80a185d28245a49d37",
+        "library/factchecking/rail_config.py": "193cb50cb7bbe2da0ba7fb765e48dad43162b6304524038571215a4deb5a2eb5",
+        "library/fiddler/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/fiddler/actions.py": "43a70230b0930feec462286007d521569832bd44b0b4d8cbdc5ea5c06f6fa30f",
+        "library/fiddler/flows.co": "b06dce0f07b240d0a46e9fc0f3ee4ddf19f25cc1f24ab9146a11f79e5f53bc6d",
+        "library/fiddler/flows.v1.co": "e6ea1a9dd7b9f06d1f8a595c7d651394b162046002ce225c5207297cd7200b6e",
+        "library/fiddler/rail.py": "4b395d7ed15f81968e1db08f59d621e24066a162c89c0f6296e005f3646d40a2",
+        "library/fiddler/rail_config.py": "3a2ea884d9b567d9a774fc968a71093fc99866c33f8b411651f5c92e2933da96",
+        "library/gcp_moderate_text/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/gcp_moderate_text/actions.py": "a6db69cb27bd2b6b5720cba2fdd6a846b8bd03ad2937b4543e7ee8508d9d044f",
+        "library/gcp_moderate_text/flows.co": "48bf69ce4b12ff1a37c36c309940dec2265d51bb0119ecac704b6a378543e2b9",
+        "library/gcp_moderate_text/flows.v1.co": "d57b7a985ea3579d9c7b0fd9c62548655d74088833cfd962474202e8844a34b5",
+        "library/gcp_moderate_text/rail.py": "4a37324e7f121947bd5fe610a9ac1e9150d9ee96af258f76ce0a6ed704a66324",
+        "library/gliner/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/gliner/actions.py": "8a2b73f33aa9f5cb1abba895f49e37949df718aa66e5ee3ad785d88716a37940",
+        "library/gliner/flows.co": "8eb6647a64df9e51253de011cbb05ba07a241798894dcf45e168f2e72cd5ed3f",
+        "library/gliner/flows.v1.co": "9db02be876c1f884faa3a67f7ba7408983eb4da04a07baede1e43d79715f4847",
+        "library/gliner/models.py": "8c3e97d5c109c54c46e7628344465442ac16a2eff71dd2ce5bdd3a809977dd77",
+        "library/gliner/rail.py": "cd856013046b2dd23455101d80845ca9aa47ad0bbc6256abd079645c08be33b1",
+        "library/gliner/rail_config.py": "287694a7801ce7d2d0f97eb1cb8964971c964403679c5be4806a2b3deb36c8e4",
+        "library/gliner/request.py": "53dfe92315a218471b9f9bac14533d4b7bc836d256a046efe25e32e0200acaf7",
+        "library/guardrails_ai/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/guardrails_ai/actions.py": "711b5cd0cea025d1a5a21a2c233895986548f7f8a958decfb3c9b3a1779a5077",
+        "library/guardrails_ai/errors.py": "3bfaf39d583c50a58159977920da243f5303d4ab059c9030ab7656bf1a5d9d2f",
+        "library/guardrails_ai/flows.co": "769ad0fac32a646db04065abe6a22008e2689367fabc5c9c9c11e276ce3ec081",
+        "library/guardrails_ai/flows.v1.co": "6325e37d74f74d7238d844c0f2f78b8382ec1edf39003d75fbc112d9fbabc7ba",
+        "library/guardrails_ai/rail.py": "388707a286911660ccf6583012bc290945eb4ae15202963600b04a7ea22861ef",
+        "library/guardrails_ai/rail_config.py": "cfa1f838bb8e9fc1fc2e8098ca73ae950398fab68f09ffd8256ea0f59affb03b",
+        "library/guardrails_ai/registry.py": "45b13b1c0c0c75bfaedee77b66e65aee464aeaabbc1bbdc28f331483e1e7154e",
+        "library/hallucination/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/hallucination/actions.py": "7852f764e1629c4d33c703c6aca216c5deffbf93306dce844d16eb21100f1b1f",
+        "library/hallucination/flows.co": "002eb3f48986c0a4e9976af69fbeb983b7fe27b86d9f1116e1b88d18a2010592",
+        "library/hallucination/flows.v1.co": "d2070a7c7f8df30929946570d4567dd77ceb2c15f3607e7d3e3938bb786cfb5b",
+        "library/hallucination/rail.py": "1344fff914e25d2478c14de9fbde4ab19d0ab37b469d428e292fd25f21ad7483",
+        "library/hf_classifier/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/hf_classifier/actions.py": "1a3eba5c61405515b3d01c81c070ddc8eb62099048aff2f0926bd5b08ceba18e",
+        "library/hf_classifier/backends.py": "f7d12c58dff91a65cdb6377af87a912e05339ab5ec9884c77a3095dd6c44eedf",
+        "library/hf_classifier/flows.co": "ab72946391c79dbfa2a0959d35a6360e8da9dc5aa9767d2b037a29104bd0c087",
+        "library/hf_classifier/flows.v1.co": "c452259aba1294b8a9aad33f41b49c4daf996b88e6827084f2514eb9f295874a",
+        "library/hf_classifier/rail.py": "2a59361a502ef69544bf5804f133d49161cf728437d5fa96ccda139f46e6adce",
+        "library/hf_classifier/rail_config.py": "2f1f922421ffe2731d23bbc39fcc12a46bcff025db02da1b2ed090045b78bbd5",
+        "library/injection_detection/__init__.py": "76073032abe4444df08cb1ec6e39383a61f63fcd0ce612df902e7aef852dc7a8",
+        "library/injection_detection/actions.py": "282c0361607f5094a3179cca8b1e40010618bc0aa41726471a56cc1d84ec6f58",
+        "library/injection_detection/flows.co": "c7ee7a3be4c1732ab3cd1c3fea91de4ee037da69b2ea9efbbbf27e0e37ec6d74",
+        "library/injection_detection/flows.v1.co": "8f69b3ca8baa5889ff8b5a7297a1fc7f0b81d92bd08774d2bc11b820d1ddb5ef",
+        "library/injection_detection/rail.py": "580420513aa36ec88e1ca78bd82c3b5ff0e4655acd0eed2364a954e4d5f2b0f2",
+        "library/injection_detection/rail_config.py": "73d44258e1b0271cdbb1af2e5a583c7e484ef36ddccf54ccb030a8df1e5bb976",
+        "library/injection_detection/yara_config.py": "d9b5258bbd7f345241e80d81ae712bc8ef05a4896631c9f2226a50b064c000ef",
+        "library/jailbreak_detection/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/jailbreak_detection/actions.py": "753e0b84444db2c7d64ec2949e9cb1bcf07722b44cadfa1116430922e168a322",
+        "library/jailbreak_detection/flows.co": "57be1bf0c42123c592124be672b9f97705c5abaa10d11b0d759ab741147ac68b",
+        "library/jailbreak_detection/flows.v1.co": "782dfcc49c09ea8a7f73a6cab76b2abe2510b36e0a9cd766757b5e51f93aee9a",
+        "library/jailbreak_detection/heuristics/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/jailbreak_detection/heuristics/checks.py": "6d27d57fdf47c6d562c7144b0654df34538887df969334fddcd3317d0bda4444",
+        "library/jailbreak_detection/model_based/__init__.py": "4e089db4ff8cb0a52ff0497993247f2875b71e8b985b055ee29274795ab8da5c",
+        "library/jailbreak_detection/model_based/checks.py": "c6a7c62b18f44ace8314058b4eed697f453cb4860ea8684d6b7bb97c41e0f728",
+        "library/jailbreak_detection/model_based/models.py": "d39bc88b34512b3d2eef2d54d04fd0788594b6bbd2fdbbf54f405f01d877efed",
+        "library/jailbreak_detection/rail.py": "63ef3be7ec9c818ccba89028eadc7859cb00657aaf689448d4f8fc223d5c3f49",
+        "library/jailbreak_detection/rail_config.py": "1dd88f1f6f1aff8d66862c6981f98851c857c1563c017a65159e51bae60d8dfa",
+        "library/jailbreak_detection/request.py": "6df94b2776d781240b1de6388fcb1dfbc4fa311093e7578c2adf5495fbdbe826",
+        "library/jailbreak_detection/server.py": "513cf06c91ff03b40af76d5f492aef6175295667261ebb16fc3a9d14bb428bb7",
+        "library/llama_guard/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/llama_guard/actions.py": "307288c85a7f15378f70da7e4272d6afcf628739ceec941560d6c295c1d366c4",
+        "library/llama_guard/flows.co": "18120027aa65add58fa8b8ef1f197e764631daf9df1b2c4623c7252c3a8fa313",
+        "library/llama_guard/flows.v1.co": "f7f4fe378ab483804a5b976d320ea71b9746cc16c3101697e6c43b80da112294",
+        "library/llama_guard/rail.py": "8e0f77f4a9085f95e95c589d3eb950232332ac5333ee894221066c47b0343f1c",
+        "library/pangea/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/pangea/actions.py": "457b26e8212276bad7c15b503a87af626fa8ad1f0d686ff4a7af7458ef5c0dc1",
+        "library/pangea/flows.co": "40f4b76887708a5b8093bdfad1b949654f75a5e0562c10418dcc1b7a64e181f5",
+        "library/pangea/flows.v1.co": "914de7f6b102c51f56121a7d75ee28b230ad440e3229a8ab1af0750ad2cebdfe",
+        "library/pangea/rail.py": "26ee59978b12949f0fdb5313e7d8e2daf9c51dfb6a2907938350a070b660afc3",
+        "library/pangea/rail_config.py": "bc7d51eb663edd326f529040ebf7fb234f7cbee2cfb1ceaee86bb20623f52fb8",
+        "library/patronusai/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/patronusai/actions.py": "8ac9536f517143365ec2111aa0a8f748a5de83a531716dd846da471f42f2d248",
+        "library/patronusai/flows.co": "41b318a6a22b575a77f827923c5ab4b459e6d416e9d8fbdcf0d1c7e3df239e12",
+        "library/patronusai/flows.v1.co": "42b0ad31d6789aa4d3e77a02ceed55d62f7f89936b7a4c629a3a48f1fef5b185",
+        "library/patronusai/rail.py": "968ee1daa630c149133c5fe5b18c5701d1da90358055bd2cdd75cd155e9c30ec",
+        "library/patronusai/rail_config.py": "1904a1c9e4c63d48d45b587a20762c21f1346ffacbce3154196444d473683b2b",
+        "library/policyai/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/policyai/actions.py": "b44e8a22ecbfc9b8d23be6510e5f298bc9733e5412d459bf69d622dc76bda39a",
+        "library/policyai/flows.co": "770dcc88b32dcc6476f5be837bc1021d0d889179d75a5aea4a4f145a3463d0a0",
+        "library/policyai/flows.v1.co": "95b930e358eaacbe0b5774e415db4f70f8e8c9af2ad036c999ced3dfcf868fd6",
+        "library/policyai/rail.py": "75e78e29201716730bfcb663f6325a21527a325ba5341d9cab597385cf791c1d",
+        "library/polygraf/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/polygraf/actions.py": "a6c8f14383c7afa2e0554822e091ad09c4c021594eb4a4c0f35287dd73585466",
+        "library/polygraf/flows.co": "58111a18bdcde12787b52182cb20e2d58d038f9f4a7f78d9cbde850abdce9026",
+        "library/polygraf/flows.v1.co": "fbc00d99ed354a3ba9cf10d1e902aa2b80aa53aed4efeeecba60547b45b0295a",
+        "library/polygraf/rail.py": "32495f5050aa0601e121244c55378b997a276323cb77b03844ed45bac7b47f17",
+        "library/polygraf/rail_config.py": "bb556610135295905dd7ba219a1f2297de88cc89805b59d07e14f786fcfaa469",
+        "library/polygraf/request.py": "adbb74fcbad06c4af152cb9a53c5466d4ea145b76f6b48ae5a5e6be745754579",
+        "library/privateai/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/privateai/actions.py": "95745f2edba6bbb526d32f51decc775c6d987fd1107e8cd09f3630fad8c91d26",
+        "library/privateai/flows.co": "b8b01f9186db5c2a24af87a235432102aa767afd8f2569d5531980c4a11507cb",
+        "library/privateai/flows.v1.co": "358cba095f7e2c8a9d2b7ee3609f99ab8c08c6ea8c7c8b728fcc7f7d4e03d1ca",
+        "library/privateai/rail.py": "73d6d2e9472dcce36e3db2da954bc69b480ed886c46a3448212fa5aac1582472",
+        "library/privateai/rail_config.py": "2038f9dd7d8fbc35ce403f1e3e3f8479144b84967d3fabe3aeff0f1031c90f0d",
+        "library/privateai/request.py": "b19f1c90736368d920b8bab8bee693fd9cfea6bbf651e592d85e14c027992224",
+        "library/prompt_security/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/prompt_security/actions.py": "8418dfc9cd01a4e542c8d56592fbd9ff0a53d120118550201e4d0aa985d5be4e",
+        "library/prompt_security/flows.co": "ab94f2ec5385bf0a6f1a1155a4f2d2917e3722d4ff9b79621cfe3101d7737a65",
+        "library/prompt_security/flows.v1.co": "189386209950eb0d5e17f5f9d7b42e642dc7454be6c8042893eba01651955258",
+        "library/prompt_security/rail.py": "0cd2b8c8ebc11d578a5a2cbf4e4c1e5f50c51103dc85fd3bb00bf620f2a0db54",
+        "library/regex/__init__.py": "c4dc0cf54a15db963e684ed996a7ceb38a3737390327929f05930ac903f33514",
+        "library/regex/actions.py": "1e6ecb1b6ae4b9e6ca11532adf503f041cc36b8b971d6077a65119a6d1eb4162",
+        "library/regex/flows.co": "d64c7aad265f267758b794fe07800308ab4cc600421dd09e038229e8886e4cbb",
+        "library/regex/flows.v1.co": "2b58d8132ed970f4dc45776b6c4edbea67a0bdbb97aca10610433ce3c16b0d2a",
+        "library/regex/rail.py": "340bc37aeae25435b13d5961d8d388057c2f31f8ef7cd13ca659fd2c7fb872d2",
+        "library/regex/rail_config.py": "dc24676ba40b7986b8187b261da60b41004d500e1f52824fd19dbf4f368f0694",
+        "library/self_check/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/self_check/facts/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/self_check/facts/actions.py": "d32b90c46c8d5e2cd6e1624d2c7b10dfcc0ee3156589f4a0a7e4d5b5a006f477",
+        "library/self_check/facts/flows.co": "c87271d28e22bdcd45df39e0a9b4149401985415e304febbcf71b3ea01330098",
+        "library/self_check/facts/flows.v1.co": "6e9f28ac8dc44c59b488c69a780e088e79a38c6d767bc9939225e7ae52685bde",
+        "library/self_check/facts/rail.py": "ac6bf080d3c1efada0990220b25d215283ec20ab3cdbd5d57f7cc038f7c32be5",
+        "library/self_check/input_check/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/self_check/input_check/actions.py": "d49cbcfad5ef942afc4e05490d69f61d3870968186c5ad8cbdbba5d2445a92c9",
+        "library/self_check/input_check/flows.co": "717435eda1c18f223045dc2d83691e9bb5e3443f488cf7a3688cd47783ac071d",
+        "library/self_check/input_check/flows.v1.co": "aa86692be937b3b7b3955b6edf09e45502665246eccfb18a0feed3596ed3741b",
+        "library/self_check/input_check/rail.py": "ec43205dab5937ec4a6a3ed9c7d0944b90a48f8ab50a22788aa18ba25000bda9",
+        "library/self_check/output_check/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/self_check/output_check/actions.py": "358e3c9399ae29aa566b0455829d45facd3979d42a8cfd86a67a19bb944caf89",
+        "library/self_check/output_check/flows.co": "a75ca4709d7793b9d850d87feff2f7c405549420cda45ee4b1c99465ca1428de",
+        "library/self_check/output_check/flows.v1.co": "c946fadfdedb4614c9dbb6bb06beeb0e1e94df01dce2fdd65b981960bd05819e",
+        "library/self_check/output_check/rail.py": "fd50ae4e2a1e80b4ae6a4a7faeaf0058920163d891cd62a04ebfd6701e1a9130",
+        "library/self_check/utils.py": "54c2b148bd88ae112e71f64ceb744ff288d0f7f661c8b0ebfa524b08258e957a",
+        "library/sensitive_data_detection/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/sensitive_data_detection/actions.py": "7645e9640958817fa59fba0e17431cd62332b4cca3d67a731a8515cc57f01371",
+        "library/sensitive_data_detection/flows.co": "444ec34437661ed542f21e3a3986836adad68d06bbf0f24c792529b14bcd5177",
+        "library/sensitive_data_detection/flows.v1.co": "67ff937a66c3724b43bd99c1b83b1d1121ea22b02fd33433704d3146229a58db",
+        "library/sensitive_data_detection/rail.py": "9ecb1f1c5a64573218362ae764c43d77430ba457c374b100475a99f6e9d11367",
+        "library/sensitive_data_detection/rail_config.py": "5b926e3697173ca979bfc48d3179352338f15d47826386d11b78d733c3d9dae8",
+        "library/topic_safety/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/topic_safety/actions.py": "9ac572d1a66cf45e88b37ca970964c4d59a305174a4263b8476620ed488039d6",
+        "library/topic_safety/flows.co": "93fbdae8f8cf1af2ed416c6178bdca23e0b09cff5a613c85a0370b478f3e5633",
+        "library/topic_safety/flows.v1.co": "5745577ee8ec757c8162959b9524cb0d0484ff206312023da320770905aee886",
+        "library/topic_safety/rail.py": "5f4f8c267e536d3c339bb4ad0d191e8ca2291133707ff754e4fb9a1278975661",
+        "library/trend_micro/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "library/trend_micro/actions.py": "53cc37643ec1c7e507b42d45512ddb60bb680ebe22540f4b401db2119fe0414c",
+        "library/trend_micro/flows.co": "f9c39897ecee24498befe9bb907215574458ea48ff7662d27e4f01512d22d40c",
+        "library/trend_micro/flows.v1.co": "35d35c5b1d52616d37ac3f217af30c99eae84087f20726b9ffac5336dd5aa5a1",
+        "library/trend_micro/rail.py": "c2b80fbcc60cb843b4f5cb528196298d623d8af36a32713bfd441a08963e32c7",
+        "library/trend_micro/rail_config.py": "b78d4f610c6cf471ff8bcda809d322b8c4cac850eccca60a61ceaae6be0ea811",
+        "library/utils/actions.py": "14472f016991b90eaa06600210f95ae8b6a24a39ae7704d286bb86722d1d0de8",
+        "llm/__init__.py": "9e69b8ca841c9f0ef073518b312219593de18838fd4933e80e5f7c79ed3f3128",
+        "llm/cache/__init__.py": "ef2aeb481ab75370cd7d42b0983acc76af7cbac23bab668070723701c9e3dab0",
+        "llm/cache/interface.py": "a5d26bc4b66a5257bae69b270d7c690d446a4a98ef970fd14cd37c54548bd6e2",
+        "llm/cache/lfu.py": "c1c73435c1fdf38ceb318b748e3a967ebba29b5c3583c7bebb96db037b1f69d1",
+        "llm/cache/utils.py": "2d8fb33ba0ded4eeb12a45a52f61f1b6d159c0eaf265f7864abb57f18fa53b29",
+        "llm/call.py": "686f61423647c6db437761dbe8925c3165fc236a62eb5fc5c1dd72e1847822c4",
+        "llm/clients/__init__.py": "788d3d23c890d336339fc4c3ff425542fa1e203fbb337beb107cb6fa829b51ef",
+        "llm/clients/_errors.py": "3b401d20c249dcc3caf3b6c4622bcc90070f9ab926186d75eb1d55172edda8a8",
+        "llm/clients/_sse.py": "366f1337122a8122c15c9c7cf46da79999318abb04cbd4b9f1c11eae29703ac7",
+        "llm/clients/base.py": "038f5cd70902db134a9690fc383e579dc321404e6a34ff4eee33433ab1d07abb",
+        "llm/clients/constants.py": "57c11b182b11d6bd3e9c22f79bb1b726a6527f218eff890f817025c54f4c27e6",
+        "llm/clients/openai_compatible.py": "536793043e6c9352c03482ecf088ef0fc13a4a2dc8bd2e8e62dcee63f9be516d",
+        "llm/completion_parsing.py": "8c0321515e828d58c64694b3008d697e9bccbf01e044c4df80f0aed81dab9b67",
+        "llm/constants.py": "9adda4a9ceb1d4eace1e3f177dfb7acfeea1f65c0287b56fc3d32733d7bfead6",
+        "llm/filters.py": "68c39fb1d55a6ef69640954e9ee60f7569ba4d497303830b12c9ac5235708e4b",
+        "llm/frameworks/__init__.py": "d3189317fd6c0fd540a531814349cc6d71e33cf23a32019d6f2502e48aa92472",
+        "llm/frameworks/default.py": "5746069c9ae11a3800914bed6e046c00e816b491a7de4fcaf6da7f9a4f5cd049",
+        "llm/frameworks/registry.py": "0d1b10cf391cb5fd90b79c4bae3a735889022464b41e3ef1818388f26b5ac24c",
+        "llm/helpers.py": "5aeb5841b4dadcf4de58e00366c65577e5febfe0056bb879fd49fa4bba328386",
+        "llm/models/initializer.py": "6fd7ffc6e9aa85641f5512a6584b625a6f1d7d54395cc6edcd52b91c080e2a93",
+        "llm/models/instrumented.py": "d9b8ccd630adbaa64ea0447cdf283b23c4a4c55f804fa659d83d3a8f4fd36cc3",
+        "llm/models/openai_chat.py": "f23da2c9fc628803f9846fbdf95fff0f132367b21ac6609e41b140eef04870c7",
+        "llm/openai_reasoning.py": "8adbae79317d4ceb193378a6d9e53380ac7214b22214cc255a3ee9cd377325f9",
+        "llm/output_parsers.py": "ad35dc453082ad28ce09d6f2b270eb7869c0eafe8c0551cc25695f3812c9a5b6",
+        "llm/prompts.py": "725a7fb7f02cc68d7834042a015ca88b4c146c8370dea5f8dec35d3f82d3f005",
+        "llm/prompts/cohere.yml": "3cc30c72ada9447fdd485c0a0be181a328e582969388ddb75530d881a29b2b5c",
+        "llm/prompts/deepseek.yml": "82f3bedd99617bddfba40521bc60cfb376ee84c38e6e3d1988ea993cfe3fe680",
+        "llm/prompts/dolly.yml": "458c7829a0e23b25d1de918089a8d0a7caf69b0dcef17d962aa51ef80e303e1d",
+        "llm/prompts/general.yml": "749c140d2b3f0243ec2e363669699b2138734f60a03bb1b57f4023d2c47232f8",
+        "llm/prompts/llama3.yml": "6401f9bbc4c7efcb02c2079e0f34f32a69ef1d0db6645261b6cea910f91d5aeb",
+        "llm/prompts/mosaic.yml": "b8929858b91eca6f37d3a6a611c4ad44a804dd44041d6ef8429601b9130fbad3",
+        "llm/prompts/nemotron_reasoning.yml": "85fc135194f9f46947b6eaf991181c0af23731dd2527f5f7aec663c9bad4999f",
+        "llm/prompts/openai-chatgpt.yml": "9e67ea443cba87e0a18d211ec915a85ddd1803d1a5a543f4ab7982e05afede5e",
+        "llm/prompts/openai.yml": "3e1d85029957c0f7e05d80bd0689bc5ee959c2981d6b72c5dd2e4be110047b2a",
+        "llm/prompts/unknown.yml": "f26ad95b084064add71a7fb0da0763c3f12359934a4bf2558c01fa2c4b5a73d1",
+        "llm/providers/__init__.py": "31433c6871966d54fcf277ae7287b2f2ef759630a4773c478f1941cf9b9e02f0",
+        "llm/providers/huggingface/__init__.py": "26b0dca5c948d260e41b4675655a371db4f0e2ee4540a7b992118468d02a3ff0",
+        "llm/providers/trtllm/__init__.py": "18cb826c9e6678f1ff0992f5793d0ddd4a73f786f95a1cf1bd33f31c1783b4bb",
+        "llm/taskmanager.py": "291e02d61b34e243af1bc0dac73dc4b18a54690c245ac0cf7e32b6b13fc70dc5",
+        "llm/telemetry.py": "e175bb419df6a61dc3cd3589c62c1fd5aab285b146f0cec547d31ec5967f0fbc",
+        "llm/types.py": "98282d9214ad3867f0d0ac3d5340766687741662d02463c8f3a08a2073c513d9",
+        "logging/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "logging/explain.py": "b182c0f31336dcb0e7d4f0acd4db6e1b5d31a55090a5ffec606871a8af5ebf2f",
+        "logging/llm_tracker.py": "8eba5e0ace6dfc4eeaaf69d82b82e13bea89954721fd3c843aca4c0348fae665",
+        "logging/processing_log.py": "1649cf077ff01659a82bee4e4b47e02ad199217c0c45fce0aa93c1a903539e38",
+        "logging/simplify_formatter.py": "005602df2c0115b245dbae503ae1711eb935ce23512e55e426c94fc7cbdf4795",
+        "logging/stats.py": "45eb73c7a91e81299592338f0f9e010c559a002e47ab67ec7f74b7148f3bd1f8",
+        "logging/verbose.py": "c57b75d7fc1a611cd36325a1d8f5c348351b06a8957eb769d65248de1e27fe05",
+        "manifests/__init__.py": "ef27849b4041d71fbaf7aa150c0f2aa3ee19f045c610d800f398fe5d5565721b",
+        "manifests/catalog.py": "84217e1995702d95161c9b592d7d033b06b2759ade715d4f618c0b1710d16699",
+        "manifests/config_schema.py": "647831a4e85e2cd272c982bbfb478cdf180aeff41e326cf09995504548539b06",
+        "manifests/manifest.py": "61f966f73fd1b85a97cf2d007c578d2ab5619aab40d1a8d6705890d0bdb67e53",
+        "manifests/registry.py": "fedd88dd31a033f347777206fe9574a26f1dca1c83e0257d9189b22f6dd2786f",
+        "manifests/surface_reference.py": "6ee899d94b19ef3274fa8868fb15dee0b64ba81171c2b69d9313ec948da5d07c",
+        "patch_asyncio.py": "522ce136d7adeae501bb53fe20ec7409d151fd82e5802e5f010039d138041d7e",
+        "rails/__init__.py": "75e0d00ffac6c27f671d9eaeacba7e2d47c22976b73f69325e5f2fd7a58f2bcb",
+        "rails/llm/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "rails/llm/buffer.py": "7887e5d9ed966b2798ef95c6d9fb9c0834df56a2446df680a81779ca577f13a8",
+        "rails/llm/config.py": "2e6f1763dc76c31a82494d0b148ce6a277c7db4290ccb76c43901a513f949c1f",
+        "rails/llm/default_config.yml": "33b91b39ef7a380c49914400a8c69bc6c991521c2de88a568d15d9a21711fbfe",
+        "rails/llm/default_config_v2.yml": "629f59ae8b0c2fe0493fc610122b617f78440aada2e81b0850ca4fecfcf41b6d",
+        "rails/llm/llm_flows.co": "4f17d74e45f12cd925f98bc4a1958610393b30850d5652244933753fe7d1ba2b",
+        "rails/llm/llmrails.py": "b115754d7fbcfb1fcbf13cbb583155709d660838901c0b86633a0e1a1f399fa7",
+        "rails/llm/options.py": "d4f1eff6964ce35a93bcc5fa50b97d206ed8d1558aa70f1411a1ccf09fa25852",
+        "rails/llm/rails_config_fields.py": "b5f787528d0889ce11c48b3126112c636c5bb48020aee4831b1a5ac79c2090c5",
+        "rails/llm/utils.py": "f9e3f615f260e666b025887668da26af784d6d804a63800db16ac55d78217b61",
+        "registry.py": "1fd0eb2516fb4f2a2ed68b0c1dd777d8a071afe87285c52226642f165a0cbfe9",
+        "server/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "server/api.py": "4814ecd6e7cab32442c407285f5f4a22a03eb1686465566b1f9fa10e639cf2e6",
+        "server/app.py": "1f71182f282c54a71b697eb48ecda0f433a145b767c716d3ece47e3c7f5625b1",
+        "server/datastore/__init__.py": "f8e5d740aceb12ede3d2d76e8f073484ab7f7ba3bbbc62b2da73ff8e0d6e0d21",
+        "server/datastore/datastore.py": "c604cca4ba4fcf025d8567f8cb31525d62673e7787b93c3cf73fc09a8842ce56",
+        "server/datastore/memory_store.py": "bae27828c11b17a63941c24b98d45a7a7e9a194f31f3e7d96b1d128dbfb2281e",
+        "server/datastore/redis_store.py": "2d8d43a08ca31e24974f4d65a81fc29ad6b5924c06bdf080698e565f58e57e1e",
+        "server/exception_handlers.py": "58d31fa808b572a25de877fc93a9ce9a85d5944d12f5b59b72a3248cd4236a0e",
+        "server/schemas/openai.py": "cc29487ccd56b78d965222d2baef36039b711024cb2cdfb7c5e1100d2e581dac",
+        "server/schemas/utils.py": "777f43e0dc357da85724dffaa4e0ecfdcc9a436195d5d98de0fdb874e8da65fb",
+        "singleton.py": "251b4e54036b512dc3b052170ed78f7df9a8c79e336fc03cd158c8f26106b955",
+        "streaming.py": "31c18148c79819770e483dd732efb89314280fc3caf71c24edd49a7faa1748ae",
+        "telemetry.py": "b4f4df1d0c3369fa9d89b9594efebda5f1c79d382e4d480080b827de206ead75",
+        "testing/__init__.py": "de5a1b68d7e9d9fb510fe02f7cc50ed513bc90ec8e164e4f11c655c9eb929f07",
+        "testing/chat_harness.py": "18c55063315f8579560c192b50ecdbbc3a5bc8aa9dbad211c351a5a4efe589ca",
+        "testing/fake_model.py": "ad9dda891fa41efca3d44e73dfa22825c32efec7f781cae817993f43f0ed63ce",
+        "testing/fixtures.py": "1f17de0c144c139b133285cb3c6ae532f72244eb383aae472771dd79c27f86ed",
+        "testing/http.py": "bb744c4df109a76641fc3479dfd0d90024bbd73361b48147e46487c07ec8d410",
+        "tracing/__init__.py": "6a4f698a029ab066f4e726d5ce2a65c1d38ced4327fd351e3f65ff5014a5e219",
+        "tracing/adapters/__init__.py": "3bf7fb61129e1521362e993ae705ae7c2f38653c460527667afc8a0bc25fc865",
+        "tracing/adapters/base.py": "eda78d25844bd2eec81064de9058e741a3446b3d0c7fbe6917739ef46e32e052",
+        "tracing/adapters/filesystem.py": "c675a4d96838743c6dab1562bc369f304216b04a103485146bb07b81a199dd3f",
+        "tracing/adapters/opentelemetry.py": "ebfb71de7acecfdf7bcef9092b1f208c5c82eb216b03cdbd6315e8acb9ba53aa",
+        "tracing/adapters/registry.py": "2f86e9a69faad91b5513fc37594efe475fd02377b1f408100a8a510243ad94e6",
+        "tracing/constants.py": "c46550c86d2cd787e9115eb737d0181590d8cafd94a78f0393649536c72d3540",
+        "tracing/interaction_types.py": "9ab230837aff171f6a631b3896dfe0191d7a00708a6fb42837448f9f37b19452",
+        "tracing/span_extractors.py": "1d1b08ba375fba537886d2e9da7497aba800ed4e106b4d9a4b69c586c78b19d7",
+        "tracing/span_format.py": "7b6caac071f868a19bf4938c87aff884f5dc20f95cf518ff6b86432e8cac95f4",
+        "tracing/span_formatting.py": "d992e8bff1beeeba3386c65d2916f364e971935e4115eaa19c6de189bba65176",
+        "tracing/spans.py": "56a72f95693f3541390896fdca3b26eeee3924ee9fd6d67a99041f0e6fcc4b0d",
+        "tracing/tracer.py": "c3c4b1a56935c803c920ec127bd84b0523bee1145ff11fea958cea9055548869",
+        "types.py": "49deadb1fbc2e846742d6bd8ba49397accb1d8c8cbe317a12e2998b19da5a6f9",
+        "utils.py": "0dfc8f23ca10ed39cd2f441619f1afd9c61b41579389f872353db69fc913cf68"
+      }
+    }
+  },
+  "git_commit": "7805fb959d5777b7225497a1f2938f0fca218ed9",
+  "git_status": "",
+  "host_after": {
+    "/proc/cpuinfo": "processor\t: 0\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3700.151\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 0\ncpu cores\t: 16\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 1\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 2600.000\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 1\ncpu cores\t: 16\napicid\t\t: 1\ninitial apicid\t: 1\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 2\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 2600.000\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 2\ncpu cores\t: 16\napicid\t\t: 2\ninitial apicid\t: 2\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 3\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 2600.000\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 3\ncpu cores\t: 16\napicid\t\t: 3\ninitial apicid\t: 3\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 4\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3717.569\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 4\ncpu cores\t: 16\napicid\t\t: 4\ninitial apicid\t: 4\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 5\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3702.134\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 5\ncpu cores\t: 16\napicid\t\t: 5\ninitial apicid\t: 5\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 6\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3699.466\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 6\ncpu cores\t: 16\napicid\t\t: 6\ninitial apicid\t: 6\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 7\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3706.288\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 7\ncpu cores\t: 16\napicid\t\t: 7\ninitial apicid\t: 7\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 8\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 2600.000\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 8\ncpu cores\t: 16\napicid\t\t: 8\ninitial apicid\t: 8\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 9\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3792.361\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 9\ncpu cores\t: 16\napicid\t\t: 9\ninitial apicid\t: 9\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 10\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3652.981\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 10\ncpu cores\t: 16\napicid\t\t: 10\ninitial apicid\t: 10\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 11\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3681.114\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 11\ncpu cores\t: 16\napicid\t\t: 11\ninitial apicid\t: 11\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 12\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3647.574\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 12\ncpu cores\t: 16\napicid\t\t: 12\ninitial apicid\t: 12\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 13\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3697.935\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 13\ncpu cores\t: 16\napicid\t\t: 13\ninitial apicid\t: 13\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 14\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3664.857\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 14\ncpu cores\t: 16\napicid\t\t: 14\ninitial apicid\t: 14\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 15\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 2600.000\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 15\ncpu cores\t: 16\napicid\t\t: 15\ninitial apicid\t: 15\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\n",
+    "/proc/loadavg": "1.31 1.40 1.44 1/3831 2433774\n",
+    "/proc/self/cgroup": "0::/user.slice/user-1001.slice/session-2729.scope\n",
+    "/sys/devices/system/cpu/cpufreq/boost": null,
+    "/sys/fs/cgroup/cpu.max": null,
+    "/sys/fs/cgroup/cpu/cpu.cfs_period_us": null,
+    "/sys/fs/cgroup/cpu/cpu.cfs_quota_us": null
+  },
+  "host_before": {
+    "/proc/cpuinfo": "processor\t: 0\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3697.283\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 0\ncpu cores\t: 16\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 1\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3702.743\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 1\ncpu cores\t: 16\napicid\t\t: 1\ninitial apicid\t: 1\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 2\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3699.763\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 2\ncpu cores\t: 16\napicid\t\t: 2\ninitial apicid\t: 2\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 3\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3697.383\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 3\ncpu cores\t: 16\napicid\t\t: 3\ninitial apicid\t: 3\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 4\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3712.676\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 4\ncpu cores\t: 16\napicid\t\t: 4\ninitial apicid\t: 4\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 5\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3699.134\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 5\ncpu cores\t: 16\napicid\t\t: 5\ninitial apicid\t: 5\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 6\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3690.664\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 6\ncpu cores\t: 16\napicid\t\t: 6\ninitial apicid\t: 6\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 7\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3691.570\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 7\ncpu cores\t: 16\napicid\t\t: 7\ninitial apicid\t: 7\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 8\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3372.616\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 8\ncpu cores\t: 16\napicid\t\t: 8\ninitial apicid\t: 8\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 9\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3348.125\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 9\ncpu cores\t: 16\napicid\t\t: 9\ninitial apicid\t: 9\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 10\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3693.744\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 10\ncpu cores\t: 16\napicid\t\t: 10\ninitial apicid\t: 10\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 11\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3585.895\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 11\ncpu cores\t: 16\napicid\t\t: 11\ninitial apicid\t: 11\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 12\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3432.999\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 12\ncpu cores\t: 16\napicid\t\t: 12\ninitial apicid\t: 12\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 13\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3366.111\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 13\ncpu cores\t: 16\napicid\t\t: 13\ninitial apicid\t: 13\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 14\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3706.283\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 14\ncpu cores\t: 16\napicid\t\t: 14\ninitial apicid\t: 14\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 15\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9R14\nstepping\t: 1\nmicrocode\t: 0xa101154\ncpu MHz\t\t: 3376.564\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 16\ncore id\t\t: 15\ncpu cores\t: 16\napicid\t\t: 15\ninitial apicid\t: 15\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr rdpru wbnoinvd arat avx512vbmi pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid flush_l1d\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret spectre_v2_user tsa\nbogomips\t: 5200.00\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:\n\n",
+    "/proc/loadavg": "0.58 1.18 1.43 2/3828 2410157\n",
+    "/proc/self/cgroup": "0::/user.slice/user-1001.slice/session-2729.scope\n",
+    "/sys/devices/system/cpu/cpufreq/boost": null,
+    "/sys/fs/cgroup/cpu.max": null,
+    "/sys/fs/cgroup/cpu/cpu.cfs_period_us": null,
+    "/sys/fs/cgroup/cpu/cpu.cfs_quota_us": null
+  },
+  "interpreter_sha256": {
+    "/usr/bin/python3.12": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f"
+  },
+  "kernel": "Linux ip-172-31-45-46 7.0.0-1010-aws #10~24.04.1-Ubuntu SMP PREEMPT Mon Jul 27 17:41:33 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "measurement_logging": {
+    "filtered_exact_message": "No main LLM specified in the config and no LLM provided via constructor.",
+    "logger": "nemoguardrails.rails.llm.llmrails",
+    "other_messages": "preserved in per-process stderr"
+  },
+  "output_sha256": {
+    "00-host_policy.json": "c8a95bd719dc5193b4f53d1aa6c330e9261fe87663785264fbf34bd28857c79d",
+    "00-host_policy.response.json": "b8fb6e71f733d1ba1c7cf39a850a149e806968f2c9d77986e75b274fa9a99598",
+    "00-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "00-invariant.json": "d386a9fbd0a369c98e2c2ed5dc50fec40adba96801de20a3d5b4838950cec689",
+    "00-invariant.response.json": "b8fb6e71f733d1ba1c7cf39a850a149e806968f2c9d77986e75b274fa9a99598",
+    "00-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "00-nemo.json": "a1310257a94dccb30a68ecb5cb9e52e7d8a852955019fa15eacd8b10d7077b07",
+    "00-nemo.response.json": "b8fb6e71f733d1ba1c7cf39a850a149e806968f2c9d77986e75b274fa9a99598",
+    "00-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "00-pgso.json": "2951f0df94196897c4a5b39e6d2ad66d9ebca602b38e88e004e5adb925d24cea",
+    "00-pgso.response.json": "169b3443a3cffa87016b0bb0f1de57979757614be8bbb90d5e5876b3039dcb63",
+    "00-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "01-host_policy.json": "134ca3136ec42634970afd598626c1b768e6fc92b9a29759a7dc6466aae269e2",
+    "01-host_policy.response.json": "0c197bde89857acffae599bd7b5987c03c28ad233d72d33cc44150218ee60b0b",
+    "01-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "01-invariant.json": "8b4034408bf256169240f3cb1088735bc70cb8e6731aa669fca56e47d25334a1",
+    "01-invariant.response.json": "0c197bde89857acffae599bd7b5987c03c28ad233d72d33cc44150218ee60b0b",
+    "01-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "01-nemo.json": "fc9e869b02fbf8f9d02d43bc5cf63890accdbdfb5e9c6924b7efb9b8f597d087",
+    "01-nemo.response.json": "0c197bde89857acffae599bd7b5987c03c28ad233d72d33cc44150218ee60b0b",
+    "01-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "01-pgso.json": "25d1c0267a5644d76e22922d503d67c12845f660bbb0ece834f04b928fe33e60",
+    "01-pgso.response.json": "69806aed29269692860df0cf7330e89e0c17a9b9d89d8c3da3cb02777b103858",
+    "01-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "02-host_policy.json": "887a21c5a7d6381ca552342e98068a45ffdedf834f1f4d5a47657ff267063664",
+    "02-host_policy.response.json": "a0d502af78d06db1981b9da8bd5bd3974b7a7c8940e18acbb9b9578ac922468d",
+    "02-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "02-invariant.json": "709647c40645b7ae77c40790a850d5c19bad7b5537dbab83b1893257e2e159c7",
+    "02-invariant.response.json": "a0d502af78d06db1981b9da8bd5bd3974b7a7c8940e18acbb9b9578ac922468d",
+    "02-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "02-nemo.json": "6e50bad8c1a2cdd37914a89fb6ff766d81640cd2c467cbbb1eb3318581107e30",
+    "02-nemo.response.json": "a0d502af78d06db1981b9da8bd5bd3974b7a7c8940e18acbb9b9578ac922468d",
+    "02-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "02-pgso.json": "3749312a267c345f079f62b8421a8de8db0e9e118a76335cece490a70013998e",
+    "02-pgso.response.json": "8bf298d0a3dd17159e44480faacfa4fb2a0096676fb27bd26effdee10676a3b5",
+    "02-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "03-host_policy.json": "840a0809acfeafb0c7f103ac9da27c01260c2dfbea058e29c9040cb29387e32e",
+    "03-host_policy.response.json": "b88f61d072a5721fa7f804926d6f612396753c4c2388c565585760c0792b1e3d",
+    "03-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "03-invariant.json": "d27823a8865a1a856d98eb93ee34485b8e874fecdbba061d312d162eee803a30",
+    "03-invariant.response.json": "b88f61d072a5721fa7f804926d6f612396753c4c2388c565585760c0792b1e3d",
+    "03-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "03-nemo.json": "40334faab0707c19da8338f731991b8fa679f640d389e4f73f41038a704a821e",
+    "03-nemo.response.json": "b88f61d072a5721fa7f804926d6f612396753c4c2388c565585760c0792b1e3d",
+    "03-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "03-pgso.json": "cc2dc5e80325cd146303893eb2c0bea9e1e01b84585157cf0afeba7b5790e9b5",
+    "03-pgso.response.json": "96447ae2c21da91c9427808bfdb9f43d979aac73de31b878585a270eb3f59124",
+    "03-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "04-host_policy.json": "341c5941d77af03316fe8bd5ec731ec0b3ef679b0e395a8f35e48642c153c272",
+    "04-host_policy.response.json": "4f850a09c478023edbba55b3c129d286f5aaec8525442e4f0a16371be828c4de",
+    "04-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "04-invariant.json": "9bfe5e49c1caab6692e95a3cf0b987f1fbf3ed2ef69a2e0a5281c925096452da",
+    "04-invariant.response.json": "4f850a09c478023edbba55b3c129d286f5aaec8525442e4f0a16371be828c4de",
+    "04-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "04-nemo.json": "e4804f69616b659748b9d4f3056d006e13e24a57cbe5363fc6e06e9abc9860b2",
+    "04-nemo.response.json": "4f850a09c478023edbba55b3c129d286f5aaec8525442e4f0a16371be828c4de",
+    "04-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "04-pgso.json": "69a0f13898ef78b44b0509f03ad8b5a7a2d6a486c4649817fdba6d45ab430c0a",
+    "04-pgso.response.json": "22be02ca9d6cc6e8634289dfa840e1a0dae308ebdcf22bdf7c06109a5bdc219f",
+    "04-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "05-host_policy.json": "8412d64f30e62be28c963622877ddac64929c557345c53dcb6242f6c661411b6",
+    "05-host_policy.response.json": "5a4996c649635d88eafb4cb06093cfab7bf79891337eea17e3ce35469c408790",
+    "05-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "05-invariant.json": "14f7deae9de13f7486eb50f9faeff00ceab7f25107affa68309d605e31c5201f",
+    "05-invariant.response.json": "5a4996c649635d88eafb4cb06093cfab7bf79891337eea17e3ce35469c408790",
+    "05-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "05-nemo.json": "6c2bbb9a46138a08601d01b7b9d546829f66fad8cbc29e0281f9e1d649ac2d0f",
+    "05-nemo.response.json": "5a4996c649635d88eafb4cb06093cfab7bf79891337eea17e3ce35469c408790",
+    "05-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "05-pgso.json": "afd5c4627984ad6eda966d038a50e3aae18f6ed52e0735b47ab37310a99b3f86",
+    "05-pgso.response.json": "52776092ccb7c8829417c96484439476b6d91862d960b3bc5cf027bfe3147b39",
+    "05-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "06-host_policy.json": "e07bec81c1ca0d203c07916472841ba22444b4afda31f389a6b496ad64e26498",
+    "06-host_policy.response.json": "76043e1588262f27a490ba6b42fe4997600441b4a93c9384e86dcfbc896f707e",
+    "06-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "06-invariant.json": "ec2545fccb92f25b71a95704a1ef30b1f85caf89f49a48dc6b8996db2f7982d1",
+    "06-invariant.response.json": "76043e1588262f27a490ba6b42fe4997600441b4a93c9384e86dcfbc896f707e",
+    "06-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "06-nemo.json": "abf762babbfb559ba67cd6647dfa21b27801a6d11b6c15c91edc560ce4bba1a2",
+    "06-nemo.response.json": "76043e1588262f27a490ba6b42fe4997600441b4a93c9384e86dcfbc896f707e",
+    "06-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "06-pgso.json": "bfe0a1dcd5ee7fcdd1feaac52af5dbf3456cd739f9b397ab7ab333e3d4bc4582",
+    "06-pgso.response.json": "97fc4e5cad6243fd850beb4ee01d4b0a0174bcf06965e7327f657fcd4a576cc8",
+    "06-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "07-host_policy.json": "a0bd22f174a0699a852034d02925eb2c40848528b5d7d2b0cb08a40e964ff1c2",
+    "07-host_policy.response.json": "70a89b84ce76b1c12e3e3468f6a5912a19c93ef6641459d624ab67e5cc3fcc6f",
+    "07-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "07-invariant.json": "1347ce0f71fa75895ec03788e524aa8059eb20338c4142adf7112dc162e2216e",
+    "07-invariant.response.json": "70a89b84ce76b1c12e3e3468f6a5912a19c93ef6641459d624ab67e5cc3fcc6f",
+    "07-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "07-nemo.json": "7c95d953834505f1c711a3dd518ec335c602088c30727ca07b72d2881dee9b95",
+    "07-nemo.response.json": "70a89b84ce76b1c12e3e3468f6a5912a19c93ef6641459d624ab67e5cc3fcc6f",
+    "07-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "07-pgso.json": "9ddc1fb97f089e3683c467f24aca3ad4f84424d911eee7fde474c5b6a4cba658",
+    "07-pgso.response.json": "8909e5e4b8c2e8f17497f53a7268b8adeccd9af11630928a858546d295ce5e92",
+    "07-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "08-host_policy.json": "52c603589657c8d5efaddf32f146a0b931019d19afea7ffaa2e843558b84551f",
+    "08-host_policy.response.json": "635abbb49cadc659a0759b658199e7c0ee7109380a2fd3fac5e26109f1c44e3e",
+    "08-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "08-invariant.json": "5ae3cf37a798afa1b9db95e1a1890f54113dc140ba6d5293045632bde722eba0",
+    "08-invariant.response.json": "635abbb49cadc659a0759b658199e7c0ee7109380a2fd3fac5e26109f1c44e3e",
+    "08-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "08-nemo.json": "d5e3a9362fac27d497d7ed1fab2addf90867fc0cf4faf190cb905f86c86eff7f",
+    "08-nemo.response.json": "635abbb49cadc659a0759b658199e7c0ee7109380a2fd3fac5e26109f1c44e3e",
+    "08-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "08-pgso.json": "7aa871e4e327ad61dc86154bfeaafa80fa9a071a864d27e7b963165c8ba80e55",
+    "08-pgso.response.json": "cf6582aff8aa4540dc127b15759cd7c70c95b97ed7c2d0aede58fde981573fe8",
+    "08-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "09-host_policy.json": "69219523da3118d0a16c62fc7b4cd02aa5fc815752bff37a7914b73310136431",
+    "09-host_policy.response.json": "70afd1855296fa7ba14bc521fec5237f771addf82ce4f713c912c0b1a7c49c26",
+    "09-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "09-invariant.json": "2b3fa847926f2b7de2bc05175ce67e5c2e3307fd18098737511dd9a13157ac44",
+    "09-invariant.response.json": "70afd1855296fa7ba14bc521fec5237f771addf82ce4f713c912c0b1a7c49c26",
+    "09-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "09-nemo.json": "5db17a117c6e1816c48ee342799602c1ac6b1bb00bf827b6484001121260af61",
+    "09-nemo.response.json": "70afd1855296fa7ba14bc521fec5237f771addf82ce4f713c912c0b1a7c49c26",
+    "09-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "09-pgso.json": "74dd0f73d1a09c002589ea96302476c24a6954bec740b79955608c6fc99474c2",
+    "09-pgso.response.json": "eacce4a398bf4d12aabe54a300cadca2d826cb7d3b796f604e7cbcf8bb65aae6",
+    "09-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "10-host_policy.json": "f1f826b4728d9ba7ddf2f8c090bc9c1a32e3c5b5657578b92dc80732aa509b73",
+    "10-host_policy.response.json": "db48be6df6a62f42012c033fb1341c6f64454a55a95053514a9398d21a7b0949",
+    "10-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "10-invariant.json": "2270c24482689f0304b88d76dc4b58fe12304160cee944b7d64fa9431eac4b6d",
+    "10-invariant.response.json": "db48be6df6a62f42012c033fb1341c6f64454a55a95053514a9398d21a7b0949",
+    "10-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "10-nemo.json": "427cb4851fb34925db61333e9619f97ab8c6c9584eda66678e652ef0843f6702",
+    "10-nemo.response.json": "db48be6df6a62f42012c033fb1341c6f64454a55a95053514a9398d21a7b0949",
+    "10-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "10-pgso.json": "1e8a09059df3b11e5053a1b733c1e100257b32a557d0e38030e2f0766062c361",
+    "10-pgso.response.json": "35e963d0456d564c4e57450c7c4f07db9a59c6b81de28c75e7052cd81167807f",
+    "10-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "11-host_policy.json": "70618fb8c133f131dc29d16d1a0c029418bdd95207ab8ae7543a5a9eda67793b",
+    "11-host_policy.response.json": "46b94c6c07dd1c4facfbc2495f99388a7d6c0bb8523b813d408b471c29f1acc7",
+    "11-host_policy.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "11-invariant.json": "60e8972601e706cd642b73187d34c0164837f99cd8f13f2433767e2f783f6bbd",
+    "11-invariant.response.json": "46b94c6c07dd1c4facfbc2495f99388a7d6c0bb8523b813d408b471c29f1acc7",
+    "11-invariant.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "11-nemo.json": "545a2e2b8d2427697eee1f14323531bb498f4de3f8fd6b7aba55165320bad984",
+    "11-nemo.response.json": "46b94c6c07dd1c4facfbc2495f99388a7d6c0bb8523b813d408b471c29f1acc7",
+    "11-nemo.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "11-pgso.json": "3fb24176f40f953b7efd185ff4f3e818c35745054439f207cde91eb409fee79f",
+    "11-pgso.response.json": "05e1cc359ee52f74d08985b5a2e4ed603743c4a4016e74d50f0f7cd3e42eb53f",
+    "11-pgso.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "contract-cases.json": "51a2e16786f61b46e33e4e5ee8ef15cd2799b7f19187e767dd6e5ce627438346",
+    "results.json": "007480841db5fd06bbde68a0203b70d3cff14fc20c8ad9dcdaad044e2299f237"
+  },
+  "params": {
+    "batches": 100,
+    "cpu": 15,
+    "invariant_python": "/tmp/pgso-invariant-venv/bin/python",
+    "nemo_python": "/tmp/pgso-nemo-venv312/bin/python",
+    "output": "/tmp/pgso-operational-main-7805fb9",
+    "parent_cpu": 0,
+    "runs": 12,
+    "seed": 20260915,
+    "timeout": 90,
+    "warmup": 5
+  },
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)\nbinary: rustc\ncommit-hash: 01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf\ncommit-date: 2026-02-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.93.1\nLLVM version: 21.1.8\n",
+  "schedule": [
+    {
+      "block": 0,
+      "controllers": [
+        "nemo",
+        "host_policy",
+        "invariant",
+        "pgso"
+      ],
+      "scenarios": [
+        11,
+        8,
+        7,
+        19,
+        6,
+        21,
+        15,
+        18,
+        13,
+        17,
+        22,
+        2,
+        1,
+        16,
+        20,
+        5,
+        14,
+        4,
+        9,
+        12,
+        0,
+        10,
+        3
+      ]
+    },
+    {
+      "block": 1,
+      "controllers": [
+        "host_policy",
+        "invariant",
+        "pgso",
+        "nemo"
+      ],
+      "scenarios": [
+        18,
+        20,
+        3,
+        5,
+        19,
+        0,
+        14,
+        15,
+        11,
+        2,
+        7,
+        16,
+        22,
+        12,
+        1,
+        21,
+        4,
+        8,
+        17,
+        10,
+        6,
+        9,
+        13
+      ]
+    },
+    {
+      "block": 2,
+      "controllers": [
+        "invariant",
+        "pgso",
+        "nemo",
+        "host_policy"
+      ],
+      "scenarios": [
+        1,
+        11,
+        14,
+        13,
+        20,
+        9,
+        10,
+        0,
+        12,
+        22,
+        16,
+        18,
+        15,
+        3,
+        8,
+        4,
+        5,
+        7,
+        21,
+        2,
+        19,
+        17,
+        6
+      ]
+    },
+    {
+      "block": 3,
+      "controllers": [
+        "pgso",
+        "nemo",
+        "host_policy",
+        "invariant"
+      ],
+      "scenarios": [
+        14,
+        20,
+        5,
+        8,
+        15,
+        13,
+        16,
+        21,
+        4,
+        12,
+        10,
+        18,
+        9,
+        7,
+        2,
+        1,
+        11,
+        19,
+        22,
+        6,
+        0,
+        17,
+        3
+      ]
+    },
+    {
+      "block": 4,
+      "controllers": [
+        "nemo",
+        "host_policy",
+        "invariant",
+        "pgso"
+      ],
+      "scenarios": [
+        8,
+        11,
+        0,
+        16,
+        14,
+        20,
+        10,
+        18,
+        21,
+        15,
+        6,
+        12,
+        3,
+        2,
+        22,
+        4,
+        13,
+        5,
+        7,
+        1,
+        9,
+        17,
+        19
+      ]
+    },
+    {
+      "block": 5,
+      "controllers": [
+        "host_policy",
+        "invariant",
+        "pgso",
+        "nemo"
+      ],
+      "scenarios": [
+        11,
+        3,
+        14,
+        19,
+        7,
+        4,
+        2,
+        5,
+        21,
+        15,
+        22,
+        10,
+        16,
+        20,
+        13,
+        6,
+        12,
+        0,
+        8,
+        9,
+        1,
+        17,
+        18
+      ]
+    },
+    {
+      "block": 6,
+      "controllers": [
+        "invariant",
+        "pgso",
+        "nemo",
+        "host_policy"
+      ],
+      "scenarios": [
+        16,
+        5,
+        9,
+        18,
+        4,
+        12,
+        11,
+        2,
+        20,
+        17,
+        8,
+        13,
+        15,
+        7,
+        1,
+        14,
+        6,
+        3,
+        19,
+        22,
+        0,
+        10,
+        21
+      ]
+    },
+    {
+      "block": 7,
+      "controllers": [
+        "pgso",
+        "nemo",
+        "host_policy",
+        "invariant"
+      ],
+      "scenarios": [
+        0,
+        16,
+        18,
+        19,
+        9,
+        1,
+        12,
+        22,
+        10,
+        17,
+        11,
+        15,
+        8,
+        3,
+        21,
+        20,
+        4,
+        2,
+        7,
+        6,
+        13,
+        14,
+        5
+      ]
+    },
+    {
+      "block": 8,
+      "controllers": [
+        "nemo",
+        "host_policy",
+        "invariant",
+        "pgso"
+      ],
+      "scenarios": [
+        2,
+        20,
+        3,
+        16,
+        8,
+        5,
+        10,
+        12,
+        22,
+        21,
+        1,
+        6,
+        0,
+        13,
+        9,
+        11,
+        18,
+        15,
+        14,
+        4,
+        7,
+        17,
+        19
+      ]
+    },
+    {
+      "block": 9,
+      "controllers": [
+        "host_policy",
+        "invariant",
+        "pgso",
+        "nemo"
+      ],
+      "scenarios": [
+        9,
+        3,
+        2,
+        11,
+        13,
+        7,
+        19,
+        12,
+        8,
+        20,
+        14,
+        10,
+        1,
+        22,
+        4,
+        17,
+        0,
+        5,
+        15,
+        18,
+        21,
+        6,
+        16
+      ]
+    },
+    {
+      "block": 10,
+      "controllers": [
+        "invariant",
+        "pgso",
+        "nemo",
+        "host_policy"
+      ],
+      "scenarios": [
+        20,
+        0,
+        15,
+        10,
+        7,
+        22,
+        5,
+        4,
+        17,
+        21,
+        11,
+        9,
+        13,
+        1,
+        19,
+        16,
+        14,
+        3,
+        6,
+        8,
+        12,
+        18,
+        2
+      ]
+    },
+    {
+      "block": 11,
+      "controllers": [
+        "pgso",
+        "nemo",
+        "host_policy",
+        "invariant"
+      ],
+      "scenarios": [
+        14,
+        18,
+        4,
+        5,
+        6,
+        11,
+        19,
+        12,
+        2,
+        22,
+        13,
+        9,
+        21,
+        7,
+        0,
+        15,
+        1,
+        17,
+        20,
+        10,
+        8,
+        3,
+        16
+      ]
+    }
+  ],
+  "source_sha256": {
+    "Cargo.lock": "6a8dbf9a5bd05be1869df6701a9fde697f8f0041635f339142e6c1ed24b0de16",
+    "Cargo.toml": "4abec7bd8d8a7854e6d91d13e29846ad5dfede438ebfa2a7ccf3c46274c9d3a9",
+    "crates/pgso-actuator-http/Cargo.toml": "bcdb4f688d947cc7bf363e3398dc70d77569d8ac9cb97d49982e25140b5c992e",
+    "crates/pgso-actuator-http/examples/execution_validation.rs": "af7356fe383a8e5834403bdc36eddc93d08332b169f27b2efaf55aec3dcfa652",
+    "crates/pgso-actuator-http/examples/lifecycle_comparison.rs": "c8cd426d1bae105e174c9f096bb329b97f1d772d5dd62d7c5bf2682e68d0da56",
+    "crates/pgso-actuator-http/examples/server.rs": "3d4e357f8a35172a056e95f025b99f69e97d008a6b945301d2ed5ef56ea7f177",
+    "crates/pgso-actuator-http/src/lib.rs": "849b993560de2d13682dd46853a91bb5fbf8df5ae1de25fb84b0eaa0adf0e5fa",
+    "crates/pgso-actuator-http/src/runtime.rs": "4d6e868fcd88cbdea120e4e8d9a9c480e5617ed4aab3a7f26de01a6bb7e93fa8",
+    "crates/pgso-actuator-http/tests/execution.rs": "65f211940287799202193c15b27b801eb8565d66e4502da3aff7753af67bdc4d",
+    "crates/pgso-actuator-local/Cargo.toml": "2782fece5af827274dc5e18f36d8e03d5d84f541e19f2a311b6dc59f504fcd7f",
+    "crates/pgso-actuator-local/src/lib.rs": "fae1b79fb7c680a3b3d595d08a7e7dffc54dd0192fabe672c68c04b83ad3aae3",
+    "crates/pgso-actuator-mcp/Cargo.toml": "4b0babb5c3a5bc6eeca9bd2af9dee148efdc33f42b4d7229044b59f98de6983d",
+    "crates/pgso-actuator-mcp/src/lib.rs": "3ff848956bb5f51fa42812493d9712b7263568c73a652501af7c3642b55f0053",
+    "crates/pgso-actuator-mcp/tests/e2e_mcp.rs": "9bfad999d676673931993903708d18420007eb24541bef1e5ae5c4fc2c0bd89e",
+    "crates/pgso-actuator-mcp/tests/governance_regressions.rs": "77b45d905bd07d61c393475f44dc7ce153b9f6cc3662a2143742df31c57b7788",
+    "crates/pgso-actuator-mcp/tests/second_signal.rs": "743f7ce120c98d79d4d71160af506079a34c45b19d600b07b280bc27b9bd3039",
+    "crates/pgso-core/Cargo.toml": "d51ebd4d2265e2e6257658e4774d03bdd7e711ef7ffbccd4043c5309ea854c85",
+    "crates/pgso-core/benches/decision_latency.rs": "b5a5223955a4d736586d28b460654d0341be07369a750a1ba541186bbc7b3762",
+    "crates/pgso-core/examples/governance_trace.rs": "6a7d6517267b55419b4916d7fd6b28c1419b27529c204664add78f1b5d8fb321",
+    "crates/pgso-core/examples/latency_percentiles.rs": "9afb0c66073a1898e4560219e94c523a760cd9f00ca97bb40d3c20616cd6d9a8",
+    "crates/pgso-core/examples/validation_trace.rs": "830414c08efb45af6e5d4dc7fa568e9fb3aec2e261f68ff2f20c324c847d081e",
+    "crates/pgso-core/src/action.rs": "d292938a1e9d6b9cf104004e8fbeb0e5897f4002285343d4e62c5c5a5a00df96",
+    "crates/pgso-core/src/audit.rs": "469da1a29bbfc9b096d92fc9da4270c6f0e8ea7a90ecb02acf7b7bd19162af8a",
+    "crates/pgso-core/src/engine.rs": "fca1d2aa558dcd5b0aa390e145f24e0a1eda46f4fb6e60d37001ba787242e93b",
+    "crates/pgso-core/src/error.rs": "16bb502f500d50b7a2a8c5bb4a2f796f55a993e13fad635e825f0a1685b0f930",
+    "crates/pgso-core/src/lib.rs": "d01d8b6db0a83bbd10bf3309dcb83a5a1c41dd9fffdc1e1d19f2c505fc573031",
+    "crates/pgso-core/src/pipeline.rs": "5787dbcdaf1e448497d6f1ae224a8f3f8308991fd56dc64f310c60e90473f03b",
+    "crates/pgso-core/src/rules.rs": "a3a5641a42b637daaac9f23b62f60da0798b9a125138cf2dc5450f4ee6e5535c",
+    "crates/pgso-core/src/state.rs": "6a11c495ca52945da886361fd0e9d15b833d2d4e7b634c91bf729f54bbf7efb0",
+    "crates/pgso-core/src/traits.rs": "1d8e10d449a13f38c8d377c0046c032993c0243df64e4fcf2a4dbc22643e2f49",
+    "crates/pgso-core/src/types.rs": "e642a0f3f42adb46f0513bd73c8e75b67dcd23051b5f499bcbf77002e53798c5",
+    "crates/pgso-core/tests/contract_boundaries.rs": "df46867f43dcfbd5ee84bfb98e22dc623afc29c84e96e6028a0fb221cdbf3984",
+    "crates/pgso-core/tests/e2e.rs": "6ccf26263ef21766809908dcfe20e105dc2c244a7f0cf4ecd19d169103e9c010",
+    "crates/pgso-core/tests/property_tests.rs": "7ad2417508d260973a224b7f56ebe72db64395cac84983abaa927c199fa3fd0f",
+    "crates/pgso-signal-egemaps/Cargo.toml": "9a2ac14fe517c2255369fb0eab443b1d60c6480705e35ca674bc70601ae210c6",
+    "crates/pgso-signal-egemaps/benches/latency.rs": "453f337769034370d937da149a77ff42634ad6792625a034a9e74e3b06c4b567",
+    "crates/pgso-signal-egemaps/examples/extract.rs": "9302ad49cf383861ac15945d0e1d31d9044f1db4bb06b803758039bd12f5a009",
+    "crates/pgso-signal-egemaps/examples/governance.rs": "8cb1e4541c26dc63b8567916c516e46e244d2b17355665691c4dd784c223987e",
+    "crates/pgso-signal-egemaps/src/dsp.rs": "6b99b1b153eaa8e005531e57860c5105c54c159f59e19134bcfa068bd01ba652",
+    "crates/pgso-signal-egemaps/src/features.rs": "a2cd6469da2fff9e147ce08eaef1b40c2485db4f646b30d334338e17d3082435",
+    "crates/pgso-signal-egemaps/src/lib.rs": "1a0043fb2d0df1449bd205808c6804e9ab9cf853f669e5a59d9dd2f0273338bb",
+    "crates/pgso-signal-egemaps/src/windowing.rs": "770dbe68079f62e0f5d7c11fdf7bbfe0c4dec27d77603e51b6ba0c6bfd48a292",
+    "crates/pgso-signal-egemaps/tests/dep_hygiene.rs": "cd6ce87c43e0860cf5177a06de6dc206b0a406c47dd23a4a45613d90cc400e78",
+    "experiments/reproducibility/comparator_adapters.py": "2ee79ec4e48874c04899963e530c7e4e47cf3d8d31eed3c9c1aebaaee9aaa3a4",
+    "experiments/reproducibility/compare_lifecycle.py": "00104f818307bbc75dfff0890a04f988ce327c5055383652a8fe0c9429d6beac",
+    "experiments/reproducibility/governance-scenarios.json": "020e5970404bb810c2ba5ce814c832ace0d8912ab2ad1ad78264c42d98fb9440",
+    "experiments/reproducibility/http_transport_check.py": "49abc5516db219910b977b0572b515defa8d177efe5a20c12feebcabad4741c7",
+    "experiments/reproducibility/measure_operations.py": "a712e1f38dd0173e43616a327571e9f299176b4a3e78366f04adec5abf434676",
+    "experiments/reproducibility/measurement_worker.py": "45e0a7b696871f8917aec629f2ec4d775dd30af91fde145534cc5379c6fb5ec0",
+    "experiments/reproducibility/run.py": "a137e56a2872b12df0509e71ec6f838a853a917cf13487b96d8d5a14e16abb62",
+    "experiments/reproducibility/test_comparison.py": "32018dc29fb6eb4c8391c72cc4805d41de16c9eec4fc7f97504a86803052e309",
+    "experiments/reproducibility/test_measure_operations.py": "f290643dad682296a9c4ea312d76a1800727d101f19d0848542151f5d33d2b0f",
+    "experiments/reproducibility/test_package.py": "a3bc96a6d4de97c430bf543155fa25b13b7f617b13f93ba425d1ac98c8f489e8"
+  }
+}

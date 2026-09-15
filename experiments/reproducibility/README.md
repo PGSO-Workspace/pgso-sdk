@@ -280,7 +280,7 @@ reference. No LLM, acoustic extraction or network service is timed.
 A parent process and the worker are pinned to different allowed CPUs. Thread
 CPU affinities and absence of child processes are checked at warm-window
 boundaries. CPU use is the difference in summed Linux per-thread `schedstat`
-runtimes for an unchanged observed thread population. Coarse `/proc/stat` CPU
+runtimes for an unchanged observed thread population. Coarse `/proc/<pid>/stat` CPU
 ticks are retained as a cross-check. Snapshot checks cannot exclude transient
 threads/children between snapshots. Neither these counters nor affinity remove
 hypervisor scheduling and shared-machine contention.
@@ -311,7 +311,7 @@ identical across arms and worker process groups are terminated on cleanup.
 Failed blocks prevent a successful aggregate report; no outlier is discarded.
 
 The execution example additionally records deterministic diagnostic receipt
-fields and independently expected reasons for its existing 13 cases. Its
+fields and predeclared expected reasons for its existing 13 cases. Its
 `duration_us` field is intentionally omitted from that functional replay so
 repeated outputs remain comparable. The number of distinguishable recorded
 reason categories is an information-availability measurement, not human
@@ -323,3 +323,7 @@ implementation time are not substitutes for those endpoints. The human
 procedure must use counterbalanced tasks, equal assistance, a fixed budget,
 and retain incomplete attempts and failures, as described in the research
 protocol.
+
+The [SDK7805fb9 measurement report](operational-results-7805fb9.md) contains the
+first frozen operational run, full raw results, calibration history, and diagnostic
+information checks. Its conclusions are limited to the configured integration paths.
