@@ -166,6 +166,21 @@ not independent native implementations of paralinguistic state. The host code
 is part of each treatment and must be counted when describing integration cost.
 Catalog hiding alone is never scored as successful dispatch prevention.
 
+The persistent NeMo and Invariant decision factories also accept a validated set
+of governed tool names. Membership is computed in trusted Python and supplied as
+context to fixed DSL programs; tool names are never interpolated into policy
+source. Their default remains the original `quote` policy used by this benchmark.
+Run the focused real-framework checks in the separate pinned environments:
+
+```bash
+/path/to/nemo-environment/bin/python experiments/reproducibility/test_framework_tool_policy.py nemo
+/path/to/invariant-environment/bin/python experiments/reproducibility/test_framework_tool_policy.py invariant
+```
+
+These checks cover policy decisions for the six public telecom pilot tools and
+an unrelated protected handoff. They do not add task-level comparator arms or
+claim native temporal-state support, task outcomes, or framework superiority.
+
 The threshold engineering ablation removes hysteresis and uses a fixed `0.8`
 cutoff, retaining confidence/backward-observation hold and explicit expiry.
 Consequently it is not the fully stateless instantaneous arm proposed for the

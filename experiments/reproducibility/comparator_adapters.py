@@ -7,6 +7,7 @@ vendor-native features. No PGSO output or expected label is accepted.
 """
 import json
 import math
+import re
 import struct
 import sys
 
@@ -22,6 +23,35 @@ MAX_GAP_MS = 1200
 HORIZON = 3
 U64_MAX = 2**64 - 1
 MODES = {"nemo", "invariant", "threshold", "voice_agnostic"}
+DEFAULT_GOVERNED_TOOLS = frozenset({"quote"})
+TOOL_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+
+
+def _configured_tools(tools=None):
+    if tools is None:
+        return DEFAULT_GOVERNED_TOOLS
+    if isinstance(tools, (str, bytes)):
+        raise ValueError("governed tools must be a collection of tool names")
+    try:
+        configured = frozenset(tools)
+    except TypeError as error:
+        raise ValueError("governed tools must be a collection of tool names") from error
+    for tool in configured:
+        _tool_name(tool)
+    return configured
+
+
+def _tool_name(tool):
+    if not isinstance(tool, str) or not TOOL_NAME.fullmatch(tool):
+        raise ValueError("tool name must match [A-Za-z][A-Za-z0-9_]*")
+    return tool
+
+
+def _decision_inputs(tool, governed, configured):
+    _tool_name(tool)
+    if not isinstance(governed, bool):
+        raise ValueError("governed must be a boolean")
+    return int(governed), int(tool in configured)
 
 
 def _unit(value, name):
@@ -66,15 +96,16 @@ def validate(raw, index):
     return raw["id"], events
 
 
-def _nemo_decider():
+def _nemo_decider(governed_tools=None):
     from nemoguardrails import LLMRails, RailsConfig
+    configured = _configured_tools(governed_tools)
     config = RailsConfig.from_content(colang_content='''
 define bot allow tool
   "ALLOW"
 define bot block tool
   "BLOCK"
 define flow enforce lifecycle
-  if $tool == "quote" and $governed == 1
+  if $governed_tool == 1 and $governed == 1
     bot block tool
     stop
   else
@@ -90,8 +121,10 @@ rails:
     rails = LLMRails(config=config)
 
     def decide(tool, governed):
+        governed, governed_tool = _decision_inputs(tool, governed, configured)
         reply = rails.generate(messages=[
-            {"role": "context", "content": {"tool": tool, "governed": int(governed)}},
+            {"role": "context", "content": {"tool": tool, "governed": governed,
+                                             "governed_tool": governed_tool}},
             {"role": "user", "content": tool},
         ])["content"]
         if reply not in {"ALLOW", "BLOCK"}:
@@ -100,19 +133,22 @@ rails:
     return decide
 
 
-def _invariant_decider():
+def _invariant_decider(governed_tools=None):
     from invariant.analyzer import LocalPolicy
+    configured = _configured_tools(governed_tools)
     policy = LocalPolicy.from_string('''
-raise "quote forbidden by host-computed lifecycle" if:
+raise "configured tool forbidden by host-computed lifecycle" if:
   (call: ToolCall)
-  call is tool:quote
   call.function.arguments.governed == 1
+  call.function.arguments.governed_tool == 1
 ''')
 
     def decide(tool, governed):
+        governed, governed_tool = _decision_inputs(tool, governed, configured)
         trace = [{"role": "assistant", "content": "", "tool_calls": [{
             "id": "candidate", "type": "function",
-            "function": {"name": tool, "arguments": {"governed": int(governed)}},
+            "function": {"name": tool, "arguments": {"governed": governed,
+                                                       "governed_tool": governed_tool}},
         }]}]
         return "block" if policy.analyze(trace).errors else "allow"
     return decide
