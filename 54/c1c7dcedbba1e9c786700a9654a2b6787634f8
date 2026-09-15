@@ -1,0 +1,50 @@
+.github/workflows/ci.yml
+  s_81bf62597beb77::t_40f20500cc43f1 37-42
+.gitignore
+  s_81bf62597beb77::t_9236b3036912b3 5
+crates/pgso-actuator-http/examples/execution_validation.rs
+  s_81bf62597beb77::t_0e77e6288423e3 1-2,322
+  s_81bf62597beb77::t_3d875a59abe4eb 3-154,163-166,175-178,187-192,201,210-217,226-228,237-246,255-260,269-276,285,294-299,308,317,323-324
+  s_81bf62597beb77::t_4e28aa9496b272 155-162,167-174,179-186,193-200,202-209,218-225,229-236,247-254,261-268,277-284,286-293,300-307,309-316,318-321
+experiments/reproducibility/README.md
+  s_81bf62597beb77::t_40f20500cc43f1 1-99
+experiments/reproducibility/run.py
+  s_81bf62597beb77::t_9297f9705cc0ea 1-13,15-45,55-135,137-161,164-166,168-177
+  s_81bf62597beb77::t_532ecb9ba031a0 14,46-54,136,162-163,167
+crates/pgso-core/examples/validation_trace.rs
+  s_81bf62597beb77::t_1ac1459f5b376e 1,3-4,6-10,12,14,17-18,25-27,29,33-65,68-74,76-81,93-119,126-127,133-137,142,146-150,156-160,165-189,191-193,200-207,218-225,227-236,239-243,282
+  s_81bf62597beb77::t_0e77e6288423e3 2,75,82-92,120-121,128-132,143-145,244-281
+  s_81bf62597beb77::t_cbcafae4f77172 5,11,13,15-16,28,30-32,66-67,122-125,138-141,151-155,161-164,190,226
+  s_81bf62597beb77::t_b79484a649ee31 19-24,194-199,208-217,237-238
+  s_81bf62597beb77::t_dcabd8647ff750 283-288
+README.md
+  s_81bf62597beb77::t_ad5c155a59190b 4,7-12,14-19,21,23-28,32-40,43-49,51-53,55,57-62,64-65,67-107,109,111,113-115,117-120,124-126,129-132,135-136,138-139,143-157,160,164-181,184-189,191,193-195,197-201,203-204,207-211,213,215-220,222-228,230,234,241
+crates/pgso-actuator-local/README.md
+  s_81bf62597beb77::t_2edf2daf1185da 4,6-7,12-13,15,21-27
+crates/pgso-actuator-mcp/README.md
+  s_81bf62597beb77::t_d5b531a4a8c5e1 7,9-14,19-20
+crates/pgso-core/README.md
+  s_81bf62597beb77::t_c62181d15d0a8c 5,9-10,15-16,18-21,24-25,31,37,39-43,45-49,51,53-57
+crates/pgso-signal-egemaps/README.md
+  s_81bf62597beb77::t_ca665be37300e1 6-9,24-26,28-29,37-42,54
+experiments/reproducibility/governance-scenarios.json
+  s_81bf62597beb77::t_4b5aca8cb87e29 1-374
+experiments/reproducibility/http_transport_check.py
+  s_81bf62597beb77::t_17c70ff9ccb1fa 1-238
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "54c1c7dcedbba1e9c786700a9654a2b6787634f8",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
