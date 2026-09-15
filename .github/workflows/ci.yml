@@ -34,6 +34,12 @@ jobs:
       - name: Test
         run: cargo test --workspace
 
+      - name: Validation trace input contract
+        run: cargo test -p pgso-core --example validation_trace
+
+      - name: Reproducible engineering evaluation
+        run: python3 experiments/reproducibility/run.py --profile dev --output "${{ runner.temp }}/pgso-evaluation"
+
       - name: Doc (deny warnings; enforces #![deny(missing_docs)])
         run: cargo doc --workspace --no-deps
         env:
