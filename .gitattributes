@@ -4,4 +4,4 @@
 *.png binary
 *.onnx binary
 # Evidence hashes refer to exact bytes, including the CSV record terminators.
-experiments/reproducibility/reference-results/** -text
+experiments/reproducibility/reference-results/** -text whitespace=cr-at-eol
