@@ -1,0 +1,237 @@
+README.md
+  s_81bf62597beb77::t_1e1125086d4e97 20-22
+experiments/reproducibility/README.md
+  s_81bf62597beb77::t_d0eae1f4c8830c 283,314,326-329
+experiments/reproducibility/operational-results-7805fb9.md
+  s_81bf62597beb77::t_5f2b9ae4ed7d74 1-130
+experiments/reproducibility/operational-review-7805fb9.md
+  s_81bf62597beb77::t_3731adab2433fb 1-43
+experiments/reproducibility/reference-results/engineering-7805fb9/execution.json
+  s_81bf62597beb77::t_bac8b9effafabd 1-301
+experiments/reproducibility/reference-results/engineering-7805fb9/governance.json
+  s_81bf62597beb77::t_f40a025bab1d22 1-79
+experiments/reproducibility/reference-results/engineering-7805fb9/http.json
+  s_81bf62597beb77::t_39143aef3df0ac 1-222
+experiments/reproducibility/reference-results/engineering-7805fb9/inputs.csv
+  s_81bf62597beb77::t_ef9783b0eaf7cf 1-455
+experiments/reproducibility/reference-results/engineering-7805fb9/manifest.json
+  s_81bf62597beb77::t_3b8a8e241e580c 1-97
+experiments/reproducibility/reference-results/engineering-7805fb9/results.json
+  s_81bf62597beb77::t_c9102128a870ca 1-20
+experiments/reproducibility/reference-results/engineering-7805fb9/trace.csv
+  s_81bf62597beb77::t_af0752adef838b 1-455
+experiments/reproducibility/reference-results/operational-7805fb9/00-host_policy.json
+  s_81bf62597beb77::t_ca2fd196e436fe 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/00-host_policy.response.json
+  s_81bf62597beb77::t_3d728127abc77f 1
+experiments/reproducibility/reference-results/operational-7805fb9/00-invariant.json
+  s_81bf62597beb77::t_cccd1cea0cc027 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/00-invariant.response.json
+  s_81bf62597beb77::t_90bda9dc75741c 1
+experiments/reproducibility/reference-results/operational-7805fb9/00-nemo.json
+  s_81bf62597beb77::t_f0810892ad8c5e 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/00-nemo.response.json
+  s_81bf62597beb77::t_7e06b6c04a76fb 1
+experiments/reproducibility/reference-results/operational-7805fb9/00-pgso.json
+  s_81bf62597beb77::t_a743dad7d1174a 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/00-pgso.response.json
+  s_81bf62597beb77::t_a1268481008b0f 1
+experiments/reproducibility/reference-results/operational-7805fb9/01-host_policy.json
+  s_81bf62597beb77::t_6ec3daa5a4810d 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/01-host_policy.response.json
+  s_81bf62597beb77::t_bbbb09a3d0eca4 1
+experiments/reproducibility/reference-results/operational-7805fb9/01-invariant.json
+  s_81bf62597beb77::t_5c4bdb225de3f0 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/01-invariant.response.json
+  s_81bf62597beb77::t_7edf16bcc694cd 1
+experiments/reproducibility/reference-results/operational-7805fb9/01-nemo.json
+  s_81bf62597beb77::t_bb4dc7d4b087e4 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/01-nemo.response.json
+  s_81bf62597beb77::t_bfc3b9d8318275 1
+experiments/reproducibility/reference-results/operational-7805fb9/01-pgso.json
+  s_81bf62597beb77::t_98b4233603764a 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/01-pgso.response.json
+  s_81bf62597beb77::t_3738bc36871c58 1
+experiments/reproducibility/reference-results/operational-7805fb9/02-host_policy.json
+  s_81bf62597beb77::t_45cda11a205243 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/02-host_policy.response.json
+  s_81bf62597beb77::t_c9309b34acca64 1
+experiments/reproducibility/reference-results/operational-7805fb9/02-invariant.json
+  s_81bf62597beb77::t_9e6479e9b645b0 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/02-invariant.response.json
+  s_81bf62597beb77::t_04bacc650e691c 1
+experiments/reproducibility/reference-results/operational-7805fb9/02-nemo.json
+  s_81bf62597beb77::t_aa6b7f5ddef273 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/02-nemo.response.json
+  s_81bf62597beb77::t_4236ab215477dd 1
+experiments/reproducibility/reference-results/operational-7805fb9/02-pgso.json
+  s_81bf62597beb77::t_1b1603d17f1b67 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/02-pgso.response.json
+  s_81bf62597beb77::t_fe08d68d7173bd 1
+experiments/reproducibility/reference-results/operational-7805fb9/03-host_policy.json
+  s_81bf62597beb77::t_2e5ab2cad79315 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/03-host_policy.response.json
+  s_81bf62597beb77::t_399fb7c8b2376e 1
+experiments/reproducibility/reference-results/operational-7805fb9/03-invariant.json
+  s_81bf62597beb77::t_1e0e7aa71e4ea3 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/03-invariant.response.json
+  s_81bf62597beb77::t_546cf2c19f653a 1
+experiments/reproducibility/reference-results/operational-7805fb9/03-nemo.json
+  s_81bf62597beb77::t_d21e70b28ca836 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/03-nemo.response.json
+  s_81bf62597beb77::t_528640624848fa 1
+experiments/reproducibility/reference-results/operational-7805fb9/03-pgso.json
+  s_81bf62597beb77::t_60d0cd92e518f6 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/03-pgso.response.json
+  s_81bf62597beb77::t_3ca6c6dff1fb8d 1
+experiments/reproducibility/reference-results/operational-7805fb9/04-host_policy.json
+  s_81bf62597beb77::t_06707028813314 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/04-host_policy.response.json
+  s_81bf62597beb77::t_a563e06df1c334 1
+experiments/reproducibility/reference-results/operational-7805fb9/04-invariant.json
+  s_81bf62597beb77::t_ae297b1626fcc5 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/04-invariant.response.json
+  s_81bf62597beb77::t_0a7c99b6928305 1
+experiments/reproducibility/reference-results/operational-7805fb9/04-nemo.json
+  s_81bf62597beb77::t_5a1157552b5ed9 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/04-nemo.response.json
+  s_81bf62597beb77::t_292181ec3d0ebd 1
+experiments/reproducibility/reference-results/operational-7805fb9/04-pgso.json
+  s_81bf62597beb77::t_c7879fc2e8f17a 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/04-pgso.response.json
+  s_81bf62597beb77::t_7eaa8dde814ea3 1
+experiments/reproducibility/reference-results/operational-7805fb9/05-host_policy.json
+  s_81bf62597beb77::t_c53e2618116f9e 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/05-host_policy.response.json
+  s_81bf62597beb77::t_654b83b213b9ef 1
+experiments/reproducibility/reference-results/operational-7805fb9/05-invariant.json
+  s_81bf62597beb77::t_2da5cef21e20a9 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/05-invariant.response.json
+  s_81bf62597beb77::t_4aded3bec8c389 1
+experiments/reproducibility/reference-results/operational-7805fb9/05-nemo.json
+  s_81bf62597beb77::t_66f33605c13de7 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/05-nemo.response.json
+  s_81bf62597beb77::t_73e1546bbdd4ae 1
+experiments/reproducibility/reference-results/operational-7805fb9/05-pgso.json
+  s_81bf62597beb77::t_e7948a598e24ec 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/05-pgso.response.json
+  s_81bf62597beb77::t_83875366aeaaa0 1
+experiments/reproducibility/reference-results/operational-7805fb9/06-host_policy.json
+  s_81bf62597beb77::t_eed212438ab9e7 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/06-host_policy.response.json
+  s_81bf62597beb77::t_2914e8fe8b421e 1
+experiments/reproducibility/reference-results/operational-7805fb9/06-invariant.json
+  s_81bf62597beb77::t_dabc322c70138a 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/06-invariant.response.json
+  s_81bf62597beb77::t_40d160e298c6e4 1
+experiments/reproducibility/reference-results/operational-7805fb9/06-nemo.json
+  s_81bf62597beb77::t_4ec734f87409d1 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/06-nemo.response.json
+  s_81bf62597beb77::t_04cd7566e22869 1
+experiments/reproducibility/reference-results/operational-7805fb9/06-pgso.json
+  s_81bf62597beb77::t_87fcecf52162c5 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/06-pgso.response.json
+  s_81bf62597beb77::t_36ac9e64c42626 1
+experiments/reproducibility/reference-results/operational-7805fb9/07-host_policy.json
+  s_81bf62597beb77::t_7b76c8ae32403d 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/07-host_policy.response.json
+  s_81bf62597beb77::t_1033937297f4e9 1
+experiments/reproducibility/reference-results/operational-7805fb9/07-invariant.json
+  s_81bf62597beb77::t_b1144a9e1a69e7 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/07-invariant.response.json
+  s_81bf62597beb77::t_f0f32d3a6ced4a 1
+experiments/reproducibility/reference-results/operational-7805fb9/07-nemo.json
+  s_81bf62597beb77::t_18b4b01d610d5d 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/07-nemo.response.json
+  s_81bf62597beb77::t_e871db12e00fb9 1
+experiments/reproducibility/reference-results/operational-7805fb9/07-pgso.json
+  s_81bf62597beb77::t_70310a8beb7a5f 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/07-pgso.response.json
+  s_81bf62597beb77::t_46a36683bf3aaa 1
+experiments/reproducibility/reference-results/operational-7805fb9/08-host_policy.json
+  s_81bf62597beb77::t_c0b3b68c9b12e1 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/08-host_policy.response.json
+  s_81bf62597beb77::t_3ed004df79d6b9 1
+experiments/reproducibility/reference-results/operational-7805fb9/08-invariant.json
+  s_81bf62597beb77::t_5a172c8e8cd383 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/08-invariant.response.json
+  s_81bf62597beb77::t_2d80d3ab5d78bf 1
+experiments/reproducibility/reference-results/operational-7805fb9/08-nemo.json
+  s_81bf62597beb77::t_f25a79e1f1953d 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/08-nemo.response.json
+  s_81bf62597beb77::t_999f085f0a5143 1
+experiments/reproducibility/reference-results/operational-7805fb9/08-pgso.json
+  s_81bf62597beb77::t_69dad8d8e169ab 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/08-pgso.response.json
+  s_81bf62597beb77::t_6516c7752f08c9 1
+experiments/reproducibility/reference-results/operational-7805fb9/09-host_policy.json
+  s_81bf62597beb77::t_7ce49383b62111 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/09-host_policy.response.json
+  s_81bf62597beb77::t_0df6965d1fdfcf 1
+experiments/reproducibility/reference-results/operational-7805fb9/09-invariant.json
+  s_81bf62597beb77::t_7d9044bd40ba37 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/09-invariant.response.json
+  s_81bf62597beb77::t_e8191d42612ecb 1
+experiments/reproducibility/reference-results/operational-7805fb9/09-nemo.json
+  s_81bf62597beb77::t_33202608487ea6 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/09-nemo.response.json
+  s_81bf62597beb77::t_b28355b85361e2 1
+experiments/reproducibility/reference-results/operational-7805fb9/09-pgso.json
+  s_81bf62597beb77::t_4ccace0f63708d 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/09-pgso.response.json
+  s_81bf62597beb77::t_ad7c91f8765860 1
+experiments/reproducibility/reference-results/operational-7805fb9/10-host_policy.json
+  s_81bf62597beb77::t_913b45c97396a3 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/10-host_policy.response.json
+  s_81bf62597beb77::t_f98cb4a4e2cf8f 1
+experiments/reproducibility/reference-results/operational-7805fb9/10-invariant.json
+  s_81bf62597beb77::t_2895e594be6715 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/10-invariant.response.json
+  s_81bf62597beb77::t_e3abf345ff3075 1
+experiments/reproducibility/reference-results/operational-7805fb9/10-nemo.json
+  s_81bf62597beb77::t_999dbb6da8ed01 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/10-nemo.response.json
+  s_81bf62597beb77::t_bd13347d0e84e9 1
+experiments/reproducibility/reference-results/operational-7805fb9/10-pgso.json
+  s_81bf62597beb77::t_d4da30118dff32 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/10-pgso.response.json
+  s_81bf62597beb77::t_3889b97016e788 1
+experiments/reproducibility/reference-results/operational-7805fb9/11-host_policy.json
+  s_81bf62597beb77::t_f9686cbe0a3eff 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/11-host_policy.response.json
+  s_81bf62597beb77::t_f38d3985c5235c 1
+experiments/reproducibility/reference-results/operational-7805fb9/11-invariant.json
+  s_81bf62597beb77::t_70e6371ae52d55 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/11-invariant.response.json
+  s_81bf62597beb77::t_6345a76e5f4de3 1
+experiments/reproducibility/reference-results/operational-7805fb9/11-nemo.json
+  s_81bf62597beb77::t_8124a2af0c0661 1-178
+experiments/reproducibility/reference-results/operational-7805fb9/11-nemo.response.json
+  s_81bf62597beb77::t_1e2a6ea3e50397 1
+experiments/reproducibility/reference-results/operational-7805fb9/11-pgso.json
+  s_81bf62597beb77::t_fd87e35b31ec5f 1-176
+experiments/reproducibility/reference-results/operational-7805fb9/11-pgso.response.json
+  s_81bf62597beb77::t_c533ddc6c9da4d 1
+experiments/reproducibility/reference-results/operational-7805fb9/contract-cases.json
+  s_81bf62597beb77::t_8ce46b30d2fbb3 1-1500
+experiments/reproducibility/reference-results/operational-7805fb9/manifest.json
+  s_81bf62597beb77::t_31d0a142b4171e 1-1763
+experiments/reproducibility/reference-results/operational-7805fb9/results.json
+  s_81bf62597beb77::t_7037c65b6f70ac 1-97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "74903ca9b0e8735c63f7193a7e68ca777418bc0f",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
