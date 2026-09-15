@@ -17,14 +17,18 @@ class PackageIntegrity(unittest.TestCase):
             named_cases(cases, EXECUTION_CASES)
 
     def test_committed_reference_bytes_match_manifest(self):
-        reference = Path(__file__).parent / "reference-results/54c1c7d"
-        manifest = json.loads((reference / "manifest.json").read_text())
-        self.assertEqual(manifest["git_status"], "")
-        self.assertEqual(json.loads((reference / "results.json").read_text())["status"], "passed")
-        outputs = manifest["output_sha256"]
-        self.assertEqual(set(outputs), {p.name for p in reference.iterdir()} - {"manifest.json"})
-        for name, expected in outputs.items():
-            self.assertEqual(hashlib.sha256((reference / name).read_bytes()).hexdigest(), expected, name)
+        references = sorted((Path(__file__).parent / "reference-results").glob("*/manifest.json"))
+        self.assertGreaterEqual(len(references), 2)
+        for manifest_path in references:
+            reference = manifest_path.parent
+            manifest = json.loads((reference / "manifest.json").read_text())
+            self.assertEqual(manifest["git_status"], "")
+            self.assertEqual(json.loads((reference / "results.json").read_text())["status"], "passed")
+            outputs = manifest["output_sha256"]
+            self.assertEqual(set(outputs), {p.name for p in reference.iterdir()} - {"manifest.json"})
+            for name, expected in outputs.items():
+                self.assertEqual(hashlib.sha256((reference / name).read_bytes()).hexdigest(), expected, name)
+
 
 
 if __name__ == "__main__":

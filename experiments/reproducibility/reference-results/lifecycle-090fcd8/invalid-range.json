@@ -1,0 +1,13 @@
+[
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 0,
+        "value": 1.00000000001
+      }
+    ],
+    "id": "bad"
+  }
+]

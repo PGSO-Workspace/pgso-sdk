@@ -202,3 +202,25 @@ instructions, blinding, data schema, and preregistration gates. Its broader
 conversational experiment still requires authorized natural speech, fixed-model
 access, and human raters. Passing this engineering comparison does not supply
 those observations or approve the confirmatory protocol.
+
+### Recorded lifecycle comparison
+
+The clean release execution at `090fcd8` is preserved in
+[reference-results/lifecycle-090fcd8](reference-results/lifecycle-090fcd8/results.json),
+including the complete manifest, raw calls, receipts, differences, and stderr.
+Each arm processed the same 23 scenarios and 96 calls, repeated in a fresh
+process with reversed episode order, and rejected seven malformed payloads.
+
+| Configured arm | Callbacks executed | Calls blocked | Missed authored blocks | Additional authored blocks |
+|---|---:|---:|---:|---:|
+| PGSO | 68 | 28 | 0 | 0 |
+| NeMo + host lifecycle | 68 | 28 | 0 | 0 |
+| Invariant + host lifecycle | 68 | 28 | 0 | 0 |
+| Threshold engineering ablation | 61 | 35 | 2 | 9 |
+| Voice-agnostic control | 96 | 0 | 28 | 0 |
+
+PGSO and the matched integrations agree within this finite contract. This result
+provides no evidence of PGSO superiority over either integration. The ablation
+counts show disagreement with authored temporal rules, not measured harms or
+inferior human experience. Natural-speech and human-preference evidence remains
+uncollected by this package.

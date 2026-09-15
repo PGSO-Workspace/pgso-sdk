@@ -1,0 +1,1 @@
+INVALID_INPUT: input must be a non-empty JSON array

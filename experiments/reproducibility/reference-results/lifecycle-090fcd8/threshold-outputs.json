@@ -1,0 +1,1156 @@
+[
+  {
+    "callback_count": 2,
+    "id": "nominal",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "quote"
+        },
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 400,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 0,
+      "governed": false,
+      "last_accepted_ms": 400,
+      "last_contribution_ms": null
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "cold_low_confidence",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "quote"
+        },
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 400,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 0,
+      "governed": false,
+      "last_accepted_ms": null,
+      "last_contribution_ms": null
+    }
+  },
+  {
+    "callback_count": 6,
+    "id": "sustained_and_recovery",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 400,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 800,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 3,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1600,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 4,
+          "tool": "human"
+        },
+        "timestamp_ms": 1600,
+        "tool": "human"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 5,
+          "tool": "quote"
+        },
+        "timestamp_ms": 2000,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 6,
+          "tool": "human"
+        },
+        "timestamp_ms": 2000,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 0,
+      "governed": false,
+      "last_accepted_ms": 2000,
+      "last_contribution_ms": 1600
+    }
+  },
+  {
+    "callback_count": 3,
+    "id": "isolated_spike",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 400,
+        "tool": "human"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "quote"
+        },
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 3,
+          "tool": "human"
+        },
+        "timestamp_ms": 800,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 0,
+      "governed": false,
+      "last_accepted_ms": 800,
+      "last_contribution_ms": 400
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "low_confidence_holds_active",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1600,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 1600,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": 1200
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "low_confidence_preserves_pending",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 800,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": 1200
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "backward_holds_active",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1300,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 1300,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": 1200
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "backward_preserves_pending",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 800,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": 1200
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "silence_holds_active",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 5000,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 5000,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": 1200
+    }
+  },
+  {
+    "callback_count": 4,
+    "id": "gap_resets_pending",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 800,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 2001,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 2001,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 2401,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 3,
+          "tool": "human"
+        },
+        "timestamp_ms": 2401,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 2801,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 4,
+          "tool": "human"
+        },
+        "timestamp_ms": 2801,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 2801,
+      "last_contribution_ms": 2801
+    }
+  },
+  {
+    "callback_count": 4,
+    "id": "gap_preserves_active",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 2401,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 2401,
+        "tool": "human"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 3,
+          "tool": "quote"
+        },
+        "timestamp_ms": 2801,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 4,
+          "tool": "human"
+        },
+        "timestamp_ms": 2801,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 0,
+      "governed": false,
+      "last_accepted_ms": 2801,
+      "last_contribution_ms": 2401
+    }
+  },
+  {
+    "callback_count": 1,
+    "id": "gap_boundary_inclusive",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 2800,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 2800,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 2800,
+      "last_contribution_ms": 2800
+    }
+  },
+  {
+    "callback_count": 4,
+    "id": "expire_strict_boundary",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1201,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 1201,
+        "tool": "human"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 3,
+          "tool": "quote"
+        },
+        "timestamp_ms": 1202,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 4,
+          "tool": "human"
+        },
+        "timestamp_ms": 1202,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": false,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": 1200
+    }
+  },
+  {
+    "callback_count": 4,
+    "id": "expiry_retains_engine_counter",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "quote"
+        },
+        "timestamp_ms": 1202,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 3,
+          "tool": "human"
+        },
+        "timestamp_ms": 1202,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1600,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 4,
+          "tool": "human"
+        },
+        "timestamp_ms": 1600,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 1600,
+      "last_contribution_ms": 1600
+    }
+  },
+  {
+    "callback_count": 3,
+    "id": "expiry_uses_contribution_age",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 2401,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 2401,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 2402,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 3,
+          "tool": "human"
+        },
+        "timestamp_ms": 2402,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 2401,
+      "last_contribution_ms": 2401
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "falling_does_not_trigger_rising_rule",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "quote"
+        },
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 0,
+      "governed": false,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": null
+    }
+  },
+  {
+    "callback_count": 7,
+    "id": "opposite_direction_pending_hold",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "quote"
+        },
+        "timestamp_ms": 1600,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 3,
+          "tool": "human"
+        },
+        "timestamp_ms": 1600,
+        "tool": "human"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 4,
+          "tool": "quote"
+        },
+        "timestamp_ms": 2000,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 5,
+          "tool": "human"
+        },
+        "timestamp_ms": 2000,
+        "tool": "human"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 6,
+          "tool": "quote"
+        },
+        "timestamp_ms": 2400,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 7,
+          "tool": "human"
+        },
+        "timestamp_ms": 2400,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 0,
+      "governed": false,
+      "last_accepted_ms": 2400,
+      "last_contribution_ms": 1200
+    }
+  },
+  {
+    "callback_count": 1,
+    "id": "confidence_boundary",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": 1200
+    }
+  },
+  {
+    "callback_count": 1,
+    "id": "value_boundary",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": 1200
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "below_value_boundary",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "quote"
+        },
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 0,
+      "governed": false,
+      "last_accepted_ms": 1200,
+      "last_contribution_ms": null
+    }
+  },
+  {
+    "callback_count": 1,
+    "id": "equal_timestamps_count_as_readings",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 400,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 400,
+      "last_contribution_ms": 400
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "expiry_without_policy",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "quote"
+        },
+        "timestamp_ms": 5000,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 5000,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 0,
+      "governed": false,
+      "last_accepted_ms": null,
+      "last_contribution_ms": null
+    }
+  },
+  {
+    "callback_count": 2,
+    "id": "sustained_long",
+    "integration": "engineering ablation",
+    "outputs": [
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 1,
+          "tool": "human"
+        },
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "action": "block",
+        "callback_delta": 0,
+        "receipt": null,
+        "timestamp_ms": 20400,
+        "tool": "quote"
+      },
+      {
+        "action": "allow",
+        "callback_delta": 1,
+        "receipt": {
+          "ordinal": 2,
+          "tool": "human"
+        },
+        "timestamp_ms": 20400,
+        "tool": "human"
+      }
+    ],
+    "state": {
+      "counter": 1,
+      "governed": true,
+      "last_accepted_ms": 20000,
+      "last_contribution_ms": 20000
+    }
+  }
+]

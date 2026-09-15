@@ -1,0 +1,56 @@
+{
+  "controllers": {
+    "invariant": {
+      "blocked": 28,
+      "callbacks": 68,
+      "calls": 96,
+      "episodes": 23,
+      "fresh_process_replays": 2,
+      "missed_blocks": 0,
+      "rejected_invalid_inputs": 7,
+      "unnecessary_blocks": 0
+    },
+    "nemo": {
+      "blocked": 28,
+      "callbacks": 68,
+      "calls": 96,
+      "episodes": 23,
+      "fresh_process_replays": 2,
+      "missed_blocks": 0,
+      "rejected_invalid_inputs": 7,
+      "unnecessary_blocks": 0
+    },
+    "pgso": {
+      "blocked": 28,
+      "callbacks": 68,
+      "calls": 96,
+      "episodes": 23,
+      "fresh_process_replays": 2,
+      "missed_blocks": 0,
+      "rejected_invalid_inputs": 7,
+      "unnecessary_blocks": 0
+    },
+    "threshold": {
+      "blocked": 35,
+      "callbacks": 61,
+      "calls": 96,
+      "episodes": 23,
+      "fresh_process_replays": 2,
+      "missed_blocks": 2,
+      "rejected_invalid_inputs": 7,
+      "unnecessary_blocks": 9
+    },
+    "voice_agnostic": {
+      "blocked": 0,
+      "callbacks": 96,
+      "calls": 96,
+      "episodes": 23,
+      "fresh_process_replays": 2,
+      "missed_blocks": 28,
+      "rejected_invalid_inputs": 7,
+      "unnecessary_blocks": 0
+    }
+  },
+  "scope": "Authored fixed-baseline lifecycle and real in-memory dispatch; no conversational utility or native-platform superiority inference",
+  "status": "passed"
+}

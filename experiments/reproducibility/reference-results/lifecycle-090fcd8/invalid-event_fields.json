@@ -1,0 +1,11 @@
+[
+  {
+    "events": [
+      {
+        "expected": "allow",
+        "kind": "silence"
+      }
+    ],
+    "id": "bad"
+  }
+]
