@@ -1,0 +1,33 @@
+experiments/reproducibility/README.md
+  s_81bf62597beb77::t_c618cfba622123 92-102
+experiments/reproducibility/reference-results/54c1c7d/execution.json
+  s_81bf62597beb77::t_f82392eac30c68 1-171
+experiments/reproducibility/reference-results/54c1c7d/governance.json
+  s_81bf62597beb77::t_15bc32f05a7c9f 1-79
+experiments/reproducibility/reference-results/54c1c7d/http.json
+  s_81bf62597beb77::t_15193b28f50048 1-222
+experiments/reproducibility/reference-results/54c1c7d/inputs.csv
+  s_81bf62597beb77::t_354e121d7fff72 1-455
+experiments/reproducibility/reference-results/54c1c7d/manifest.json
+  s_81bf62597beb77::t_fe0b7687df255a 1-89
+experiments/reproducibility/reference-results/54c1c7d/results.json
+  s_81bf62597beb77::t_46742faea0d5e9 1-20
+experiments/reproducibility/reference-results/54c1c7d/trace.csv
+  s_81bf62597beb77::t_6d840052475517 1-455
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8c6a75fe1591f2a2c55773cb77d041bc4194649c",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
