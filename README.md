@@ -101,7 +101,9 @@ authentication, clock, session, and confirmation requirements.
 
 Context directives are maintained separately from the base prompt and removed
 when their contributions retire. Policy changes carry audit records, including
-the requested action before protected-tool enforcement. Audit logs and execution
+the requested action before protected-tool enforcement. Execution receipts include
+bounded reason codes and the committed policy-history prefix length for
+diagnosis. Audit logs and execution
 receipts are in memory; the host must persist them. Failed policy commits are
 returned as errors and require separate host logging. Restoring a catalog does
 not reverse an already executed tool's effects.

@@ -46,6 +46,65 @@ struct Approval {
     expires_at: u64,
 }
 
+#[derive(Debug, Clone, Copy)]
+enum AuthorizationError {
+    WrongSession,
+    PermissionDenied,
+    ToolUnavailable,
+    UnknownTool,
+    InvalidArguments,
+}
+
+impl AuthorizationError {
+    fn message(self) -> &'static str {
+        match self {
+            Self::WrongSession => "wrong session",
+            Self::PermissionDenied => "permission denied",
+            Self::ToolUnavailable => "tool currently unavailable",
+            Self::UnknownTool => "unknown tool",
+            Self::InvalidArguments => "invalid arguments",
+        }
+    }
+
+    fn reason(self) -> ExecutionReason {
+        match self {
+            Self::WrongSession => ExecutionReason::WrongSession,
+            Self::PermissionDenied => ExecutionReason::PermissionDenied,
+            Self::ToolUnavailable => ExecutionReason::ToolUnavailable,
+            Self::UnknownTool => ExecutionReason::InternalUnknown,
+            Self::InvalidArguments => ExecutionReason::InvalidArguments,
+        }
+    }
+}
+
+/// Bounded diagnostic reason for an execution receipt.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ExecutionReason {
+    /// Callback completed successfully.
+    Completed,
+    /// Trusted host time moved backwards.
+    ClockRollback,
+    /// Request did not match the authenticated session.
+    WrongSession,
+    /// Host permissions excluded the tool.
+    PermissionDenied,
+    /// Current policy excluded the tool.
+    ToolUnavailable,
+    /// Arguments did not match the registered schema.
+    InvalidArguments,
+    /// A required confirmation was absent, revoked, or otherwise unavailable.
+    ConfirmationMissing,
+    /// Presented confirmation did not match the request or had expired.
+    InvalidOrExpiredConfirmation,
+    /// Callback returned an error.
+    CallbackFailed,
+    /// Callback panicked.
+    CallbackPanicked,
+    /// An unexpected internal dispatch inconsistency occurred.
+    InternalUnknown,
+}
+
 /// Execution receipt. No bearer or confirmation secrets are logged.
 #[derive(Debug, Clone, Serialize)]
 pub struct ExecutionRecord {
@@ -57,8 +116,12 @@ pub struct ExecutionRecord {
     pub timestamp_ms: u64,
     /// Policy revision checked at dispatch.
     pub revision: u64,
+    /// Number of committed policy transitions visible at dispatch.
+    pub policy_transition_count: usize,
     /// Completed, denied, or failed.
     pub outcome: String,
+    /// Bounded reason that excludes arguments, tokens, and callback errors.
+    pub reason: ExecutionReason,
     /// Timing of authorization plus execution, in microseconds.
     pub duration_us: u128,
 }
@@ -220,19 +283,26 @@ impl<S: Signal> Runtime<S> {
         Ok(())
     }
 
-    fn check(&self, request: &CallRequest) -> Result<bool, String> {
+    fn check_session(&self, request: &CallRequest) -> Result<(), AuthorizationError> {
         if request.session != self.session {
-            return Err("wrong session".into());
+            return Err(AuthorizationError::WrongSession);
         }
+        Ok(())
+    }
+
+    fn check(&self, request: &CallRequest) -> Result<bool, AuthorizationError> {
+        self.check_session(request)?;
         let id = ToolId::from(request.tool.clone());
         if !self.allowed.contains(&id) {
-            return Err("permission denied".into());
+            return Err(AuthorizationError::PermissionDenied);
         }
         let catalog = self.pipeline.current_catalog();
-        let tool = catalog.find(&id).ok_or("tool currently unavailable")?;
-        let registered = self.tools.get(&id).ok_or("unknown tool")?;
+        let tool = catalog
+            .find(&id)
+            .ok_or(AuthorizationError::ToolUnavailable)?;
+        let registered = self.tools.get(&id).ok_or(AuthorizationError::UnknownTool)?;
         if !registered.validator.is_valid(&request.arguments) {
-            return Err("invalid arguments".into());
+            return Err(AuthorizationError::InvalidArguments);
         }
         Ok(tool.requires_step_up)
     }
@@ -252,7 +322,7 @@ impl<S: Signal> Runtime<S> {
         ttl_ms: u64,
     ) -> Result<String, String> {
         self.observe_host_time(now_ms)?;
-        self.check(request)?;
+        self.check(request).map_err(|error| error.message())?;
         let expires_at = now_ms
             .checked_add(ttl_ms)
             .filter(|&end| end > now_ms)
@@ -284,26 +354,38 @@ impl<S: Signal> Runtime<S> {
     pub fn call(&mut self, request: CallRequest, now_ms: u64) -> Result<Value, String> {
         let start = Instant::now();
         let mut outcome = "denied";
+        let mut reason = ExecutionReason::InternalUnknown;
         let result = (|| {
-            self.observe_host_time(now_ms)?;
+            if let Err(error) = self.observe_host_time(now_ms) {
+                reason = ExecutionReason::ClockRollback;
+                return Err(error);
+            }
             // A token is single-use even when the presented arguments fail
             // schema validation. Session identity is checked first so a token
             // cannot be consumed by a request from another session.
-            if request.session != self.session {
-                return Err("wrong session".into());
+            if let Err(error) = self.check_session(&request) {
+                reason = error.reason();
+                return Err(error.message().into());
             }
             let presented = request
                 .confirmation
                 .as_ref()
                 .and_then(|token| self.approvals.remove(token));
-            let needs_confirmation = self.check(&request)?;
+            let needs_confirmation = self.check(&request).map_err(|error| {
+                reason = error.reason();
+                error.message().to_string()
+            })?;
             if needs_confirmation {
-                let approval = presented.ok_or("confirmation required")?;
+                let approval = presented.ok_or_else(|| {
+                    reason = ExecutionReason::ConfirmationMissing;
+                    "confirmation required".to_string()
+                })?;
                 if approval.tool != request.tool
                     || approval.arguments != request.arguments
                     || approval.revision != self.revision
                     || now_ms >= approval.expires_at
                 {
+                    reason = ExecutionReason::InvalidOrExpiredConfirmation;
                     return Err("invalid or expired confirmation".into());
                 }
             }
@@ -311,12 +393,22 @@ impl<S: Signal> Runtime<S> {
             let registered = self
                 .tools
                 .get(&ToolId::from(request.tool.clone()))
-                .ok_or("unknown tool")?;
+                .ok_or_else(|| {
+                    reason = ExecutionReason::InternalUnknown;
+                    "unknown tool".to_string()
+                })?;
             let value = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                 (registered.binding.handler)(&request.arguments)
             }))
-            .map_err(|_| "tool callback panicked".to_string())??;
+            .map_err(|_| {
+                reason = ExecutionReason::CallbackPanicked;
+                "tool callback panicked".to_string()
+            })?
+            .inspect_err(|_| {
+                reason = ExecutionReason::CallbackFailed;
+            })?;
             outcome = "completed";
+            reason = ExecutionReason::Completed;
             Ok(value)
         })();
         self.log.push(ExecutionRecord {
@@ -324,7 +416,9 @@ impl<S: Signal> Runtime<S> {
             tool: request.tool,
             timestamp_ms: now_ms,
             revision: self.revision,
+            policy_transition_count: self.pipeline.audit_log().transitions().len(),
             outcome: outcome.into(),
+            reason,
             duration_us: start.elapsed().as_micros(),
         });
         result

@@ -6,7 +6,9 @@
 //! Use TLS at the deployment boundary. Tools must not expose bypass credentials.
 #![deny(missing_docs)]
 mod runtime;
-pub use runtime::{CallRequest, ExecutionRecord, Runtime, ToolBinding, ToolHandler};
+pub use runtime::{
+    CallRequest, ExecutionReason, ExecutionRecord, Runtime, ToolBinding, ToolHandler,
+};
 
 use axum::{
     extract::{DefaultBodyLimit, State},
