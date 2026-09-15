@@ -1,0 +1,38 @@
+crates/pgso-actuator-http/src/lib.rs
+  s_81bf62597beb77::t_d75c6c7f0948ae 9
+  s_81bf62597beb77::t_af589fcc4a993c 10-11
+crates/pgso-actuator-http/tests/execution.rs
+  s_81bf62597beb77::t_d0bf3a0483047f 130-141,154-156,340,346,373-374
+  s_81bf62597beb77::t_d75c6c7f0948ae 5,157,159,297,299,326-339,341-342,352-353,358-362,364-367,376-399
+  s_81bf62597beb77::t_bfec086fc7145f 296
+  s_81bf62597beb77::t_d65b3b483374ad 343-345,347-351,354-357,363,368-372,375
+  s_81bf62597beb77::t_979c106d904e26 158,298,400-402
+crates/pgso-actuator-http/src/runtime.rs
+  s_81bf62597beb77::t_67a965b378a6c8 84,86,88,90,92,94,100,102,104
+  s_81bf62597beb77::t_a98851c7dd756a 408
+  s_81bf62597beb77::t_d75c6c7f0948ae 49-53,55-63,65-73,75-83,85,87,89,91,93,95,97,99,101,103,105-107,119-120,123-124,286,288,290-294,297,300-303,305,325,357,359-362,366-368,374-377,379-382,388,396-399,403-407,409
+  s_81bf62597beb77::t_d65b3b483374ad 54,64,74,96,98
+  s_81bf62597beb77::t_0f362e53a82ad8 411,419,421
+README.md
+  s_81bf62597beb77::t_8d993f2c3d2535 104-106
+crates/pgso-actuator-http/README.md
+  s_81bf62597beb77::t_658c36d79f3d45 46-77
+experiments/reproducibility/README.md
+  s_81bf62597beb77::t_caea91abc3e5cc 227-245
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "84242c94b7117fcea83fb7c6a5aec76a14ea3d47",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
