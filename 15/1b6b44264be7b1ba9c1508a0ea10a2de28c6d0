@@ -1,0 +1,26 @@
+experiments/public_voice/test_framework_comparators.py
+  s_81bf62597beb77::t_497ead558b4e44 4,7,21-40
+experiments/public_voice/pilot.py
+  s_81bf62597beb77::t_497ead558b4e44 370-381
+experiments/public_voice/bridge.py
+  s_81bf62597beb77::t_b70273bf266311 145-147
+  s_81bf62597beb77::t_f4417f7e5e7eea 175
+  s_81bf62597beb77::t_497ead558b4e44 7,11,113,118,130-131,136,141-142,157-174
+  s_81bf62597beb77::t_fba5851bafc10c 297-301
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "151b6b44264be7b1ba9c1508a0ea10a2de28c6d0",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": null
+    }
+  }
+}
