@@ -1,0 +1,25 @@
+.gitattributes
+  s_81bf62597beb77::t_4cb0da09ee7f6b 6-7
+experiments/reproducibility/test_package.py
+  s_81bf62597beb77::t_4cb0da09ee7f6b 1-31
+.github/workflows/ci.yml
+  s_81bf62597beb77::t_4cb0da09ee7f6b 41-43
+experiments/reproducibility/reference-results/54c1c7d/inputs.csv
+  s_81bf62597beb77::t_b6cdfb0979abfe 1-455
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a392523933ecdd59727f7af433ae9db8262a5707",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
