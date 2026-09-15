@@ -367,13 +367,18 @@ def run(args: argparse.Namespace) -> int:
                             GOVERNED_TOOLS if condition == "P" else set(),
                             session=f"{condition}:{task.id}")
             framework_policy = None
-            if condition in framework_pythons:
-                mode = "nemo" if condition == "N" else "invariant"
-                framework_policy = FrameworkPolicy(
-                    mode, framework_pythons[condition], GOVERNED_TOOLS,
-                    {tool.name for tool in environment.get_tools()}, RUNTIME_CONFIG,
-                    run_dir / "framework.stderr.log",
-                )
+            try:
+                if condition in framework_pythons:
+                    mode = "nemo" if condition == "N" else "invariant"
+                    framework_policy = FrameworkPolicy(
+                        mode, framework_pythons[condition], GOVERNED_TOOLS,
+                        {tool.name for tool in environment.get_tools()}, RUNTIME_CONFIG,
+                        run_dir / "framework.stderr.log",
+                    )
+            except BaseException:
+                bridge.close()
+                raise
+            if framework_policy is not None:
                 previous = manifest["frameworks"].get(condition)
                 if previous is not None and previous != framework_policy.framework:
                     framework_policy.close()

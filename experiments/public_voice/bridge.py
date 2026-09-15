@@ -4,9 +4,11 @@ The Rust callback remains on the Runtime::call stack while Python executes the
 actual sandbox effect. This is not an authorization-token/check-then-call bridge.
 """
 import json
+import os
 from pathlib import Path
 import select
 import subprocess
+import time
 
 
 class Bridge:
@@ -108,11 +110,12 @@ class FrameworkPolicy:
         self.timeout = timeout
         self.state = {}
         self.audit = []
+        self._stdout_buffer = b""
         worker = Path(__file__).with_name("framework_sidecar.py")
         self._stderr = Path(stderr_path).open("w", encoding="utf-8")
         self.process = subprocess.Popen(
             [str(executable), str(worker), mode], stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE, stderr=self._stderr, text=True, bufsize=1,
+            stdout=subprocess.PIPE, stderr=self._stderr,
         )
         try:
             response = self.request({"op": "init", "governed_tools": sorted(governed_tools),
@@ -124,23 +127,24 @@ class FrameworkPolicy:
 
     def request(self, command):
         try:
-            self.process.stdin.write(json.dumps(command, allow_nan=False) + "\n")
+            self.process.stdin.write(
+                (json.dumps(command, allow_nan=False) + "\n").encode())
             self.process.stdin.flush()
         except (BrokenPipeError, ValueError) as error:
             self.close()
             raise RuntimeError(f"{self.mode} policy sidecar unavailable; call denied") from error
-        if not select.select([self.process.stdout], [], [], self.timeout)[0]:
-            self.close()
-            raise TimeoutError(f"{self.mode} policy sidecar timed out; call denied")
-        line = self.process.stdout.readline()
+        line = self._readline()
         if not line:
             self.close()
             raise RuntimeError(f"{self.mode} policy sidecar exited; call denied")
         try:
-            response = json.loads(line)
-        except json.JSONDecodeError as error:
+            response = json.loads(line.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
             self.close()
             raise RuntimeError(f"unexpected {self.mode} sidecar output; call denied") from error
+        if not isinstance(response, dict):
+            self.close()
+            raise RuntimeError(f"unexpected {self.mode} sidecar output; call denied")
         if not response.get("ok"):
             error = response.get("error", f"{self.mode} policy failed; call denied")
             self.close()
@@ -149,6 +153,25 @@ class FrameworkPolicy:
         if "record" in response:
             self.audit.append(response["record"])
         return response
+
+    def _readline(self):
+        deadline = time.monotonic() + self.timeout
+        while b"\n" not in self._stdout_buffer:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0 or not select.select(
+                    [self.process.stdout], [], [], remaining)[0]:
+                self.close()
+                raise TimeoutError(f"{self.mode} policy sidecar timed out; call denied")
+            chunk = os.read(self.process.stdout.fileno(), 65536)
+            if not chunk:
+                line, self._stdout_buffer = self._stdout_buffer, b""
+                return line
+            self._stdout_buffer += chunk
+            if len(self._stdout_buffer) > 1024 * 1024:
+                self.close()
+                raise RuntimeError(f"{self.mode} sidecar output exceeded limit; call denied")
+        line, self._stdout_buffer = self._stdout_buffer.split(b"\n", 1)
+        return line
 
     def observe(self, event):
         return self.request({"op": "observe", **event})
@@ -271,7 +294,11 @@ class GovernedEnvironment:
             attempt["error"] = "instantaneous threshold intervention"
             raise ValueError(attempt["error"])
         if self.framework_policy is not None:
-            action = self.framework_policy.decide(tool_name, self.timestamp_ms)
+            try:
+                action = self.framework_policy.decide(tool_name, self.timestamp_ms)
+            except Exception as error:
+                attempt["error"] = str(error)
+                raise
             attempt["framework_policy"] = self.framework_policy.audit[-1]
             if action == "block":
                 attempt["error"] = f"{self.framework_policy.mode} policy intervention"

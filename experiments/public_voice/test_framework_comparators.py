@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Offline real-framework and tau-sandbox tests for opt-in N/I arms."""
 import os
+import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -16,6 +18,26 @@ from pilot import GOVERNED_TOOLS, RUNTIME_CONFIG  # noqa: E402
 
 
 class FrameworkComparatorTests(unittest.TestCase):
+    def test_partial_sidecar_line_respects_deadline(self):
+        with tempfile.TemporaryDirectory() as directory:
+            policy = FrameworkPolicy.__new__(FrameworkPolicy)
+            policy.mode = "nemo"
+            policy.timeout = .1
+            policy.state = {}
+            policy.audit = []
+            policy._stdout_buffer = b""
+            policy._stderr = (Path(directory) / "partial.stderr").open("w")
+            policy.process = subprocess.Popen(
+                [sys.executable, "-u", "-c",
+                 "import sys,time; sys.stdout.write('{'); sys.stdout.flush(); time.sleep(10)"],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=policy._stderr,
+            )
+            started = time.monotonic()
+            with self.assertRaises(TimeoutError):
+                policy.request({"op": "test"})
+            self.assertLess(time.monotonic() - started, 1)
+            self.assertIsNotNone(policy.process.poll())
+
     def frameworks(self):
         configured = {
             "nemo": os.environ.get("PGSO_NEMO_PYTHON"),
