@@ -1,0 +1,131 @@
+experiments/reproducibility/README.md
+  s_81bf62597beb77::t_b6b64d565848d7 205-226
+experiments/reproducibility/reference-results/lifecycle-090fcd8/contract-cases.json
+  s_81bf62597beb77::t_42c8fd08081d85 1-1500
+experiments/reproducibility/reference-results/lifecycle-090fcd8/differences.json
+  s_81bf62597beb77::t_ad3f66f265bbe6 1-275
+experiments/reproducibility/reference-results/lifecycle-090fcd8/episodes-reversed.json
+  s_81bf62597beb77::t_d9a06c63a769b5 1-1358
+experiments/reproducibility/reference-results/lifecycle-090fcd8/episodes.json
+  s_81bf62597beb77::t_70196e444b3e08 1-1358
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invalid-blank_id.json
+  s_81bf62597beb77::t_243a07d3ce69bd 1-10
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invalid-duplicate.json
+  s_81bf62597beb77::t_cda9257e59a2ab 1-44
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invalid-empty.json
+  s_81bf62597beb77::t_34cbcf871c4d6b 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invalid-event_fields.json
+  s_81bf62597beb77::t_6a3dcb5d58b2fe 1-11
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invalid-labels.json
+  s_81bf62597beb77::t_2d98ee0440910e 1-24
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invalid-range.json
+  s_81bf62597beb77::t_987de3aea4c61b 1-13
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invalid-timestamp.json
+  s_81bf62597beb77::t_d8c86db65fd0b3 1-12
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invariant-outputs.json
+  s_81bf62597beb77::t_30df9939a9ee0f 1-1177
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invariant-reject-blank_id.stderr.txt
+  s_81bf62597beb77::t_e7b5ac856aac34 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invariant-reject-duplicate.stderr.txt
+  s_81bf62597beb77::t_d9e8f985ccfa16 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invariant-reject-empty.stderr.txt
+  s_81bf62597beb77::t_2d0ddb8d2b06be 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invariant-reject-event_fields.stderr.txt
+  s_81bf62597beb77::t_989192dc83b3f6 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invariant-reject-labels.stderr.txt
+  s_81bf62597beb77::t_c5c8ebb534516d 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invariant-reject-range.stderr.txt
+  s_81bf62597beb77::t_a96ea8e13b0b78 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/invariant-reject-timestamp.stderr.txt
+  s_81bf62597beb77::t_edefe5b26f2f5f 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/manifest.json
+  s_81bf62597beb77::t_b43bd45b4f37b5 1-1223
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-forward.stderr.txt
+  s_81bf62597beb77::t_fbe0f3412750d5 1-96
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-outputs.json
+  s_81bf62597beb77::t_52ae2885f50a7d 1-1177
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-reject-blank_id.stderr.txt
+  s_81bf62597beb77::t_53c3339cdf1bb5 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-reject-duplicate.stderr.txt
+  s_81bf62597beb77::t_bc91595ee7acf0 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-reject-empty.stderr.txt
+  s_81bf62597beb77::t_d92db107d53404 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-reject-event_fields.stderr.txt
+  s_81bf62597beb77::t_8724d477ed3292 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-reject-labels.stderr.txt
+  s_81bf62597beb77::t_9a7436f9476971 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-reject-range.stderr.txt
+  s_81bf62597beb77::t_0aaad02ce1fc4d 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-reject-timestamp.stderr.txt
+  s_81bf62597beb77::t_e124b9c7c29bfb 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/nemo-reverse.stderr.txt
+  s_81bf62597beb77::t_aa2104a87a3395 1-96
+experiments/reproducibility/reference-results/lifecycle-090fcd8/pgso-outputs.json
+  s_81bf62597beb77::t_9a50b9bb52c321 1-1016
+experiments/reproducibility/reference-results/lifecycle-090fcd8/pgso-reject-blank_id.stderr.txt
+  s_81bf62597beb77::t_a6d599a534b72c 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/pgso-reject-duplicate.stderr.txt
+  s_81bf62597beb77::t_0bb60f22f4d1ba 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/pgso-reject-empty.stderr.txt
+  s_81bf62597beb77::t_5992410d8f365f 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/pgso-reject-event_fields.stderr.txt
+  s_81bf62597beb77::t_eca7e856a11cec 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/pgso-reject-labels.stderr.txt
+  s_81bf62597beb77::t_b54aebe6dd5fe5 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/pgso-reject-range.stderr.txt
+  s_81bf62597beb77::t_c4fd79d58b0b40 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/pgso-reject-timestamp.stderr.txt
+  s_81bf62597beb77::t_418efd962250ab 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/results.json
+  s_81bf62597beb77::t_4e08c4badfd930 1-56
+experiments/reproducibility/reference-results/lifecycle-090fcd8/threshold-outputs.json
+  s_81bf62597beb77::t_211f978d55c72c 1-1156
+experiments/reproducibility/reference-results/lifecycle-090fcd8/threshold-reject-blank_id.stderr.txt
+  s_81bf62597beb77::t_eec616ce01e1de 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/threshold-reject-duplicate.stderr.txt
+  s_81bf62597beb77::t_b156c4c14bf60b 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/threshold-reject-empty.stderr.txt
+  s_81bf62597beb77::t_2d295dbe8ca0e7 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/threshold-reject-event_fields.stderr.txt
+  s_81bf62597beb77::t_815986d73e737a 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/threshold-reject-labels.stderr.txt
+  s_81bf62597beb77::t_d7cee28fb07187 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/threshold-reject-range.stderr.txt
+  s_81bf62597beb77::t_fd182c8a2187f2 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/threshold-reject-timestamp.stderr.txt
+  s_81bf62597beb77::t_7f02b0d2ef324d 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/voice_agnostic-outputs.json
+  s_81bf62597beb77::t_5a26e3f4003451 1-1261
+experiments/reproducibility/reference-results/lifecycle-090fcd8/voice_agnostic-reject-blank_id.stderr.txt
+  s_81bf62597beb77::t_347459e98a107c 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/voice_agnostic-reject-duplicate.stderr.txt
+  s_81bf62597beb77::t_d5006f9d2b6e79 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/voice_agnostic-reject-empty.stderr.txt
+  s_81bf62597beb77::t_dcb8a16836c299 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/voice_agnostic-reject-event_fields.stderr.txt
+  s_81bf62597beb77::t_dfd3f24536b4d7 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/voice_agnostic-reject-labels.stderr.txt
+  s_81bf62597beb77::t_03a3089f3afbb5 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/voice_agnostic-reject-range.stderr.txt
+  s_81bf62597beb77::t_744f028b22208e 1
+experiments/reproducibility/reference-results/lifecycle-090fcd8/voice_agnostic-reject-timestamp.stderr.txt
+  s_81bf62597beb77::t_4375b2d1761803 1
+experiments/reproducibility/test_package.py
+  s_81bf62597beb77::t_0c7e1c5d90b6ea 20-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c0209948a052055263b3924c50167a9f421ee4bf",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
