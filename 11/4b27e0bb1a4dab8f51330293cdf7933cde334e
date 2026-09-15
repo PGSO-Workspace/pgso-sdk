@@ -1,0 +1,29 @@
+crates/pgso-actuator-http/examples/voice_bridge.rs
+  s_81bf62597beb77::t_dacf77cd9cf8b6 25-34,61-68,161-162,168-174,177,210-213,362,374,389-411
+  s_81bf62597beb77::t_22731913544792 412-413
+experiments/public_voice/test_bridge.py
+  s_81bf62597beb77::t_110a6ad2050a14 153-154,164
+  s_81bf62597beb77::t_60d9874d5d9a87 177-183
+  s_81bf62597beb77::t_d6323c5e44e8e6 112-152,155-163,165-176,184
+experiments/public_voice/README.md
+  s_81bf62597beb77::t_d6323c5e44e8e6 47-54
+experiments/public_voice/bridge.py
+  s_81bf62597beb77::t_dacf77cd9cf8b6 12-13,28-29,77-83
+  s_81bf62597beb77::t_705518f9b1aa9d 84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "114b27e0bb1a4dab8f51330293cdf7933cde334e",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
