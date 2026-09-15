@@ -1,0 +1,32 @@
+experiments/reproducibility/measurement_worker.py
+  s_81bf62597beb77::t_3ffa64c2579cf7 1-48
+  s_81bf62597beb77::t_975bc6b8db22ce 49-56
+crates/pgso-actuator-http/examples/lifecycle_comparison.rs
+  s_81bf62597beb77::t_3ffa64c2579cf7 15,253,336-368
+.github/workflows/ci.yml
+  s_81bf62597beb77::t_f0818d454cb26f 46
+crates/pgso-actuator-http/examples/execution_validation.rs
+  s_81bf62597beb77::t_75a78e6aad173a 3,125-131,134-135,142,146-170,173-174,186-189,201,213-216,230,239,255,266,284,298,314,323,337,346
+experiments/reproducibility/README.md
+  s_81bf62597beb77::t_68718587d71d8a 246-325
+experiments/reproducibility/measure_operations.py
+  s_81bf62597beb77::t_a9d91215f5f2ad 1-295
+experiments/reproducibility/test_measure_operations.py
+  s_81bf62597beb77::t_2c0dda2db9da76 1-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7805fb959d5777b7225497a1f2938f0fca218ed9",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
