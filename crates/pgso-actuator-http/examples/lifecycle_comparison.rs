@@ -205,12 +205,49 @@ fn invalid(message: impl Into<String>) -> Box<dyn Error> {
     io::Error::new(io::ErrorKind::InvalidData, message.into()).into()
 }
 
+fn invalid_input(message: impl Into<String>) -> Box<dyn Error> {
+    invalid(format!("INVALID_INPUT: {}", message.into()))
+}
+
 #[allow(clippy::cast_possible_truncation)]
-fn unit(value: f64, name: &str) -> Result<f32, Box<dyn Error>> {
-    if !value.is_finite() || !(0.0..=1.0).contains(&value) {
-        return Err(invalid(format!("{name} must be finite and in [0, 1]")));
+fn unit(value: f64) -> f32 {
+    value as f32
+}
+
+fn parse_and_validate(input: &str) -> Result<Vec<Episode>, Box<dyn Error>> {
+    let episodes: Vec<Episode> = serde_json::from_str(input)
+        .map_err(|error| invalid_input(format!("invalid JSON contract: {error}")))?;
+    if episodes.is_empty() {
+        return Err(invalid_input("at least one episode is required"));
     }
-    Ok(value as f32)
+    let mut ids = HashSet::new();
+    for episode in &episodes {
+        if episode.id.trim().is_empty() || !ids.insert(&episode.id) {
+            return Err(invalid_input("episode ids must be non-empty and unique"));
+        }
+        if episode.events.is_empty() {
+            return Err(invalid_input(format!(
+                "episode {} has no events",
+                episode.id
+            )));
+        }
+        for event in &episode.events {
+            if let Event::Observation(event) = event {
+                for (name, value) in [
+                    ("observation value", event.value),
+                    ("confidence", event.confidence),
+                ] {
+                    if !value.is_finite() || !(0.0..=1.0).contains(&value) {
+                        return Err(invalid_input(format!(
+                            "episode {} {name} must be finite and in [0, 1]",
+                            episode.id
+                        )));
+                    }
+                }
+            }
+        }
+    }
+    Ok(episodes)
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -224,20 +261,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         (Some(path), None) => fs::read_to_string(path)?,
         _ => return Err(invalid("usage: lifecycle_comparison [INPUT.json]")),
     };
-    let episodes: Vec<Episode> = serde_json::from_str(&input)?;
-    if episodes.is_empty() {
-        return Err(invalid("at least one episode is required"));
-    }
-    let mut ids = HashSet::new();
+    let episodes = parse_and_validate(&input)?;
     let mut results = Vec::with_capacity(episodes.len());
 
     for episode in episodes {
-        if episode.id.trim().is_empty() || !ids.insert(episode.id.clone()) {
-            return Err(invalid("episode ids must be non-empty and unique"));
-        }
-        if episode.events.is_empty() {
-            return Err(invalid(format!("episode {} has no events", episode.id)));
-        }
         let (mut runtime, queue, count) = runtime(&episode.id)?;
         let mut outputs = Vec::new();
         let mut latest_timestamp = 0;
@@ -251,8 +278,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                         timestamp_ms,
                         ..
                     } = event;
-                    let value = unit(value, "observation value")?;
-                    let confidence = unit(confidence, "confidence")?;
+                    let value = unit(value);
+                    let confidence = unit(confidence);
                     latest_timestamp = timestamp_ms;
                     queue.borrow_mut().push_back(Some(SignalReading {
                         value,
@@ -319,4 +346,21 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     println!("{}", serde_json::to_string(&results)?);
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parse_and_validate;
+
+    #[test]
+    fn rejects_a_later_bad_episode_before_returning_the_batch() {
+        let input = r#"[
+            {"id":"valid","events":[{"kind":"call","tool":"human","timestamp_ms":0}]},
+            {"id":"bad","events":[{"kind":"observation","value":1.00000000001,"confidence":0.5,"timestamp_ms":0}]}
+        ]"#;
+        let Err(error) = parse_and_validate(input) else {
+            panic!("invalid later episode was accepted");
+        };
+        assert!(error.to_string().starts_with("INVALID_INPUT:"));
+    }
 }

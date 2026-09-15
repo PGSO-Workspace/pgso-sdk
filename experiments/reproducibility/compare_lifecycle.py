@@ -117,6 +117,8 @@ def main():
             (out/(name+".stderr.txt")).write_text(completed.stderr)
             require((completed.returncode==0)==expected_success,
                     f"Unexpected process status for {name}: {completed.returncode}; see saved stderr")
+            if not expected_success:
+                require("INVALID_INPUT:" in completed.stderr,"Failure was not identified as input rejection: "+name)
             return completed.stdout
         invalid={
             "empty":[], "duplicate":[episodes[0],episodes[0]],

@@ -195,9 +195,13 @@ def main():
         raise SystemExit("usage: comparator_adapters.py nemo|invariant|threshold|voice_agnostic [episodes.json]")
     mode = sys.argv[1]
     source = open(sys.argv[2], encoding="utf-8") if len(sys.argv) == 3 else sys.stdin
-    with source:
-        payload = json.load(source)
-    validated = validate_payload(payload)
+    try:
+        with source:
+            payload = json.load(source)
+        validated = validate_payload(payload)
+    except ValueError as error:
+        print(f"INVALID_INPUT: {error}", file=sys.stderr)
+        raise SystemExit(2) from None
     decide = _nemo_decider() if mode == "nemo" else _invariant_decider() if mode == "invariant" else lambda tool, state: "block" if tool == "quote" and state else "allow"
     json.dump([evaluate(item, mode, decide) for item in validated], sys.stdout, separators=(",", ":"))
     sys.stdout.write("\n")

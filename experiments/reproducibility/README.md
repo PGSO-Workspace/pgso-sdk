@@ -116,7 +116,7 @@ Guardrails, and Invariant, plus an instantaneous-threshold engineering ablation
 and a voice-agnostic control. The two controls are not competing products.
 The comparison contains 23 authored scenarios and 96 candidate calls per arm.
 Every allowed call executes an in-memory callback; every blocked call must leave
-its counter unchanged. Deterministic receipts identify the callback and ordinal.
+its counter unchanged. Deterministic receipts identify the callback and ordinal. These are source-inspected, in-process instrumentation: their internal consistency is checked, but this is not an independent attestation channel against a malicious replacement executable.
 
 Use separate Python environments with `nemoguardrails==0.24.0` and
 `invariant-ai==0.3.5`, respectively. The recorded run uses Python 3.12 for both.
@@ -184,7 +184,7 @@ missed blocks, unnecessary blocks, and repeat-process agreement. The manifest
 hashes source, binary, environment inventory, raw inputs, outputs, and stderr.
 Sources and framework inventories are rechecked before a run can pass.
 
-Each arm must reject seven malformed inputs. PGSO, matched NeMo, and matched
+Each arm must reject seven malformed inputs with an explicit validation-error marker. A crash or dependency-import failure does not count as input rejection. The complete payload is validated before any callback executes. PGSO, matched NeMo, and matched
 Invariant must satisfy all authored decisions. Ablations may differ; their
 mismatches remain visible. A fresh process repeats each arm with reversed
 episode order. Repetition is a reproducibility check, not an independent sample.
