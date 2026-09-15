@@ -38,6 +38,12 @@ experimental treatments; the task labels do not establish their appropriateness.
 The policy may unnecessarily prevent a legitimate repair. Such failures must be
 retained, not reclassified as successful protection.
 
+The offline sandbox checks reproduce this limitation in the second selected task:
+sustained injected signal withholds its required `enable_roaming` repair and leaves
+both original live environment assertions false until the signal returns to nominal
+and the same repair executes. This is a treatment diagnostic, not evidence that the
+block is appropriate or that task utility improves.
+
 ## Actual effects and independent scoring
 
 ```mermaid
