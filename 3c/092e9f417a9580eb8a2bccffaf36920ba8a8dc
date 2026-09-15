@@ -1,0 +1,25 @@
+experiments/public_voice/README.md
+  s_81bf62597beb77::t_bf65476935d9c1 97-116
+experiments/public_voice/pilot.py
+  s_81bf62597beb77::t_43d668c15dd426 135-205
+experiments/public_voice/test_pilot.py
+  s_81bf62597beb77::t_15373b9632a5f9 103,107
+  s_81bf62597beb77::t_961d04aa09f30f 58-93,95-102,104-106,108-128
+  s_81bf62597beb77::t_c51affd47b14ee 94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3c092e9f417a9580eb8a2bccffaf36920ba8a8dc",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
