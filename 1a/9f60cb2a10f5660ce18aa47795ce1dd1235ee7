@@ -1,0 +1,34 @@
+crates/pgso-actuator-http/examples/voice_bridge.rs
+  s_81bf62597beb77::t_2a55d6c09dbe57 172-174,176
+  s_81bf62597beb77::t_910ec58edbcfba 35-36
+  s_81bf62597beb77::t_6b9e2d6a8d3e7f 175
+  s_81bf62597beb77::t_22731913544792 424-425
+  s_81bf62597beb77::t_dacf77cd9cf8b6 25-34,70-77,170-171,177,181,186,220-223,374,386,401-419,421,423
+  s_81bf62597beb77::t_ce0a0ff45f768b 37-43,169,187,196,266,275-276,281,367,393,396,420,422,428
+experiments/public_voice/README.md
+  s_81bf62597beb77::t_d6323c5e44e8e6 47-54
+experiments/public_voice/bridge.py
+  s_81bf62597beb77::t_705518f9b1aa9d 84
+  s_81bf62597beb77::t_dacf77cd9cf8b6 12-13,28-29,77-83
+experiments/public_voice/test_bridge.py
+  s_81bf62597beb77::t_110a6ad2050a14 154-155,165
+  s_81bf62597beb77::t_60d9874d5d9a87 178-184
+  s_81bf62597beb77::t_d6323c5e44e8e6 112-137,139-153,156-164,166-177,185
+  s_81bf62597beb77::t_ce0a0ff45f768b 138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1a9f60cb2a10f5660ce18aa47795ce1dd1235ee7",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": null
+    }
+  }
+}
