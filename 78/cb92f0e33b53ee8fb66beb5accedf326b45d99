@@ -1,0 +1,45 @@
+experiments/reproducibility/pilot-procedure.md
+  s_81bf62597beb77::t_6ff1531e36f6e3 1-100
+crates/pgso-actuator-http/examples/lifecycle_comparison.rs
+  s_81bf62597beb77::t_1bf03db3e1f95e 46,48-51,54-56,61-66,69-73,76-81,84-89,93-94,98-99,103-104,108,247,269,277-278
+  s_81bf62597beb77::t_ade70991484f59 57-58,67-68,74-75,82-83
+  s_81bf62597beb77::t_fa4f05338d0034 59-60,208-215,254-255
+  s_81bf62597beb77::t_f2fbd8f5154c2c 23,90-92,95-97,100-102,105-107,141,248-253,279-281
+  s_81bf62597beb77::t_145a26ec209296 1-22,24-45,47,52-53,109-140,142-207,216-246,256-268,270-276,282-293,304-306,308,310-322
+  s_81bf62597beb77::t_ed4b6455d1fd48 294-303,307,309
+experiments/reproducibility/comparator_adapters.py
+  s_81bf62597beb77::t_de208e8c5dc5e6 4-6
+  s_81bf62597beb77::t_b7f86c3dad3a42 125,127,144,146,149,153-164,167,178-179
+  s_81bf62597beb77::t_b6064a5eee788d 10,13-20,23,30,34-35,40,121-122,145,148,190-195,197
+  s_81bf62597beb77::t_606a6718c0b05d 130-135,174
+  s_81bf62597beb77::t_685560ff3ffad2 150-151
+  s_81bf62597beb77::t_fcc4dda97921f5 1-3,7-9,11-12,21-22,24-29,31-33,36-39,41-76,78-93,95-108,110-114,116-120,123-124,126,128-129,136-143,147,152,165-166,168-173,175-177,180-189,196,198-202
+  s_81bf62597beb77::t_dea1d0f2e164bd 77,94,109,115
+  s_81bf62597beb77::t_0ef9eba56ef93a 203-207
+.github/workflows/ci.yml
+  s_81bf62597beb77::t_a63c3259d3cb0d 43
+README.md
+  s_81bf62597beb77::t_0524a66adc1c1b 244-245
+experiments/reproducibility/README.md
+  s_81bf62597beb77::t_d6136b25f59267 111-204
+experiments/reproducibility/compare_lifecycle.py
+  s_81bf62597beb77::t_4da2f09de718b2 1-165
+experiments/reproducibility/test_comparison.py
+  s_81bf62597beb77::t_af78cdf2d681d0 1-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "78cb92f0e33b53ee8fb66beb5accedf326b45d99",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
