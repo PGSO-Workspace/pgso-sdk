@@ -4,20 +4,20 @@ An `Actuator` for [PGSO](../../README.md) that serves the governed tool catalog
 over the **Model Context Protocol** (MCP) `tools/list` transport, and tracks when
 a `notifications/tools/list_changed` is owed to the client.
 
-## Why it exists — the agnosticism proof
+## Integration boundary
 
-This crate is PGSO's **transport-agnosticism proof** (Milestone 5). It implements
-the *exact same* `pgso_core::Actuator` boundary as
-[`pgso-actuator-local`](../pgso-actuator-local), with identical governance
-semantics (G1/G2/G3), and the deterministic core drives it **with a zero-line
-diff to `pgso-core`** — agnosticism demonstrated, not asserted.
+This crate implements the same `pgso_core::Actuator` trait as
+[`pgso-actuator-local`](../pgso-actuator-local). It represents catalog policy;
+it does not dispatch tool calls or enforce confirmation tokens. The surrounding
+host must recheck policy before effects. The
+[HTTP runtime](../pgso-actuator-http/README.md) provides a separate implementation
+of that execution boundary.
 
 ## What it does
 
 - **`tools_list_response()`** → the MCP `tools/list` *result* object
-  `{ "tools": [ { name, title, description, inputSchema } ] }`, verified against
-  the 2025-06-18 MCP spec. Pruned tools are absent; protected tools a rule
-  targeted are still present (**G2 over MCP**).
+  `{ "tools": [ { name, title, description, inputSchema } ] }`. Pruned tools are
+  absent; protected tools in the nominal catalog remain present.
 - **`has_changed()` / `acknowledge_change()`** → drive
   `notifications/tools/list_changed`, set **only** when the served catalog
   actually changes (a no-op prune, an already-nominal `Allow`, or an injected

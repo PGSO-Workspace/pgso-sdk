@@ -2,74 +2,56 @@
 
 The pure, deterministic core of **PGSO** — *Paralinguistic Governance for State
 Orchestration*, an external layer that governs which tools an agent's catalog
-exposes based on **how** the interlocutor sounds.
+exposes using numerical acoustic readings and caller-defined rules.
 
 This crate is the engine. It has **no ML, HTTP, or I/O dependencies** (only
 `thiserror`, INV-1) and never reaches outward: it consumes `SignalReading`s and
-emits `ScopeDecision`s. Perception and action plug in behind two traits, so the
-core never changes when you swap an extractor or a transport.
+emits `ScopeDecision`s. Perception and action plug in through two traits. Implementations must satisfy
+the contracts defined by those traits.
 
 ## What's inside
 
 - **`Signal`** (perception extension point) and **`Actuator`** (action extension
-  point) — the two symmetric boundaries. Implement these to add an extractor or a
-  transport; the core is untouched. Their trait docs spell out the implementer
-  contract.
+  point) — extension boundaries for an extractor or policy adapter. Their trait
+  documentation specifies the implementer contract.
 - **`DecisionEngine`** — a three-layer speaker baseline (population prior →
-  warm-up mean → EMA), **hysteresis** (a lone spike never fires), and
-  **abstention** below a confidence threshold.
-- **`RuleEngine` + `pgso_rules!`** — compile-time rules that map a *sustained*
+  warm-up mean → EMA), **hysteresis** over same-side deviations, and
+  **abstention** below a confidence threshold. Only nominal readings update the
+  baseline; abstention holds existing policy rather than restoring permissions.
+- **`RuleEngine` + `pgso_rules!`** — configured rules that map a *sustained*
   deviation to `ScopeDecision`s, and enforce the **inviolable allowlist**: a
   `Prune` of a protected tool is downgraded to `RequireStepUp`, never dropped.
-- **`AuditLog` / `AuditRecord`** — every intervention *and* reversal is traceable.
+- **`AuditLog` / `AuditRecord`** — records effective policy changes in memory;
+  persistence and logging failed attempts are host responsibilities.
 - **`Pgso<S, A>`** — the generic pipeline that wires a `Signal` to an `Actuator`.
 
 ## Where it sits
 
 ```
- perception (probabilistic)        deterministic · pure        action (verifiable)
+ signal extraction                  policy evaluation            catalog policy
    impl Signal  ───SignalReading──▶   pgso-core   ───ScopeDecision──▶  impl Actuator
  (pgso-signal-egemaps)            (DecisionEngine, RuleEngine,      (pgso-actuator-local,
                                    AuditLog, Pgso<S,A>)              pgso-actuator-mcp)
 ```
 
-## Safety guarantees enforced here
+## Policy boundaries
 
-**G1** prompt-sovereign (only a removable directive block is appended) · **G2**
-inviolable allowlist (RuleEngine downgrade) · **G3** non-punitive default · **G4**
-abstention on low confidence · **G5** full auditability. The governing principle:
-*PGSO fails toward inaction, not intervention.*
+Protected tools cannot be pruned by the reference governance state; attempted
+prunes are downgraded to step-up. Unprotected tools can be pruned, so step-up is
+not a universal default. Low-confidence or missing readings retain existing
+restrictions. Nominal readings retire the relevant axis's contributions; expiry
+is an explicit host policy. See the [governance contract](../../docs/governance-contract.md).
+
+Catalog visibility and step-up metadata do not enforce authorization at dispatch.
+The host must enforce execution permissions, for example through the
+[HTTP runtime](../pgso-actuator-http/README.md). Restoring a catalog does not undo
+previously executed effects. Tests establish implementation behavior under their
+stated assumptions, not validity of an acoustic interpretation.
 
 ## Minimal usage
 
-`pgso-core` is generic over a `Signal` and an `Actuator`; pair it with the default
-extractor and the reference actuator:
-
-```rust
-use std::collections::HashSet;
-use pgso_core::{pgso_rules, Action, DecisionEngine, EngineConfig, Pgso, RuleEngine, Catalog, Tool, ToolId};
-use pgso_signal_egemaps::EgemapsSignal;
-use pgso_actuator_local::LocalActuator;
-
-let protected = HashSet::from([ToolId::from("escalate")]);
-let rules = pgso_rules! {
-    rule "tense_arousal" {
-        axis: Arousal, deviation: 0.3, confidence: 0.5,
-        action: Action::Prune(ToolId::from("close_sale"))
-    }
-};
-let catalog = Catalog::new(vec![Tool::new("close_sale", "Close Sale"), Tool::new("escalate", "Escalate")]);
-
-let mut pgso = Pgso::builder()
-    .signal(EgemapsSignal::new(16_000))
-    .engine(DecisionEngine::new(EngineConfig { confidence_threshold: 0.5, deviation_threshold: 0.3,
-        hysteresis_window: 3, ema_alpha: 0.1, warmup_readings: 5, population_prior: 0.5 }))
-    .rules(RuleEngine::new(rules, protected.clone()))
-    .actuator(LocalActuator::new(catalog, protected))
-    .build()?;
-
-let served = pgso.process_window(&window)?; // the catalog the agent may see this turn
-```
-
-See the [workspace README](../../README.md) for architecture, guarantees, and the
-end-to-end example.
+`pgso-core` is generic over a `Signal` and an `Actuator`. The
+[workspace quick start](../../README.md#quick-start) provides a complete example
+with validated `EngineConfig`, an explicit rising-direction rule, and an audio
+window. `Rule::new` and `pgso_rules!` use `Direction::Either` unless a rule is
+changed with `Rule::with_direction`.

@@ -1,26 +1,30 @@
 # pgso-actuator-local
 
 The **reference `Actuator`** for [PGSO](../../README.md): a minimal, in-memory
-tool catalog you fully own. It applies the deterministic core's `ScopeDecision`s
+tool catalog. It applies the deterministic core's `ScopeDecision`s
 to the served catalog — pruning a tool, flagging a step-up, appending a removable
-directive block — and is the **G2 backstop**: a protected tool is never removed,
-whatever the decision.
+directive block — and enforces protected-tool retention within the catalog. Protected tools must
+be present in the nominal catalog to be available.
 
 ## Where it sits
 
 Implements `pgso_core::Actuator`; the default action target wired into
-`pgso_core::Pgso`. Because the boundary is a trait, you depend on this owned,
-auditable reference rather than a black box — and can swap in another transport
-(e.g. [`pgso-actuator-mcp`](../pgso-actuator-mcp)) without changing the core.
+`pgso_core::Pgso`. The same trait is implemented by
+[`pgso-actuator-mcp`](../pgso-actuator-mcp).
 
-## Guarantees it upholds
+## Policy behavior
 
 - **G1** — `Action::Allow` restores the nominal catalog and drops any appended
   directive blocks.
 - **G2** — protected ids are never pruned (inviolable-allowlist backstop, even if
   a rule targets one directly).
-- **G3** — escalates friction (`Action::RequireStepUp`) rather than removing a
-  tool punitively.
+- `Action::RequireStepUp` marks a tool as requiring confirmation. Unprotected
+  tools may still be removed by `Action::Prune`.
+
+This adapter manages catalog state, not tool execution. A host must enforce
+permissions and confirmation requirements at dispatch; see the
+[HTTP runtime](../pgso-actuator-http/README.md). Restoring catalog state cannot
+undo an executed action.
 
 ## Usage
 

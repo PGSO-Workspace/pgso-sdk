@@ -1,0 +1,374 @@
+{
+  "design": "Synthetic engineering contract cases plus deliberately separate sensitivity challenges; no human emotion ground truth",
+  "segment_fields": [
+    "count",
+    "value",
+    "confidence",
+    "expected_governed",
+    "cadence_ms"
+  ],
+  "scenarios": [
+    {
+      "name": "sustained",
+      "segments": [
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ],
+        [
+          2,
+          0.95,
+          0.9,
+          0,
+          400
+        ],
+        [
+          32,
+          0.95,
+          0.9,
+          1,
+          400
+        ],
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "isolated_spike",
+      "segments": [
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ],
+        [
+          1,
+          0.95,
+          0.9,
+          0,
+          400
+        ],
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "low_confidence_hold",
+      "segments": [
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ],
+        [
+          2,
+          0.95,
+          0.9,
+          0,
+          400
+        ],
+        [
+          1,
+          0.95,
+          0.9,
+          1,
+          400
+        ],
+        [
+          8,
+          0.5,
+          0.1,
+          1,
+          400
+        ],
+        [
+          3,
+          0.5,
+          0.9,
+          0,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "silence_hold",
+      "segments": [
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ],
+        [
+          2,
+          0.95,
+          0.9,
+          0,
+          400
+        ],
+        [
+          1,
+          0.95,
+          0.9,
+          1,
+          400
+        ],
+        [
+          8,
+          null,
+          null,
+          1,
+          400
+        ],
+        [
+          3,
+          0.5,
+          0.9,
+          0,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "falling_negative_control",
+      "segments": [
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ],
+        [
+          12,
+          0.05,
+          0.9,
+          0,
+          400
+        ],
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "sign_reversal_pending",
+      "segments": [
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ],
+        [
+          2,
+          0.95,
+          0.9,
+          0,
+          400
+        ],
+        [
+          2,
+          0.05,
+          0.9,
+          0,
+          400
+        ],
+        [
+          2,
+          0.95,
+          0.9,
+          0,
+          400
+        ],
+        [
+          1,
+          0.95,
+          0.9,
+          1,
+          400
+        ],
+        [
+          3,
+          0.5,
+          0.9,
+          0,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "gap_boundary",
+      "segments": [
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ],
+        [
+          2,
+          0.95,
+          0.9,
+          0,
+          1200
+        ],
+        [
+          1,
+          0.95,
+          0.9,
+          1,
+          1200
+        ],
+        [
+          3,
+          0.5,
+          0.9,
+          0,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "gap_reset",
+      "segments": [
+        [
+          5,
+          0.5,
+          0.9,
+          0,
+          400
+        ],
+        [
+          2,
+          0.95,
+          0.9,
+          0,
+          400
+        ],
+        [
+          1,
+          0.95,
+          0.9,
+          0,
+          1201
+        ],
+        [
+          1,
+          0.95,
+          0.9,
+          0,
+          400
+        ],
+        [
+          1,
+          0.95,
+          0.9,
+          1,
+          400
+        ],
+        [
+          3,
+          0.5,
+          0.9,
+          0,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "steady_nominal",
+      "segments": [
+        [
+          30,
+          0.5,
+          0.9,
+          0,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "slow_ramp_challenge",
+      "segments": [
+        [
+          5,
+          0.5,
+          0.9,
+          null,
+          400
+        ]
+      ],
+      "ramp": {
+        "count": 200,
+        "from": 0.5,
+        "to": 0.95
+      },
+      "tail": [
+        [
+          10,
+          0.95,
+          0.9,
+          null,
+          400
+        ]
+      ]
+    },
+    {
+      "name": "shifted_baseline_challenge",
+      "segments": [
+        [
+          20,
+          0.7,
+          0.9,
+          null,
+          400
+        ],
+        [
+          30,
+          0.95,
+          0.9,
+          null,
+          400
+        ],
+        [
+          5,
+          0.7,
+          0.9,
+          null,
+          400
+        ]
+      ]
+    }
+  ],
+  "comparators": {
+    "no_governance": "Always expose quote; human remains protected",
+    "fixed_threshold": "Restrict when accepted value >= 0.8; confidence >= 0.5; hold on silence or low confidence; restore on accepted lower value. No adaptation or persistence filter. Engineering control, not AgentSpec or any published system"
+  },
+  "interpretation": "Expected values are authored policy acceptance criteria before execution, not outputs of PGSO or a perfect-signal PGSO oracle. Baselines intentionally lack the same temporal semantics, so contract agreement is not an unbiased score of superiority. Challenge rows have no contract oracle: report behavior only. No statistical population inference from this purposive deterministic suite. All tool exposure measurements are distinct from authorization and dispatch.",
+  "reference_sdk_commit": "60113da9c0ca354af1536f1690b0ba6e1c644538"
+}

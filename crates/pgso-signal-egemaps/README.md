@@ -3,9 +3,10 @@
 The **default `Signal`** for [PGSO](../../README.md): a pure-Rust, eGeMAPS-style
 DSP extractor. From a raw 16 kHz mono audio window it computes low-level
 prosodic descriptors — F0 (mean, std), RMS energy, jitter, shimmer, voicing —
-and maps them to an **arousal** `SignalReading` with a calibrated confidence. No
-model, no download, CPU-only, and every reading is **explainable** (*"pitch rose,
-energy fell vs. baseline"*).
+and maps energy and pitch variability to a heuristic **arousal** `SignalReading`.
+Its confidence is a voicing-quality heuristic, not a calibrated probability of
+emotion or an appropriate governance action. It runs on CPU without a model
+download, and exposes the descriptors behind each reading.
 
 ## Where it sits
 
@@ -20,13 +21,12 @@ system. Its signal quality is **characterized, not solved**:
 - It derives **arousal only** (energy + pitch dynamism); it does not produce
   valence.
 - It is **not** validated on spontaneous speech as a governance-grade signal.
-  Internal characterization on *acted* speech (MUStARD++) placed eGeMAPS arousal
-  vs. human arousal in the **WEAK** band (Spearman ρ ≈ 0.21), and that weakness
-  was found to be **inherent** to the two-feature mapping — label-free
-  recalibration did not move it. Spontaneous-speech validation is future work.
+  Historical acted-speech characterizations and their reproducibility limits are
+  documented in the [experimental package](../../experiments/reproducibility/README.md).
+  Those reports do not establish signal validity for a new population or task.
 
-Use it as the auditable **default and reference floor**; swap in a stronger,
-domain-validated `Signal` when you have one.
+Use it as a reference extractor. Any interpretation of its readings and any
+replacement `Signal` require validation for the intended domain.
 
 ## Usage
 
@@ -34,7 +34,12 @@ domain-validated `Signal` when you have one.
 use pgso_core::AudioWindow;
 use pgso_signal_egemaps::EgemapsSignal;
 
-let mut signal = EgemapsSignal::new(16_000); // construction sample rate (Hz)
+let window = AudioWindow {
+    samples: vec![0.0; 16_000], // one second of silence; may yield no readings
+    sample_rate: 16_000,
+    timestamp_ms: 0,
+};
+let mut signal = EgemapsSignal::new(16_000);
 for e in signal.extract_explained(&window) {
     println!("axis={:?} value={:.3} confidence={:.3}  (mean_f0={:.0}Hz energy={:.3})",
         e.reading.axis, e.reading.value, e.reading.confidence,
@@ -46,6 +51,6 @@ Runnable demos (no model download, CPU-only):
 
 ```bash
 cargo run -p pgso-signal-egemaps --example extract      # one window -> features behind the reading
-cargo run -p pgso-signal-egemaps --example governance   # end-to-end: prosody prunes a tool, calm restores it
+cargo run -p pgso-signal-egemaps --example governance   # synthetic catalog-policy demonstration
 cargo bench -p pgso-signal-egemaps                       # signal latency p50/p95/p99
 ```
