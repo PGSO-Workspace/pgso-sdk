@@ -1,0 +1,25 @@
+experiments/public_voice/README.md
+  s_81bf62597beb77::t_035a790a8e1826 56-59,220-221
+experiments/public_voice/test_framework_comparators.py
+  s_81bf62597beb77::t_035a790a8e1826 62-64,68-70,88-105
+  s_81bf62597beb77::t_489f8034e1cc9c 106
+experiments/public_voice/framework_sidecar.py
+  s_81bf62597beb77::t_035a790a8e1826 114-116,120-124,133-140,151-154,188,197,204,268,272,275-276
+  s_81bf62597beb77::t_b30a10831dd4f4 117-119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "83266d48510eb61ff259a36fe74a3496bf81262e",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
