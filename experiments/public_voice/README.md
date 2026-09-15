@@ -109,6 +109,34 @@ components rather than silently treating omitted communication/DB checks as pass
 This produces an environment-assertion component score, not a general composite
 tau-Voice score. Tests use scripted fixture repairs solely to check the scorer.
 
+The pilot module also provides a live-state composite for explicitly selected
+broader tasks whose reward basis contains only `DB`, `COMMUNICATE`, and
+`ENV_ASSERTION`. It compares the actual final sandbox hashes with a fresh gold
+environment initialized from the task and changed only by the task author's gold
+actions. It never reconstructs a predicted environment from the conversation, so
+a denied attempted call cannot be replayed as an effect. Gold-action errors fail
+evaluation rather than leaving a partial gold target. `COMMUNICATE` reuses tau's
+case-insensitive substring evaluator; that component checks required text, not
+communication quality. Tasks containing `ACTION` or `NL_ASSERTION` are rejected.
+The default three-task telecom pilot remains ENV-assertion-only and retains its
+existing result shape.
+
+Pass `--scoring live-composite` to activate the live composite for the frozen
+pilot tasks. The command fails before model or audio calls if a selected task
+has an empty or duplicated reward basis, or uses `ACTION` or `NL_ASSERTION`.
+The current command still selects the same three ENV-only telecom tasks, so
+this option exercises ENV-score parity. DB and COMMUNICATE behavior is verified
+separately by offline evaluator tests; broader task selection is not exposed by
+this pilot CLI. Omitting the option keeps the historical ENV-only score object.
+
+At pinned tau commit `2174a603f6d014ef94473ffa95957f6ce27100db`, the task files
+contain these reward bases: airline 50/50 `DB+COMMUNICATE`; retail 112/114
+`DB+NL_ASSERTION` and 2/114 `DB`; telecom 2253/2285 `ENV_ASSERTION` and 32/2285
+`ENV_ASSERTION+ACTION`; banking-knowledge 88/97 `DB` and 9/97 `ACTION`. The
+telecom small split contains 18 `ENV_ASSERTION` and 2
+`ENV_ASSERTION+ACTION` tasks. These counts come from the pinned task data, not
+from the general evaluation documentation.
+
 Keep attempted calls, actual callback effects, before/after database hashes and
 SDK receipts separate. A callback failure can leave a partial effect; a timeout
 after execution begins is indeterminate, not evidence of a safe block. Failure

@@ -55,6 +55,104 @@ _WAV = _wav()
 
 
 class PilotOfflineFullLoop(unittest.TestCase):
+    def _composite_fixture(self, communicate="done", basis=("DB", "COMMUNICATE"),
+                           gold_fails=False):
+        from tau2.data_model.message import AssistantMessage, ToolCall
+
+        class Environment:
+            def __init__(self, live=False):
+                self.agent_hash = "target" if live else "initial"
+                self.user_hash = "user"
+                self.calls = []
+
+            def set_state(self, **_):
+                self.agent_hash = "initial"
+
+            def make_tool_call(self, tool_name, requestor, **arguments):
+                self.calls.append((tool_name, requestor, arguments))
+                if gold_fails:
+                    raise RuntimeError("fixture gold failure")
+                self.agent_hash = "target"
+
+            def get_db_hash(self):
+                return self.agent_hash
+
+            def get_user_db_hash(self):
+                return self.user_hash
+
+        criteria = SimpleNamespace(
+            reward_basis=list(basis),
+            actions=[SimpleNamespace(name="repair", requestor="assistant", arguments={})],
+            communicate_info=["done"],
+            env_assertions=[],
+        )
+        task = SimpleNamespace(
+            evaluation_criteria=criteria,
+            initial_state=SimpleNamespace(initialization_data={}, initialization_actions=[],
+                                          message_history=[]),
+        )
+        denied = ToolCall(id="denied", name="repair", arguments={})
+        messages = [AssistantMessage(role="assistant", content=communicate,
+                                     tool_calls=[denied])]
+        live = Environment(live=True)
+        gold = Environment()
+        return live, gold, task, messages
+
+    def test_live_composite_never_replays_denied_attempts(self):
+        live, gold, task, messages = self._composite_fixture()
+        live.agent_hash = "initial"
+
+        result = pilot._live_composite(live, task, messages, lambda: gold)
+
+        self.assertEqual(result["score"], 0.0)
+        self.assertEqual(live.calls, [])
+        self.assertEqual(gold.calls, [("repair", "assistant", {})])
+
+    def test_live_composite_requires_communication(self):
+        live, gold, task, messages = self._composite_fixture(communicate="not supplied")
+        result = pilot._live_composite(live, task, messages, lambda: gold)
+        self.assertEqual(result["components"]["DB"]["score"], 1.0)
+        self.assertEqual(result["components"]["COMMUNICATE"]["score"], 0.0)
+        self.assertEqual(result["score"], 0.0)
+
+    def test_live_composite_rejects_unsupported_basis(self):
+        live, gold, task, messages = self._composite_fixture(basis=("ACTION",))
+        with self.assertRaisesRegex(ValueError, "ACTION"):
+            pilot._live_composite(live, task, messages, lambda: gold)
+        self.assertEqual(gold.calls, [])
+
+    def test_live_composite_surfaces_failed_gold_action(self):
+        live, gold, task, messages = self._composite_fixture(gold_fails=True)
+        with self.assertRaisesRegex(RuntimeError, "gold action failed: repair"):
+            pilot._live_composite(live, task, messages, lambda: gold)
+
+    def test_live_composite_rejects_empty_and_duplicate_basis(self):
+        for basis, message in [((), "nonempty"), (("DB", "DB"), "duplicates")]:
+            live, gold, task, messages = self._composite_fixture(basis=basis)
+            with self.subTest(basis=basis), self.assertRaisesRegex(ValueError, message):
+                pilot._live_composite(live, task, messages, lambda: gold)
+
+    def test_pinned_telecom_env_only_score_has_composite_parity(self):
+        from tau2.domains.telecom.environment import get_environment
+        from tau2.runner import get_tasks
+
+        task = next(task for task in get_tasks("telecom", task_split_name="small")
+                    if task.id == pilot.TASK_IDS[0])
+        environment = get_environment()
+        initial = task.initial_state
+        environment.set_state(initial.initialization_data, initial.initialization_actions,
+                              initial.message_history or [])
+
+        historical = pilot._live_assertions(environment, task)
+        composite = pilot._live_composite(
+            environment, task, [],
+            lambda: self.fail("ENV-only scoring must not construct a gold environment"),
+        )
+
+        self.assertEqual(composite["score"], historical["score"])
+        self.assertEqual(composite["components"]["ENV_ASSERTION"]["checks"],
+                         historical["checks"])
+
     def test_multiple_calls_keep_ids_prefix_and_intervening_state(self):
         from tau2.data_model.message import AssistantMessage, ToolCall, UserMessage
         from tau2.domains.telecom.environment import get_environment, get_tasks
@@ -104,7 +202,7 @@ class PilotOfflineFullLoop(unittest.TestCase):
             governor.attempts[1]["pre_attempt_state"]["user_db"],
         )
 
-    def test_all_conditions_run_with_real_tau_and_bridge(self):
+    def _run_full_loop(self, scoring="env-only"):
         """Mocks only network LLM/audio; orchestration and PGSO stay real."""
         from tau2.data_model.message import AssistantMessage, ToolCall
 
@@ -135,6 +233,8 @@ class PilotOfflineFullLoop(unittest.TestCase):
             "--bridge-binary", str(ROOT.parent.parent / "target/debug/examples/voice_bridge"),
             "--output", "PLACEHOLDER", "--max-steps", "8",
         ]
+        if scoring != "env-only":
+            args.extend(["--scoring", scoring])
         framework_paths = {
             "--nemo-python": os.environ.get("PGSO_NEMO_PYTHON"),
             "--invariant-python": os.environ.get("PGSO_INVARIANT_PYTHON"),
@@ -178,6 +278,15 @@ class PilotOfflineFullLoop(unittest.TestCase):
             self.assertEqual(len(results), 3 * len(expected_conditions))
             self.assertEqual({result["condition"] for result in results}, expected_conditions)
             self.assertEqual({result["task_id"] for result in results}, set(pilot.TASK_IDS))
+            if scoring == "live-composite":
+                self.assertTrue(all(result["score"]["component"] ==
+                                    "live_reward_basis_composite" for result in results))
+                self.assertTrue(all(result["score"]["reward_basis"] ==
+                                    ["ENV_ASSERTION"] for result in results))
+            else:
+                self.assertTrue(all(result["score"]["component"] ==
+                                    "live_original_environment_assertions_only"
+                                    for result in results))
             self.assertTrue(all(len(result["attempts"]) == len(result["effects"]) == 1
                                 for result in results))
             for result in results:
@@ -207,6 +316,13 @@ class PilotOfflineFullLoop(unittest.TestCase):
             self.assertTrue(all("pre_attempt_state" not in payload
                                 for _, payload in llm_requests))
             self.assertEqual(user_calls, 6 * len(expected_conditions))
+
+    def test_all_conditions_run_with_real_tau_and_bridge(self):
+        """Mocks only network LLM/audio; orchestration and PGSO stay real."""
+        self._run_full_loop()
+
+    def test_live_composite_scoring_runs_through_cli_path(self):
+        self._run_full_loop("live-composite")
 
     def test_retired_directive_is_absent_from_next_agent_prompt(self):
         from tau2.agent.llm_agent import LLMAgent

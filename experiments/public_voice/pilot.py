@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Metered TAU telecom pilot for a post-utterance OpenAI TTS/ASR cascade.
 
-This development pilot intentionally reports only TAU's original live
-environment assertions.  It does not replay attempted tool calls or use the
-task's golden actions when scoring.
+By default this development pilot reports only TAU's original live environment
+assertions. Its opt-in composite derives a DB target from authored gold actions,
+but never replays attempted tool calls into the observed environment.
 """
 
 from __future__ import annotations
@@ -68,6 +68,8 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--asr-model", default="gpt-4o-mini-transcribe")
     run.add_argument("--seed", type=int, default=20260915)
     run.add_argument("--max-steps", type=int, default=30)
+    run.add_argument("--scoring", choices=("env-only", "live-composite"), default="env-only",
+                     help="opt in to reward-basis composite scoring on the selected pilot tasks")
     run.add_argument("--nemo-python", type=Path,
                      help="opt in to N using this pinned NeMo interpreter")
     run.add_argument("--invariant-python", type=Path,
@@ -134,6 +136,87 @@ def _live_assertions(environment, task) -> dict:
         "component": "live_original_environment_assertions_only",
         "score": float(all(check["met"] for check in checks)),
         "checks": checks,
+    }
+
+
+def _reward_name(value) -> str:
+    return str(getattr(value, "value", value))
+
+
+def _validated_composite_basis(task) -> list[str]:
+    basis = [_reward_name(value) for value in task.evaluation_criteria.reward_basis]
+    if not basis:
+        raise ValueError("live composite requires a nonempty reward basis")
+    if len(basis) != len(set(basis)):
+        raise ValueError("live composite reward basis contains duplicates")
+    unsupported = sorted(set(basis) - {"DB", "COMMUNICATE", "ENV_ASSERTION"})
+    if unsupported:
+        raise ValueError(f"live composite does not support reward components: {unsupported}")
+    return basis
+
+
+def _live_composite(environment, task, messages, environment_constructor) -> dict:
+    """Score the observed live state without replaying the agent trajectory."""
+    basis = _validated_composite_basis(task)
+
+    components = {}
+    if "DB" in basis:
+        gold = environment_constructor()
+        initial = task.initial_state
+        gold.set_state(
+            initialization_data=(initial.initialization_data if initial else None),
+            initialization_actions=(initial.initialization_actions if initial else None),
+            message_history=list(initial.message_history or []) if initial else [],
+        )
+        for action in task.evaluation_criteria.actions or []:
+            try:
+                gold.make_tool_call(
+                    tool_name=action.name,
+                    requestor=action.requestor,
+                    **action.arguments,
+                )
+            except Exception as error:
+                raise RuntimeError(
+                    f"gold action failed: {action.name}({action.arguments})"
+                ) from error
+        agent_match = environment.get_db_hash() == gold.get_db_hash()
+        user_match = environment.get_user_db_hash() == gold.get_user_db_hash()
+        components["DB"] = {
+            "score": float(agent_match and user_match),
+            "agent_db_match": agent_match,
+            "user_db_match": user_match,
+            "live_hashes": [environment.get_db_hash(), environment.get_user_db_hash()],
+            "gold_hashes": [gold.get_db_hash(), gold.get_user_db_hash()],
+        }
+
+    if "COMMUNICATE" in basis:
+        from tau2.evaluator.evaluator_communicate import CommunicateEvaluator
+        result = CommunicateEvaluator.calculate_reward(task, messages)
+        components["COMMUNICATE"] = {
+            "score": float(result.reward),
+            "checks": [check.model_dump(mode="json") for check in result.communicate_checks or []],
+            "scope": "official case-insensitive substring checks; not a communication-quality judgment",
+        }
+
+    if "ENV_ASSERTION" in basis:
+        assertions = list(task.evaluation_criteria.env_assertions or [])
+        checks = [{
+            "assertion": assertion.model_dump(mode="json"),
+            "met": environment.run_env_assertion(assertion, raise_assertion_error=False),
+        } for assertion in assertions]
+        components["ENV_ASSERTION"] = {
+            "score": float(all(check["met"] for check in checks)),
+            "checks": checks,
+        }
+
+    score = 1.0
+    for name in basis:
+        score *= components[name]["score"]
+    return {
+        "component": "live_reward_basis_composite",
+        "score": score,
+        "reward_basis": basis,
+        "components": components,
     }
 
 
@@ -314,19 +397,28 @@ def run(args: argparse.Namespace) -> int:
         conditions.append("S")
 
     tasks_by_id = {task.id: task for task in get_tasks("telecom", task_split_name="small")}
-    tasks = [tasks_by_id[task_id] for task_id in TASK_IDS]
+    selected_task_ids = list(TASK_IDS)
+    tasks = [tasks_by_id[task_id] for task_id in selected_task_ids]
+    composite_scoring = args.scoring == "live-composite"
     for task in tasks:
-        if not task.evaluation_criteria.env_assertions or task.evaluation_criteria.reward_basis != ["ENV_ASSERTION"]:
+        if composite_scoring:
+            try:
+                _validated_composite_basis(task)
+            except ValueError as error:
+                raise SystemExit(str(error)) from error
+        elif (not task.evaluation_criteria.env_assertions or
+              task.evaluation_criteria.reward_basis != ["ENV_ASSERTION"]):
             raise SystemExit("pilot fixture must have ENV_ASSERTION-only outcomes")
     effective_policy = build_environment("telecom").get_policy()
     args.output.mkdir(parents=True)
     models = {"agent": args.agent_model, "user": args.user_model,
               "tts": args.tts_model, "voice": args.tts_voice, "asr": args.asr_model}
     manifest = {
-        "scope": "development pilot; live original environment assertions only",
+        "scope": ("development pilot; live reward-basis composite" if composite_scoring else
+                  "development pilot; live original environment assertions only"),
         "tau_commit": tau_commit,
         "bridge_binary": {"path": str(args.bridge_binary.resolve()), "sha256": _sha256(args.bridge_binary)},
-        "conditions": conditions, "task_ids": list(TASK_IDS), "models": models,
+        "conditions": conditions, "task_ids": selected_task_ids, "models": models,
         "seed": args.seed, "max_steps": args.max_steps,
         "temperature": 0, "runtime_config": RUNTIME_CONFIG,
         "instantaneous_threshold": THRESHOLD,
@@ -416,7 +508,9 @@ def run(args: argparse.Namespace) -> int:
                     orchestrator.step()
                     orchestrator._check_termination()
                 simulation = orchestrator._finalize()
-                score = _live_assertions(environment, task)
+                score = (_live_composite(environment, task, simulation.messages,
+                                         lambda: build_environment("telecom"))
+                         if composite_scoring else _live_assertions(environment, task))
                 result = {
                     "condition": condition, "task_id": task.id, "seed": args.seed,
                     "termination_reason": simulation.termination_reason,
