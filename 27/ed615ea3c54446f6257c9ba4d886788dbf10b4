@@ -1,0 +1,32 @@
+experiments/public_voice/bridge.py
+  s_81bf62597beb77::t_ebc1e4cc21c68c 118-119,163-167
+  s_81bf62597beb77::t_a1967d30674bf7 109,114-117,120-133,169-170
+experiments/public_voice/README.md
+  s_81bf62597beb77::t_a1967d30674bf7 90-95
+experiments/public_voice/test_bridge.py
+  s_81bf62597beb77::t_58b977a81f5d8a 98-101
+experiments/public_voice/pilot.py
+  s_81bf62597beb77::t_a1967d30674bf7 131-136,139-143,351
+  s_81bf62597beb77::t_ebc1e4cc21c68c 137-138
+experiments/public_voice/test_pilot.py
+  s_81bf62597beb77::t_58b977a81f5d8a 58-75,78-93,98-101,103-106
+  s_81bf62597beb77::t_ebc1e4cc21c68c 154-161,178-179
+  s_81bf62597beb77::t_ec755a28b6cc5b 102
+  s_81bf62597beb77::t_d44592e9d08399 76-77,94-97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "27ed615ea3c54446f6257c9ba4d886788dbf10b4",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
