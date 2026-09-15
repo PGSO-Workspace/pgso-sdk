@@ -1,0 +1,25 @@
+experiments/public_voice/README.md
+  s_81bf62597beb77::t_8ff0ea1fc74da1 96-111
+experiments/public_voice/export_permission_packets.py
+  s_81bf62597beb77::t_b023c4adceb712 1-87,90-123,130-148
+  s_81bf62597beb77::t_9b422e95f235d0 88-89,124-129
+experiments/public_voice/test_export_permission_packets.py
+  s_81bf62597beb77::t_375500ef31f2b4 78-83
+  s_81bf62597beb77::t_9b422e95f235d0 1-77,84-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d88b8c3f3cc819fedf60ec4117eb472a6afff874",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
