@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Persistent NeMo/Invariant policy process for the public voice pilot."""
+"""Persistent external-framework policy process for the public voice pilot."""
 import hashlib
 import importlib
 import importlib.metadata
 import json
 import math
 import struct
+import subprocess
 import sys
+import tomllib
+from contextlib import redirect_stdout
 from pathlib import Path
 
 
@@ -66,7 +69,8 @@ def _source_fingerprint(module_name):
 
 
 class Session:
-    def __init__(self, mode, configured_tools, all_tools, config):
+    def __init__(self, mode, configured_tools, all_tools, config,
+                 agentspec_checkout=None, agentspec_revision=None):
         required = {key: config.get(key) for key in EXPECTED_CONFIG}
         if required != EXPECTED_CONFIG:
             raise ValueError("framework comparator requires the frozen public-voice configuration")
@@ -75,14 +79,129 @@ class Session:
         self.all_tools = _tool_names(all_tools)
         if not self.configured_tools <= self.all_tools:
             raise ValueError("governed tools must be present in the nominal tool set")
-        factory = _nemo_decider if mode == "nemo" else _invariant_decider
-        self.decide = factory(self.configured_tools)
+        self.rules = None
+        self.agentspec = None
+        if mode == "agentspec":
+            self.agentspec = self._load_agentspec(
+                agentspec_checkout, agentspec_revision)
+        else:
+            factory = _nemo_decider if mode == "nemo" else _invariant_decider
+            self.decide = factory(self.configured_tools)
         self.active = False
         self.counter = 0
         self.rising_run = None
         self.last_accepted = None
         self.last_contribution = None
         self.audit = []
+
+    def _load_agentspec(self, checkout_value, revision):
+        checkout = Path(checkout_value or "").resolve()
+        if not checkout.is_dir() or not (checkout / "src/spec_lang/AgentSpec.g4").is_file():
+            raise ValueError("AgentSpec checkout is missing required source files")
+        if not isinstance(revision, str) or len(revision) != 40 or any(
+                character not in "0123456789abcdef" for character in revision):
+            raise ValueError("AgentSpec revision must be a lowercase 40-character commit")
+        actual = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=checkout, check=True,
+            text=True, capture_output=True).stdout.strip()
+        if actual != revision:
+            raise ValueError(f"AgentSpec revision must be {revision}, found {actual}")
+        dirty = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=no"], cwd=checkout,
+            check=True, text=True, capture_output=True).stdout.strip()
+        if dirty:
+            raise ValueError("AgentSpec tracked files differ from the pinned revision")
+        untracked = subprocess.run(
+            ["git", "ls-files", "--others", "--", "src"],
+            cwd=checkout, check=True, text=True, capture_output=True).stdout.splitlines()
+        unsafe_untracked = [path for path in untracked if (
+            Path(path).suffix in {".py", ".g4"} or
+            (Path(path).suffix == ".pyc" and "__pycache__" not in Path(path).parts))]
+        if unsafe_untracked:
+            raise ValueError("AgentSpec checkout contains untracked Python or grammar source")
+        tracked = set(subprocess.run(
+            ["git", "ls-files", "--", "src"], cwd=checkout, check=True,
+            text=True, capture_output=True).stdout.splitlines())
+        source = checkout / "src"
+        sys.path.insert(0, str(source))
+        with redirect_stdout(sys.stderr):
+            from agent import Action
+            from enforcement import EnforceResult
+            from interpreter import RuleInterpreter
+            from rule import Rule
+            from state import RuleState
+            for module_name in ("agent", "enforcement", "interpreter", "rule", "state"):
+                module_path = Path(sys.modules[module_name].__file__).resolve()
+                try:
+                    relative = str(module_path.relative_to(checkout))
+                except ValueError as error:
+                    raise ValueError("AgentSpec module resolved outside the pinned checkout") from error
+                if relative not in tracked:
+                    raise ValueError("AgentSpec module did not resolve to tracked source")
+            rules = {}
+            texts = {}
+            for tool in sorted(self.configured_tools):
+                text = (f"rule @pgso_{tool}\ntrigger {tool}\ncheck true\n"
+                        "enforce skip\nend\n")
+                rules[tool] = Rule.from_text(text)
+                texts[tool] = text
+        self.rules = rules
+        digest = hashlib.sha256()
+        files = []
+        audited_sources = sorted(path for path in tracked
+                                 if Path(path).suffix in {".py", ".g4"})
+        for relative in audited_sources:
+            path = checkout / relative
+            digest.update(relative.encode())
+            digest.update(b"\0")
+            digest.update(path.read_bytes())
+            digest.update(b"\0")
+            files.append(relative)
+        dependencies = {}
+        for distribution in (
+                "antlr4-python3-runtime", "langchain", "langchain-core",
+                "langchain-community", "langchain-experimental", "langchain-openai",
+                "langchain-text-splitters", "openai", "pydantic"):
+            dependencies[distribution] = importlib.metadata.version(distribution)
+        rule_text = "".join(texts[tool] for tool in sorted(texts))
+        project = tomllib.loads((checkout / "pyproject.toml").read_text())["project"]
+        if project.get("name") != "agentspec" or not isinstance(project.get("version"), str):
+            raise ValueError("AgentSpec checkout has unexpected package metadata")
+        return {
+            "checkout": str(checkout), "revision": revision,
+            "git_tree": subprocess.run(
+                ["git", "rev-parse", "HEAD^{tree}"], cwd=checkout, check=True,
+                text=True, capture_output=True).stdout.strip(),
+            "source_sha256": digest.hexdigest(), "source_files": files,
+            "dependencies": dependencies, "rules": texts,
+            "rules_sha256": hashlib.sha256(rule_text.encode()).hexdigest(),
+            "project_version": project["version"],
+            "license_file_present": any((checkout / name).is_file() for name in (
+                "LICENSE", "LICENSE.md", "COPYING", "NOTICE")),
+            "classes": {"Action": Action, "EnforceResult": EnforceResult,
+                        "RuleInterpreter": RuleInterpreter, "RuleState": RuleState},
+        }
+
+    def _agentspec_decide(self, name):
+        _tool_names([name])
+        if not self.active:
+            return "allow", None, "host_no_active_rule"
+        classes = self.agentspec["classes"]
+        matched = None
+        with redirect_stdout(sys.stderr):
+            for rule in self.rules.values():
+                if rule.triggered(name, ""):
+                    matched = rule
+                    break
+            if matched is None:
+                return "allow", None, "host_no_matching_rule"
+            action = classes["Action"](name=name, input="", action=None)
+            state = classes["RuleState"](action=action, intermediate_steps=[])
+            result, replacement = classes["RuleInterpreter"](
+                matched, state).verify_and_enforce(action)
+        if result != classes["EnforceResult"].SKIP or not replacement.is_skip():
+            raise RuntimeError("AgentSpec exact-tool rule did not return native SKIP")
+        return "block", result.name, "upstream_interpreter"
 
     def state(self):
         return {
@@ -145,16 +264,23 @@ class Session:
         if set(command) != {"op", "name", "timestamp_ms"}:
             raise ValueError("call has invalid fields")
         timestamp = _timestamp(command["timestamp_ms"], "timestamp_ms")
-        action = self.decide(command["name"], self.active)
+        if self.mode == "agentspec":
+            action, native_decision, decision_origin = self._agentspec_decide(command["name"])
+        else:
+            action = self.decide(command["name"], self.active)
+            native_decision = action.upper()
+            decision_origin = "framework_dsl"
         record = {"op": "call", "tool": command["name"], "timestamp_ms": timestamp,
-                  "governed": self.active, "action": action}
+                  "governed": self.active, "action": action,
+                  "native_decision": native_decision,
+                  "decision_origin": decision_origin}
         self.audit.append(record)
         return {"ok": True, "action": action, "record": record, "state": self.state()}
 
 
 def main():
-    if len(sys.argv) != 2 or sys.argv[1] not in {"nemo", "invariant"}:
-        raise SystemExit("usage: framework_sidecar.py nemo|invariant")
+    if len(sys.argv) != 2 or sys.argv[1] not in {"nemo", "invariant", "agentspec"}:
+        raise SystemExit("usage: framework_sidecar.py nemo|invariant|agentspec")
     mode = sys.argv[1]
     session = None
     for line in sys.stdin:
@@ -163,26 +289,42 @@ def main():
             if not isinstance(command, dict) or not isinstance(command.get("op"), str):
                 raise ValueError("command must be an object with an op")
             if command["op"] == "init":
-                if session is not None or set(command) != {
-                        "op", "governed_tools", "all_tools", "config"}:
+                expected = {"op", "governed_tools", "all_tools", "config"}
+                if mode == "agentspec":
+                    expected |= {"agentspec_checkout", "agentspec_revision"}
+                if session is not None or set(command) != expected:
                     raise ValueError("invalid or repeated init")
                 session = Session(mode, command["governed_tools"], command["all_tools"],
-                                  command["config"])
-                distribution = "nemoguardrails" if mode == "nemo" else "invariant-ai"
-                module = "nemoguardrails" if mode == "nemo" else "invariant"
-                source_root, source_hash = _source_fingerprint(module)
+                                  command["config"], command.get("agentspec_checkout"),
+                                  command.get("agentspec_revision"))
+                distribution = ("nemoguardrails" if mode == "nemo" else
+                                "invariant-ai" if mode == "invariant" else "agentspec")
+                if mode == "agentspec":
+                    source_root = session.agentspec["checkout"]
+                    source_hash = session.agentspec["source_sha256"]
+                    version = session.agentspec["project_version"]
+                else:
+                    module = "nemoguardrails" if mode == "nemo" else "invariant"
+                    source_root, source_hash = _source_fingerprint(module)
+                    version = importlib.metadata.version(distribution)
                 response = {"ok": True, "state": session.state(), "framework": {
                     "mode": mode, "distribution": distribution,
-                    "version": importlib.metadata.version(distribution),
+                    "version": version,
                     "python": sys.version, "executable": sys.executable,
                     "executable_sha256": hashlib.sha256(
                         Path(sys.executable).read_bytes()).hexdigest(),
                     "module_root": source_root, "module_source_sha256": source_hash,
-                    "policy_source_sha256": hashlib.sha256(
-                        (REPRO / "comparator_adapters.py").read_bytes()).hexdigest(),
+                    "policy_source_sha256": (
+                        session.agentspec["rules_sha256"] if mode == "agentspec" else
+                        hashlib.sha256((REPRO / "comparator_adapters.py").read_bytes()).hexdigest()),
                     "config": EXPECTED_CONFIG,
                     "temporal_state": "host-authored; framework DSL owns candidate-call decision",
                 }}
+                if mode == "agentspec":
+                    response["framework"]["external_runtime"] = {
+                        key: value for key, value in session.agentspec.items()
+                        if key != "classes"
+                    }
             elif session is None:
                 raise ValueError("init required")
             elif command["op"] == "observe":

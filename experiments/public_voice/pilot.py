@@ -21,6 +21,7 @@ from pathlib import Path
 
 
 TAU_COMMIT = "2174a603f6d014ef94473ffa95957f6ce27100db"
+AGENTSPEC_REVISION = "e6fa3902e2cfb9681f454b355691b771f70543f8"
 CONDITIONS = ("B0", "B1", "T", "P")
 TASK_IDS = (
     "[mobile_data_issue]user_abroad_roaming_enabled_off[PERSONA:None]",
@@ -71,6 +72,10 @@ def parser() -> argparse.ArgumentParser:
                      help="opt in to N using this pinned NeMo interpreter")
     run.add_argument("--invariant-python", type=Path,
                      help="opt in to I using this pinned Invariant interpreter")
+    run.add_argument("--agentspec-python", type=Path,
+                     help="opt in to S using a reconstructed AgentSpec interpreter")
+    run.add_argument("--agentspec-checkout", type=Path,
+                     help="external AgentSpec checkout; requires --agentspec-python")
     return result
 
 
@@ -159,15 +164,15 @@ def _install_agent_context(agent, bridge, governor, condition):
         state.system_messages = list(base_messages)
         context = governor.voice_context
         if context is not None:
-            if condition in ("P", "N", "I"):
+            if condition in ("P", "N", "I", "S"):
                 context = {**context, "directives": governor.policy_state["directives"]}
-            objective = (ADAPTATION_OBJECTIVE if condition in ("B1", "P", "N", "I") else
+            objective = (ADAPTATION_OBJECTIVE if condition in ("B1", "P", "N", "I", "S") else
                          "Follow the domain policy and the current host clarification directive. "
                          "Acoustic observations are uncertain, not emotion or intent labels.")
             state.system_messages.append(SystemMessage(role="system", content=(
                 objective + "\nCurrent host voice context:\n" +
                 json.dumps(context, separators=(",", ":")))))
-        if condition in ("P", "N", "I"):
+        if condition in ("P", "N", "I", "S"):
             assert not governor.blocked_tools
         available = set(governor.policy_state["tools"]) - governor.blocked_tools
         agent.tools = [tool for tool in nominal_tools if tool.name in available]
@@ -215,7 +220,7 @@ def _install_cascade(user, client, bridge, governor, condition: str, output: Pat
             event = {"timestamp_ms": audio_timestamp_ms, "readings": readings}
             utterance_observations.append(event)
             observation_history.append(event)
-            if condition in ("P", "N", "I"):
+            if condition in ("P", "N", "I", "S"):
                 observed = governor.observe(event)
                 if not observed.get("ok"):
                     raise RuntimeError(observed.get("error", "policy observation failed"))
@@ -233,11 +238,11 @@ def _install_cascade(user, client, bridge, governor, condition: str, output: Pat
         user_message = user_message.model_copy(deep=True)
         user_message.content = transcribed_text
         voice_context = None
-        if condition in ("B1", "P", "N", "I"):
+        if condition in ("B1", "P", "N", "I", "S"):
             voice_context = {"fixed_voice_config": RUNTIME_CONFIG,
                              "observation_history": observation_history,
                              "governed_tools": sorted(GOVERNED_TOOLS)}
-            if condition in ("P", "N", "I"):
+            if condition in ("P", "N", "I", "S"):
                 voice_context["directives"] = governor.policy_state.get("directives", [])
         elif condition == "T" and threshold_active:
             voice_context = {
@@ -291,13 +296,22 @@ def run(args: argparse.Namespace) -> int:
     from bridge import Bridge, FrameworkPolicy, GovernedEnvironment
 
     conditions = list(CONDITIONS)
-    framework_pythons = {}
+    framework_configs = {}
     if args.nemo_python is not None:
-        framework_pythons["N"] = args.nemo_python
+        framework_configs["N"] = {"mode": "nemo", "python": args.nemo_python}
         conditions.append("N")
     if args.invariant_python is not None:
-        framework_pythons["I"] = args.invariant_python
+        framework_configs["I"] = {"mode": "invariant", "python": args.invariant_python}
         conditions.append("I")
+    if (args.agentspec_python is None) != (args.agentspec_checkout is None):
+        raise SystemExit("--agentspec-python and --agentspec-checkout must be supplied together")
+    if args.agentspec_python is not None:
+        framework_configs["S"] = {
+            "mode": "agentspec", "python": args.agentspec_python,
+            "agentspec_checkout": args.agentspec_checkout,
+            "agentspec_revision": AGENTSPEC_REVISION,
+        }
+        conditions.append("S")
 
     tasks_by_id = {task.id: task for task in get_tasks("telecom", task_split_name="small")}
     tasks = [tasks_by_id[task_id] for task_id in TASK_IDS]
@@ -335,7 +349,9 @@ def run(args: argparse.Namespace) -> int:
                               "no independent intervention-appropriateness labels",
                               "B1/P contrast bundles representation and orchestration",
                               ("NeMo/Invariant are opt-in host-state plus real DSL integrations; "
-                               "they are not native temporal-state implementations")],
+                               "they are not native temporal-state implementations"),
+                              ("AgentSpec S is opt-in host-state plus the official external "
+                               "parser/interpreter; no upstream code is vendored")],
         "frameworks": {},
     }
     (args.output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
@@ -368,12 +384,14 @@ def run(args: argparse.Namespace) -> int:
                             session=f"{condition}:{task.id}")
             framework_policy = None
             try:
-                if condition in framework_pythons:
-                    mode = "nemo" if condition == "N" else "invariant"
+                if condition in framework_configs:
+                    framework = framework_configs[condition]
                     framework_policy = FrameworkPolicy(
-                        mode, framework_pythons[condition], GOVERNED_TOOLS,
+                        framework["mode"], framework["python"], GOVERNED_TOOLS,
                         {tool.name for tool in environment.get_tools()}, RUNTIME_CONFIG,
                         run_dir / "framework.stderr.log",
+                        agentspec_checkout=framework.get("agentspec_checkout"),
+                        agentspec_revision=framework.get("agentspec_revision"),
                     )
             except BaseException:
                 bridge.close()
@@ -408,6 +426,7 @@ def run(args: argparse.Namespace) -> int:
                     "framework_state": (framework_policy.state if framework_policy else None),
                     "pgso_audit": bridge.receipts,
                     "framework_audit": (framework_policy.audit if framework_policy else []),
+                    "framework_stderr": ("framework.stderr.log" if framework_policy else None),
                     "messages": [message.model_dump(mode="json") for message in simulation.messages],
                 }
                 (run_dir / "result.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -418,6 +437,7 @@ def run(args: argparse.Namespace) -> int:
                            "attempts": governor.attempts, "effects": governor.effects,
                            "pgso_audit": bridge.receipts,
                            "framework_audit": (framework_policy.audit if framework_policy else []),
+                           "framework_stderr": ("framework.stderr.log" if framework_policy else None),
                            "messages": [m.model_dump(mode="json") for m in orchestrator.trajectory]}
                 (run_dir / "failure.json").write_text(json.dumps(failure, indent=2) + "\n")
                 raise
