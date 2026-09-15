@@ -43,6 +43,7 @@ jobs:
         run: |
           python3 experiments/reproducibility/test_package.py
           python3 experiments/reproducibility/test_comparison.py
+          python3 experiments/reproducibility/test_measure_operations.py
           python3 experiments/reproducibility/run.py --profile dev --output "${{ runner.temp }}/pgso-evaluation"
 
       - name: Doc (deny warnings; enforces #![deny(missing_docs)])

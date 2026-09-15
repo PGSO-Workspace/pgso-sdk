@@ -12,7 +12,7 @@ use std::collections::{HashSet, VecDeque};
 use std::env;
 use std::error::Error;
 use std::fs;
-use std::io::{self, Read};
+use std::io::{self, BufRead, Read, Write};
 use std::rc::Rc;
 use std::sync::{
     atomic::{AtomicUsize, Ordering},
@@ -250,18 +250,7 @@ fn parse_and_validate(input: &str) -> Result<Vec<Episode>, Box<dyn Error>> {
     Ok(episodes)
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let mut args = env::args_os().skip(1);
-    let input = match (args.next(), args.next()) {
-        (None, None) => {
-            let mut input = String::new();
-            io::stdin().read_to_string(&mut input)?;
-            input
-        }
-        (Some(path), None) => fs::read_to_string(path)?,
-        _ => return Err(invalid("usage: lifecycle_comparison [INPUT.json]")),
-    };
-    let episodes = parse_and_validate(&input)?;
+fn evaluate(episodes: Vec<Episode>) -> Result<Vec<EpisodeOutput>, Box<dyn Error>> {
     let mut results = Vec::with_capacity(episodes.len());
 
     for episode in episodes {
@@ -344,7 +333,39 @@ fn main() -> Result<(), Box<dyn Error>> {
             callback_count: count.load(Ordering::SeqCst),
         });
     }
-    println!("{}", serde_json::to_string(&results)?);
+    Ok(results)
+}
+
+fn serve() -> Result<(), Box<dyn Error>> {
+    let stdin = io::stdin();
+    let mut stdout = io::stdout().lock();
+    writeln!(stdout, r#"{{"ready":true}}"#)?;
+    stdout.flush()?;
+    for line in stdin.lock().lines() {
+        let episodes = parse_and_validate(&line?)?;
+        serde_json::to_writer(&mut stdout, &evaluate(episodes)?)?;
+        stdout.write_all(b"\n")?;
+        stdout.flush()?;
+    }
+    Ok(())
+}
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let mut args = env::args_os().skip(1);
+    let input = match (args.next(), args.next()) {
+        (Some(flag), None) if flag == "--serve" => return serve(),
+        (None, None) => {
+            let mut input = String::new();
+            io::stdin().read_to_string(&mut input)?;
+            input
+        }
+        (Some(path), None) => fs::read_to_string(path)?,
+        _ => return Err(invalid("usage: lifecycle_comparison [INPUT.json]")),
+    };
+    println!(
+        "{}",
+        serde_json::to_string(&evaluate(parse_and_validate(&input)?)?)?
+    );
     Ok(())
 }
 
