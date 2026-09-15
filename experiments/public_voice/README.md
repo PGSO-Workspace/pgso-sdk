@@ -93,6 +93,27 @@ before the assistant tool-call message. These fields are output-only annotation
 material: they are never added to agent or simulator context. They make later
 blinded policy assessment possible; they are not human annotations themselves.
 
+Create randomized action-permission review material offline with an explicit copy
+of the policy reviewers must apply:
+
+```bash
+python experiments/public_voice/export_permission_packets.py \
+  --pilot-dir /path/to/pilot-output --policy /path/to/pinned-telecom-policy.md \
+  --output /new/private-export-directory --seed 20260915
+```
+
+The command refuses an existing output directory. Distribute only `reviewer/`;
+`private/linkage.json` contains the seed and task, condition and attempt linkage.
+Reviewer packets omit later dialogue, outcomes, scores and PGSO treatment records.
+Literal dialogue remains quoted benchmark data rather than reviewer instructions.
+The policy file must exactly match the effective composite policy text and hash
+recorded by the pilot, including both main and technical-support policy wrappers;
+main-policy-only files are refused. Dialogue behavior may still make treatment
+inferable. These packets cover attempted actions only: they cannot reveal permitted
+actions that catalog hiding prevented the agent from attempting, and therefore
+cannot estimate all withheld opportunities. Reviewing incomplete trajectories is a
+separate prerequisite.
+
 ## Reproduce the integration checks
 
 Run from the SDK root on Linux with Python 3.12 (`audioop` is used for PCM conversion):

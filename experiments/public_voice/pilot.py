@@ -291,6 +291,7 @@ def run(args: argparse.Namespace) -> int:
     for task in tasks:
         if not task.evaluation_criteria.env_assertions or task.evaluation_criteria.reward_basis != ["ENV_ASSERTION"]:
             raise SystemExit("pilot fixture must have ENV_ASSERTION-only outcomes")
+    effective_policy = build_environment("telecom").get_policy()
     args.output.mkdir(parents=True)
     models = {"agent": args.agent_model, "user": args.user_model,
               "tts": args.tts_model, "voice": args.tts_voice, "asr": args.asr_model}
@@ -307,6 +308,8 @@ def run(args: argparse.Namespace) -> int:
         "dependencies": {d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},
         "source_hashes": {p.name: _sha256(p) for p in (Path(__file__), Path(__file__).with_name("bridge.py"))},
         "task_hashes": {task.id: hashlib.sha256(task.model_dump_json().encode()).hexdigest() for task in tasks},
+        "effective_policy": {"text": effective_policy,
+                             "sha256": hashlib.sha256(effective_policy.encode()).hexdigest()},
         "telecom_file_hashes": {str(p.relative_to(args.tau_root)): _sha256(p)
                                for p in sorted((args.tau_root / "data/tau2/domains/telecom").rglob("*")) if p.is_file()},
         "clock": "concatenated user audio with 400ms inter-utterance gap; no processing or assistant-speech time",
@@ -329,6 +332,8 @@ def run(args: argparse.Namespace) -> int:
             run_dir = args.output / condition / hashlib.sha256(task.id.encode()).hexdigest()[:12]
             run_dir.mkdir(parents=True)
             environment = build_environment("telecom")
+            if environment.get_policy() != effective_policy:
+                raise RuntimeError("effective telecom policy changed between pilot sessions")
             agent = LLMAgent(environment.get_tools(), environment.get_policy(), models["agent"],
                              {"temperature": 0})
             user = build_user("user_simulator", environment, task, llm=models["user"],
