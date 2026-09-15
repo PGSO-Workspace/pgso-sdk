@@ -146,6 +146,12 @@ class PilotOfflineFullLoop(unittest.TestCase):
                 self.assertEqual(pilot.run(namespace), 0)
 
             results = json.loads((output / "results.json").read_text())
+            manifest = json.loads((output / "manifest.json").read_text())
+            effective_policy = manifest["effective_policy"]
+            self.assertIn("<main_policy>", effective_policy["text"])
+            self.assertIn("<tech_support_policy>", effective_policy["text"])
+            self.assertEqual(hashlib.sha256(effective_policy["text"].encode()).hexdigest(),
+                             effective_policy["sha256"])
             self.assertEqual(len(results), 12)
             self.assertEqual({result["condition"] for result in results}, set(pilot.CONDITIONS))
             self.assertEqual({result["task_id"] for result in results}, set(pilot.TASK_IDS))
