@@ -1,0 +1,21 @@
+experiments/public_voice/test_framework_comparators.py
+  s_81bf62597beb77::t_eff02a996c6b24 107-129
+experiments/public_voice/framework_sidecar.py
+  s_81bf62597beb77::t_eff02a996c6b24 115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "62937adb3fdc343ca047689d89f858feed8e9846",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
