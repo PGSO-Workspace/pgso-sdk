@@ -89,6 +89,17 @@ binaries or copy historical result files. A result should be cited together with
 its manifest and complete case outputs. Rerun after any implementation or fixture
 change; passing historical outputs are not evidence for a new revision.
 
+### Recorded reference execution
+
+The [reference outputs](reference-results/54c1c7d/results.json) were obtained from
+the clean source revision `54c1c7d` on the platform recorded in its
+[manifest](reference-results/54c1c7d/manifest.json), using a release build.
+The run produced zero mismatches on 184 labeled observations (454 observations
+in total), and passed all 13 execution and 14 transport cases. The raw inputs,
+trace, and individual case outputs are retained beside the manifest. This is a
+bounded engineering result, not an empirical comparison or population estimate.
+The subsequent commit adds this record without changing the evaluated source.
+
 ## Scope of the remaining research
 
 Separate studies are required for matched comparisons with existing governance

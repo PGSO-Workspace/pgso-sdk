@@ -1,0 +1,171 @@
+[
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "callback_count": 1,
+    "case": "allowed_call",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "tool currently unavailable"
+    },
+    "callback_count": 0,
+    "case": "pruned_quote",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "tool currently unavailable"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "callback_count": 0,
+    "case": "protected_human_step_up_missing",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "callback_count": 1,
+    "case": "granted_token",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "confirmation required"
+    },
+    "callback_count": 1,
+    "case": "token_replay",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "confirmation required"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "invalid arguments"
+    },
+    "callback_count": 0,
+    "case": "wrong_arguments",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "invalid arguments"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "callback_count": 0,
+    "case": "wrong_arguments_consumes_token",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "callback_count": 0,
+    "case": "policy_transition_sequence_revokes_token",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "confirmation required"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "invalid or expired confirmation"
+    },
+    "callback_count": 0,
+    "case": "expired_token",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "invalid or expired confirmation"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 0,
+      "outcome": "wrong session"
+    },
+    "callback_count": 0,
+    "case": "session_isolation",
+    "expected": {
+      "callback_count": 0,
+      "outcome": "wrong session"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "callback_count": 1,
+    "case": "session_isolation_preserves_token",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "completed"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "injected callback failure"
+    },
+    "callback_count": 1,
+    "case": "callback_failure",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "injected callback failure"
+    },
+    "pass": true
+  },
+  {
+    "actual": {
+      "callback_count": 1,
+      "outcome": "confirmation required"
+    },
+    "callback_count": 1,
+    "case": "callback_failure_consumes_token",
+    "expected": {
+      "callback_count": 1,
+      "outcome": "confirmation required"
+    },
+    "pass": true
+  }
+]
