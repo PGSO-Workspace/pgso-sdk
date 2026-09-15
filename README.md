@@ -20,6 +20,10 @@ in the [reproducibility package](experiments/reproducibility/README.md).
 The [operational measurement report](experiments/reproducibility/operational-results-7805fb9.md)
 compares four persistent integrations on one host and reports diagnostic receipt
 checks; developer effort and human interaction outcomes remain unmeasured.
+The [public voice-task pilot](experiments/public_voice/README.md) connects the SDK
+to pinned telecom sandbox tools and independent task predicates. Its integration
+checks are separate from the metered conversational experiment and establish no
+comparative task-utility result.
 
 ## Architecture
 

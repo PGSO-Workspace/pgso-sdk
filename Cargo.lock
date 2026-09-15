@@ -881,6 +881,7 @@ dependencies = [
  "jsonschema",
  "pgso-actuator-mcp",
  "pgso-core",
+ "pgso-signal-egemaps",
  "rand",
  "serde",
  "serde_json",
