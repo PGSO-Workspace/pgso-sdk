@@ -1,0 +1,28 @@
+experiments/reproducibility/comparator_adapters.py
+  s_81bf62597beb77::t_d579772e6d478f 198-204
+crates/pgso-actuator-http/examples/lifecycle_comparison.rs
+  s_81bf62597beb77::t_721b59b1e76f77 208-211,213-221,223-225,227-250,264,281-282,350-360,365-366
+  s_81bf62597beb77::t_70386ac63c806a 226,361-364
+.github/workflows/ci.yml
+  s_81bf62597beb77::t_91d187fbff4637 38-40
+experiments/reproducibility/README.md
+  s_81bf62597beb77::t_149759d76e2fe1 119,187
+experiments/reproducibility/compare_lifecycle.py
+  s_81bf62597beb77::t_683d80be2e956c 120-121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "090fcd8bed0db2620e38f935853b27c9771f9411",
+  "prompts": {},
+  "sessions": {
+    "s_81bf62597beb77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09634-16f5-7683-8dee-23f8ff5526b5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
