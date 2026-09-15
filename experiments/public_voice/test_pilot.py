@@ -135,6 +135,13 @@ class PilotOfflineFullLoop(unittest.TestCase):
             "--bridge-binary", str(ROOT.parent.parent / "target/debug/examples/voice_bridge"),
             "--output", "PLACEHOLDER", "--max-steps", "8",
         ]
+        framework_paths = {
+            "--nemo-python": os.environ.get("PGSO_NEMO_PYTHON"),
+            "--invariant-python": os.environ.get("PGSO_INVARIANT_PYTHON"),
+        }
+        for flag, path in framework_paths.items():
+            if path:
+                args.extend([flag, path])
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "pilot"
             args[args.index("PLACEHOLDER")] = str(output)
@@ -152,8 +159,13 @@ class PilotOfflineFullLoop(unittest.TestCase):
             self.assertIn("<tech_support_policy>", effective_policy["text"])
             self.assertEqual(hashlib.sha256(effective_policy["text"].encode()).hexdigest(),
                              effective_policy["sha256"])
-            self.assertEqual(len(results), 12)
-            self.assertEqual({result["condition"] for result in results}, set(pilot.CONDITIONS))
+            expected_conditions = set(pilot.CONDITIONS)
+            if framework_paths["--nemo-python"]:
+                expected_conditions.add("N")
+            if framework_paths["--invariant-python"]:
+                expected_conditions.add("I")
+            self.assertEqual(len(results), 3 * len(expected_conditions))
+            self.assertEqual({result["condition"] for result in results}, expected_conditions)
             self.assertEqual({result["task_id"] for result in results}, set(pilot.TASK_IDS))
             self.assertTrue(all(len(result["attempts"]) == len(result["effects"]) == 1
                                 for result in results))
@@ -183,7 +195,7 @@ class PilotOfflineFullLoop(unittest.TestCase):
                                 if name == "user_simulator_response"))
             self.assertTrue(all("pre_attempt_state" not in payload
                                 for _, payload in llm_requests))
-            self.assertEqual(user_calls, 24)
+            self.assertEqual(user_calls, 6 * len(expected_conditions))
 
     def test_retired_directive_is_absent_from_next_agent_prompt(self):
         from tau2.agent.llm_agent import LLMAgent
@@ -193,7 +205,7 @@ class PilotOfflineFullLoop(unittest.TestCase):
         agent = LLMAgent(env.get_tools(), env.get_policy(), "offline")
         bridge = SimpleNamespace(state={"tools": [t.name for t in env.get_tools()],
                                         "directives": ["TEMPORARY_TEST_DIRECTIVE"]})
-        host = SimpleNamespace(blocked_tools=set())
+        host = SimpleNamespace(blocked_tools=set(), policy_state=bridge.state)
         pilot._install_agent_context(agent, bridge, host, "P")
         host.voice_context = {"observation_history": [], "directives": ["stale copy"]}
         state = agent.get_init_state()

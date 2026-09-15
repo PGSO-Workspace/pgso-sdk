@@ -38,6 +38,18 @@ experimental treatments; the task labels do not establish their appropriateness.
 The policy may unnecessarily prevent a legitimate repair. Such failures must be
 retained, not reclassified as successful protection.
 
+The opt-in N and I arms use persistent NeMo Guardrails and Invariant sidecars in
+separate pinned interpreters. They receive the same raw observations, catalog,
+directive, history and frozen numeric configuration as P. Host code maintains the
+documented temporal state, while each framework's real DSL decides whether the
+candidate tool call is allowed. No PGSO state, verdict or scoring label enters a
+sidecar. The shared Rust bridge supplies schema validation, host permissions and
+the in-stack sandbox callback with an empty paralinguistic governed set for these
+arms. The host executes policy evaluation and callback sequentially; this setup
+does not claim native framework temporal state or protection from another host
+thread mutating the sandbox between those operations. A sidecar timeout, exit,
+error or non-JSON stdout fails the call closed and remains in the run artifacts.
+
 The offline sandbox checks reproduce this limitation in the second selected task:
 sustained injected signal withholds its required `enable_roaming` repair and leaves
 both original live environment assertions false until the signal returns to nominal
@@ -129,6 +141,20 @@ cargo build --locked -p pgso-actuator-http --example voice_bridge
 /tmp/pgso-tau-venv/bin/python experiments/public_voice/test_pilot.py
 ```
 
+For the opt-in real-framework checks, create separate interpreters because the
+framework dependency ranges conflict with the tau environment, install
+`nemoguardrails==0.24.0` and `invariant-ai==0.3.5` respectively, then run:
+
+```bash
+PGSO_NEMO_PYTHON=/tmp/pgso-nemo-venv312/bin/python \
+PGSO_INVARIANT_PYTHON=/tmp/pgso-invariant-venv/bin/python \
+/tmp/pgso-tau-venv/bin/python experiments/public_voice/test_framework_comparators.py
+
+PGSO_NEMO_PYTHON=/tmp/pgso-nemo-venv312/bin/python \
+PGSO_INVARIANT_PYTHON=/tmp/pgso-invariant-venv/bin/python \
+/tmp/pgso-tau-venv/bin/python experiments/public_voice/test_pilot.py
+```
+
 These checks exercise real tools, PGSO and the simulator control loop while
 replacing paid generation in the loop test. They do not produce research estimates
 of task utility. The dependency snapshot includes upstream's import-time voice
@@ -148,6 +174,14 @@ explicitly; every selected model identifier is recorded in the manifest.
   --output /tmp/pgso-public-voice-live-pilot
 ```
 
+Adding `--nemo-python /path/to/python` and/or
+`--invariant-python /path/to/python` appends N and/or I; omitting both preserves
+the twelve-session four-arm pilot. Their executable, package version, module-tree
+hash, DSL source hash, configuration and stderr path are recorded. These arms use
+the same effective composite tau policy text and hash stored for every condition.
+They remain prune-only; the separate opt-in step-up bridge capability is outside
+this comparison.
+
 This invokes metered agent, user-simulator, speech synthesis and transcription
 services. It stores WAV files, original/ASR transcripts, observations, trajectories,
 effect logs, component scores and manifests with binary, source, fixture and
@@ -162,8 +196,8 @@ development sample is needed before selecting a meaningful effect and task-level
 sample size. Then freeze policies, statistical contrasts, clean-task degradation
 tolerance, exclusions, repetitions, held-out voices/noise and transfer tasks.
 
-Matched NeMo/Invariant task-level implementations, aligned-versus-shuffled signal
-controls, independent action-appropriateness assessment and transfer-domain runs
-remain subsequent validation work. Existing lifecycle parity tests do not substitute
-for these experiments. Do not describe this integration as evidence of empathy,
+Aligned-versus-shuffled signal controls, independent action-appropriateness
+assessment and transfer-domain runs remain subsequent validation work. The offline
+N/I connectivity and lifecycle checks do not establish task benefit or substitute
+for those experiments. Do not describe this integration as evidence of empathy,
 sales conversion, deployment safety, or Q1 acceptance.

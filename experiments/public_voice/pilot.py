@@ -67,6 +67,10 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--asr-model", default="gpt-4o-mini-transcribe")
     run.add_argument("--seed", type=int, default=20260915)
     run.add_argument("--max-steps", type=int, default=30)
+    run.add_argument("--nemo-python", type=Path,
+                     help="opt in to N using this pinned NeMo interpreter")
+    run.add_argument("--invariant-python", type=Path,
+                     help="opt in to I using this pinned Invariant interpreter")
     return result
 
 
@@ -155,17 +159,17 @@ def _install_agent_context(agent, bridge, governor, condition):
         state.system_messages = list(base_messages)
         context = governor.voice_context
         if context is not None:
-            if condition == "P":
-                context = {**context, "directives": bridge.state["directives"]}
-            objective = (ADAPTATION_OBJECTIVE if condition in ("B1", "P") else
+            if condition in ("P", "N", "I"):
+                context = {**context, "directives": governor.policy_state["directives"]}
+            objective = (ADAPTATION_OBJECTIVE if condition in ("B1", "P", "N", "I") else
                          "Follow the domain policy and the current host clarification directive. "
                          "Acoustic observations are uncertain, not emotion or intent labels.")
             state.system_messages.append(SystemMessage(role="system", content=(
                 objective + "\nCurrent host voice context:\n" +
                 json.dumps(context, separators=(",", ":")))))
-        if condition == "P":
+        if condition in ("P", "N", "I"):
             assert not governor.blocked_tools
-        available = set(bridge.state["tools"]) - governor.blocked_tools
+        available = set(governor.policy_state["tools"]) - governor.blocked_tools
         agent.tools = [tool for tool in nominal_tools if tool.name in available]
         return original(message, state)
 
@@ -211,10 +215,10 @@ def _install_cascade(user, client, bridge, governor, condition: str, output: Pat
             event = {"timestamp_ms": audio_timestamp_ms, "readings": readings}
             utterance_observations.append(event)
             observation_history.append(event)
-            if condition == "P":
-                observed = bridge.request({"op": "observe", **event})
+            if condition in ("P", "N", "I"):
+                observed = governor.observe(event)
                 if not observed.get("ok"):
-                    raise RuntimeError(observed.get("error", "PGSO observation failed"))
+                    raise RuntimeError(observed.get("error", "policy observation failed"))
         governor.timestamp_ms = audio_timestamp_ms
         threshold_active = bool(utterance_observations and
                                 _instantaneous_blocks(utterance_observations[-1]["readings"]))
@@ -229,12 +233,12 @@ def _install_cascade(user, client, bridge, governor, condition: str, output: Pat
         user_message = user_message.model_copy(deep=True)
         user_message.content = transcribed_text
         voice_context = None
-        if condition in ("B1", "P"):
+        if condition in ("B1", "P", "N", "I"):
             voice_context = {"fixed_voice_config": RUNTIME_CONFIG,
                              "observation_history": observation_history,
                              "governed_tools": sorted(GOVERNED_TOOLS)}
-            if condition == "P":
-                voice_context["directives"] = bridge.state.get("directives", [])
+            if condition in ("P", "N", "I"):
+                voice_context["directives"] = governor.policy_state.get("directives", [])
         elif condition == "T" and threshold_active:
             voice_context = {
                 "directive": "Ask the user for clarification before continuing.",
@@ -284,7 +288,16 @@ def run(args: argparse.Namespace) -> int:
     from tau2.agent.llm_agent import LLMAgent
     from tau2.orchestrator.orchestrator import Orchestrator
     from tau2.runner import build_environment, build_user, get_tasks
-    from bridge import Bridge, GovernedEnvironment
+    from bridge import Bridge, FrameworkPolicy, GovernedEnvironment
+
+    conditions = list(CONDITIONS)
+    framework_pythons = {}
+    if args.nemo_python is not None:
+        framework_pythons["N"] = args.nemo_python
+        conditions.append("N")
+    if args.invariant_python is not None:
+        framework_pythons["I"] = args.invariant_python
+        conditions.append("I")
 
     tasks_by_id = {task.id: task for task in get_tasks("telecom", task_split_name="small")}
     tasks = [tasks_by_id[task_id] for task_id in TASK_IDS]
@@ -299,14 +312,18 @@ def run(args: argparse.Namespace) -> int:
         "scope": "development pilot; live original environment assertions only",
         "tau_commit": tau_commit,
         "bridge_binary": {"path": str(args.bridge_binary.resolve()), "sha256": _sha256(args.bridge_binary)},
-        "conditions": list(CONDITIONS), "task_ids": list(TASK_IDS), "models": models,
+        "conditions": conditions, "task_ids": list(TASK_IDS), "models": models,
         "seed": args.seed, "max_steps": args.max_steps,
         "temperature": 0, "runtime_config": RUNTIME_CONFIG,
         "instantaneous_threshold": THRESHOLD,
         "governed_tools": sorted(GOVERNED_TOOLS),
         "python": sys.version,
         "dependencies": {d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},
-        "source_hashes": {p.name: _sha256(p) for p in (Path(__file__), Path(__file__).with_name("bridge.py"))},
+        "source_hashes": {str(p.relative_to(Path(__file__).parent.parent)): _sha256(p) for p in (
+            Path(__file__), Path(__file__).with_name("bridge.py"),
+            Path(__file__).with_name("framework_sidecar.py"),
+            Path(__file__).parent.parent / "reproducibility/comparator_adapters.py",
+        )},
         "task_hashes": {task.id: hashlib.sha256(task.model_dump_json().encode()).hexdigest() for task in tasks},
         "effective_policy": {"text": effective_policy,
                              "sha256": hashlib.sha256(effective_policy.encode()).hexdigest()},
@@ -317,12 +334,14 @@ def run(args: argparse.Namespace) -> int:
                               "three development tasks; not a powered confirmatory study",
                               "no independent intervention-appropriateness labels",
                               "B1/P contrast bundles representation and orchestration",
-                              "NeMo/Invariant portability not executed here"],
+                              ("NeMo/Invariant are opt-in host-state plus real DSL integrations; "
+                               "they are not native temporal-state implementations")],
+        "frameworks": {},
     }
     (args.output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     client = OpenAI()
     results = []
-    condition_order = list(CONDITIONS)
+    condition_order = list(conditions)
     import random
     random.Random(args.seed).shuffle(condition_order)
     manifest["execution_order"] = condition_order
@@ -347,7 +366,27 @@ def run(args: argparse.Namespace) -> int:
             bridge = Bridge(args.bridge_binary, environment.get_tools(),
                             GOVERNED_TOOLS if condition == "P" else set(),
                             session=f"{condition}:{task.id}")
-            governor = GovernedEnvironment(environment, bridge)
+            framework_policy = None
+            try:
+                if condition in framework_pythons:
+                    mode = "nemo" if condition == "N" else "invariant"
+                    framework_policy = FrameworkPolicy(
+                        mode, framework_pythons[condition], GOVERNED_TOOLS,
+                        {tool.name for tool in environment.get_tools()}, RUNTIME_CONFIG,
+                        run_dir / "framework.stderr.log",
+                    )
+            except BaseException:
+                bridge.close()
+                raise
+            if framework_policy is not None:
+                previous = manifest["frameworks"].get(condition)
+                if previous is not None and previous != framework_policy.framework:
+                    framework_policy.close()
+                    bridge.close()
+                    raise RuntimeError(f"{condition} framework environment changed between sessions")
+                manifest["frameworks"][condition] = framework_policy.framework
+                (args.output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+            governor = GovernedEnvironment(environment, bridge, framework_policy)
             if bridge.config != RUNTIME_CONFIG:
                 governor.close()
                 raise RuntimeError("Rust/Python pilot configuration mismatch")
@@ -365,7 +404,10 @@ def run(args: argparse.Namespace) -> int:
                     "termination_reason": simulation.termination_reason,
                     "score": score,
                     "attempts": governor.attempts, "effects": governor.effects,
-                    "pgso_state": bridge.state, "pgso_audit": bridge.receipts,
+                    "pgso_state": bridge.state,
+                    "framework_state": (framework_policy.state if framework_policy else None),
+                    "pgso_audit": bridge.receipts,
+                    "framework_audit": (framework_policy.audit if framework_policy else []),
                     "messages": [message.model_dump(mode="json") for message in simulation.messages],
                 }
                 (run_dir / "result.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -375,6 +417,7 @@ def run(args: argparse.Namespace) -> int:
                            "status": "execution_failed_not_a_task_score", "error": str(error),
                            "attempts": governor.attempts, "effects": governor.effects,
                            "pgso_audit": bridge.receipts,
+                           "framework_audit": (framework_policy.audit if framework_policy else []),
                            "messages": [m.model_dump(mode="json") for m in orchestrator.trajectory]}
                 (run_dir / "failure.json").write_text(json.dumps(failure, indent=2) + "\n")
                 raise
