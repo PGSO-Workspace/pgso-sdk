@@ -43,6 +43,38 @@ implemented. Panics with unwind enabled become failed receipts; aborting process
 cannot produce an in-memory receipt. Receipts are not a durable or tamper-evident
 log: the host must drain and persist execution receipts and policy transitions.
 
+## Diagnostic receipts
+
+Each execution receipt includes a structured `reason` alongside the existing
+`outcome`, plus `policy_transition_count`: the length of the committed policy
+transition history at that attempt. This identifies the applicable history
+prefix even when several calls share a timestamp and after earlier execution
+receipts have been drained. An empty prefix means no committed transition has
+been recorded; host permissions may nevertheless have changed.
+
+Persist execution receipts together with `runtime.policy_audit().transitions()`
+and the initial runtime configuration. The count is local to one runtime instance;
+associate it with a host-owned runtime-instance identifier across restarts.
+The revision also changes on host-permission updates and clock rollback, so the
+transition count is not a replacement for the authorization revision.
+
+Reasons classify authorization and callback outcomes without copying argument
+values, confirmation tokens, or arbitrary callback error/panic text into the
+receipt. The ordinary call response retains its existing error behavior; hosts
+must apply their own disclosure policy when exposing callback errors. Process
+panic hooks are likewise outside receipt sanitization.
+
+These fields do not form a complete causal replay log. The host must separately
+retain permissions/configuration changes, approval events, raw observations and
+failed policy operations when the investigation requires them. A callback can
+perform effects and subsequently fail; a failed receipt does not imply rollback.
+Improved recorded information alone does not establish faster human diagnosis.
+
+`ExecutionRecord` has new public fields and a public serialized reason enum.
+Consumers constructing struct literals or rejecting unknown serialized fields
+must update their integrations. Existing `call`/`approve` return types and tool
+responses remain unchanged.
+
 Run the local echo example with `PGSO_BEARER` set in your environment:
 
 ```sh

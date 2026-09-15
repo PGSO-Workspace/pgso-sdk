@@ -224,3 +224,22 @@ provides no evidence of PGSO superiority over either integration. The ablation
 counts show disagreement with authored temporal rules, not measured harms or
 inferior human experience. Natural-speech and human-preference evidence remains
 uncollected by this package.
+
+## Execution diagnostics regression
+
+The HTTP runtime's diagnostic receipts are checked in
+[`tests/execution.rs`](../../crates/pgso-actuator-http/tests/execution.rs).
+The tests exercise actual authorization and callbacks, assert bounded reasons
+for denials/failures, check that receipt serialization omits callback error text
+and confirmation tokens, and link same-timestamp calls to the committed policy
+history across receipt drains.
+
+```bash
+cargo test -p pgso-actuator-http --test execution
+```
+
+This is a functional information-availability check. It does not measure human
+incident-diagnosis accuracy, developer effort, or comparative auditability.
+Those require independent tasks and equivalent competitor instrumentation as
+specified in the research protocol. Complete event replay and durable audit
+storage remain host responsibilities.

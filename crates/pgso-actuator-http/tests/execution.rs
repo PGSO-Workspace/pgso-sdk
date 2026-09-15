@@ -2,7 +2,7 @@ use axum::{
     body::{to_bytes, Body},
     http::Request,
 };
-use pgso_actuator_http::{router, CallRequest, Runtime, ToolBinding};
+use pgso_actuator_http::{router, CallRequest, ExecutionReason, Runtime, ToolBinding};
 use pgso_actuator_mcp::{McpActuator, ToolDefinition};
 use pgso_core::*;
 use serde_json::{json, Value};
@@ -127,6 +127,18 @@ fn confirmations_are_bound_expiring_single_use_and_revocable() {
         1
     );
     assert!(receipts.iter().all(|r| r.session == "s1"));
+    assert!(receipts
+        .iter()
+        .any(|record| record.reason == ExecutionReason::Completed));
+    assert!(receipts
+        .iter()
+        .any(|record| record.reason == ExecutionReason::PermissionDenied));
+    assert!(receipts
+        .iter()
+        .any(|record| record.reason == ExecutionReason::InvalidOrExpiredConfirmation));
+    assert!(receipts
+        .iter()
+        .all(|record| record.policy_transition_count == 0));
 }
 
 #[test]
@@ -139,6 +151,12 @@ fn observed_clock_rollback_revokes_approval() {
     assert!(runtime.call(request(), 120).is_err());
     assert!(runtime.call(r, 105).is_err());
     assert_eq!(effects.load(Ordering::SeqCst), 0);
+    let receipts = runtime.drain_execution_log();
+    assert_eq!(
+        receipts.last().unwrap().reason,
+        ExecutionReason::ClockRollback
+    );
+    assert_eq!(receipts.last().unwrap().revision, 1);
 }
 
 #[test]
@@ -275,6 +293,10 @@ fn stale_discovery_and_confirmation_cannot_bypass_new_restriction() {
     runtime.expire_before(3).unwrap();
     assert!(runtime.call(r, 4).is_err());
     assert_eq!(effects.load(Ordering::SeqCst), 0);
+    assert!(runtime
+        .drain_execution_log()
+        .iter()
+        .any(|record| record.reason == ExecutionReason::ToolUnavailable));
 }
 
 #[test]
@@ -300,4 +322,81 @@ fn failed_and_panicking_callbacks_consume_confirmation_and_leave_receipts() {
     let mut r = request();
     r.confirmation = Some(runtime.approve(&r, 24, 100).unwrap());
     assert!(runtime.call(r, 25).is_ok());
+}
+
+#[test]
+fn receipts_report_bounded_denial_and_failure_reasons_without_secrets() {
+    let (mut runtime, _) = setup();
+    assert!(runtime.call(request(), 1).is_err());
+
+    let mut wrong_session = request();
+    wrong_session.session = "secret-session".into();
+    assert!(runtime.call(wrong_session, 2).is_err());
+
+    let mut invalid = request();
+    invalid.arguments = json!({"amount": "secret-argument"});
+    assert!(runtime.call(invalid, 3).is_err());
+
+    let mut failed = request();
+    failed.arguments = json!({"amount": 13});
+    failed.confirmation = Some(runtime.approve(&failed, 4, 100).unwrap());
+    let failed_confirmation = failed.confirmation.clone().unwrap();
+    assert_eq!(runtime.call(failed, 5).unwrap_err(), "injected failure");
+
+    let mut panicked = request();
+    panicked.arguments = json!({"amount": 14});
+    panicked.confirmation = Some(runtime.approve(&panicked, 6, 100).unwrap());
+    let panicked_confirmation = panicked.confirmation.clone().unwrap();
+    assert_eq!(
+        runtime.call(panicked, 7).unwrap_err(),
+        "tool callback panicked"
+    );
+
+    let receipts = runtime.drain_execution_log();
+    assert_eq!(
+        receipts
+            .iter()
+            .map(|record| record.reason)
+            .collect::<Vec<_>>(),
+        vec![
+            ExecutionReason::ConfirmationMissing,
+            ExecutionReason::WrongSession,
+            ExecutionReason::InvalidArguments,
+            ExecutionReason::CallbackFailed,
+            ExecutionReason::CallbackPanicked,
+        ]
+    );
+    let serialized = serde_json::to_string(&receipts).unwrap();
+    assert!(serialized.contains("callback_failed"));
+    for secret in [
+        "secret-session",
+        "secret-argument",
+        "injected failure",
+        "injected panic",
+        &failed_confirmation,
+        &panicked_confirmation,
+    ] {
+        assert!(!serialized.contains(secret));
+    }
+}
+
+#[test]
+fn transition_count_links_same_timestamp_receipts_across_drains() {
+    let (mut runtime, _) = setup();
+    assert!(runtime.call(request(), 1).is_err());
+    let first = runtime.drain_execution_log().pop().unwrap();
+    assert_eq!(first.policy_transition_count, 0);
+
+    runtime
+        .observe(&AudioWindow {
+            samples: vec![0.95],
+            sample_rate: 16000,
+            timestamp_ms: 1,
+        })
+        .unwrap();
+    assert!(runtime.call(request(), 1).is_err());
+    let second = runtime.drain_execution_log().pop().unwrap();
+    assert_eq!(second.timestamp_ms, first.timestamp_ms);
+    assert_eq!(second.policy_transition_count, 1);
+    assert_eq!(runtime.policy_audit().transitions().len(), 1);
 }
