@@ -9,8 +9,10 @@ from pathlib import Path
 from loguru import logger
 from tau2.data_model.message import ToolCall
 from tau2.domains.telecom.environment import get_environment, get_tasks
+from tau2.runner import get_tasks as get_task_split
 
 from bridge import Bridge, GovernedEnvironment
+from pilot import GOVERNED_TOOLS, TASK_IDS
 
 logger.remove()
 BINARY = Path(os.environ.get("PGSO_BRIDGE", "target/debug/examples/voice_bridge")).resolve()
@@ -60,6 +62,52 @@ class RealEnvironmentChecks(unittest.TestCase):
         self.assertEqual(self.bridge.state["directives"], [])
         self.assertFalse(self.call("disable_roaming", args).error)
         self.assertFalse(self.env.tools._get_line_by_id("L1002").roaming_enabled)
+
+    def test_sustained_signal_can_withhold_selected_task_repair(self):
+        tasks = {task.id: task for task in get_task_split("telecom", task_split_name="small")}
+        task = tasks[TASK_IDS[1]]
+        env = get_environment()
+        initial = task.initial_state
+        env.set_state(initial.initialization_data, initial.initialization_actions,
+                      initial.message_history or [])
+        bridge = Bridge(BINARY, env.get_tools(), GOVERNED_TOOLS, session="limitation")
+        host = GovernedEnvironment(env, bridge)
+        self.addCleanup(host.close)
+        assertions = task.evaluation_criteria.env_assertions
+        score = lambda: [env.run_env_assertion(a, raise_assertion_error=False)
+                         for a in assertions]
+        args = {"customer_id": "C1001", "line_id": "L1002"}
+
+        self.assertEqual(task.id, TASK_IDS[1])
+        self.assertIn("enable_roaming", GOVERNED_TOOLS)
+        self.assertEqual(score(), [False, False])
+        for timestamp in range(800, 5600, 400):
+            host.timestamp_ms = timestamp
+            response = bridge.request({
+                "op": "observe", "timestamp_ms": timestamp,
+                "readings": [{"axis": "Arousal", "value": 0.95, "confidence": 0.9,
+                              "timestamp_ms": timestamp}],
+            })
+            self.assertTrue(response["ok"], response)
+        before = env.get_db_hash()
+        effects = len(host.effects)
+        self.assertTrue(env.get_response(ToolCall(name="enable_roaming", arguments=args,
+                                                  requestor="assistant")).error)
+        self.assertEqual(env.get_db_hash(), before)
+        self.assertEqual(len(host.effects), effects)
+        self.assertEqual(score(), [False, False])
+
+        host.timestamp_ms = 5600
+        response = bridge.request({
+            "op": "observe", "timestamp_ms": 5600,
+            "readings": [{"axis": "Arousal", "value": 0.5, "confidence": 0.9,
+                          "timestamp_ms": 5600}],
+        })
+        self.assertTrue(response["ok"], response)
+        self.assertEqual(bridge.state["directives"], [])
+        self.assertFalse(env.get_response(ToolCall(name="enable_roaming", arguments=args,
+                                                   requestor="assistant")).error)
+        self.assertEqual(score(), [True, True])
 
     def test_bad_calls_have_no_callback_and_user_tools_still_work(self):
         before = len(self.host.effects)
