@@ -55,6 +55,55 @@ _WAV = _wav()
 
 
 class PilotOfflineFullLoop(unittest.TestCase):
+    def test_multiple_calls_keep_ids_prefix_and_intervening_state(self):
+        from tau2.data_model.message import AssistantMessage, ToolCall, UserMessage
+        from tau2.domains.telecom.environment import get_environment, get_tasks
+        from bridge import Bridge, GovernedEnvironment
+
+        environment = get_environment()
+        initial = get_tasks()[0].initial_state
+        environment.set_state(initial.initialization_data, initial.initialization_actions,
+                              initial.message_history or [])
+        bridge = Bridge(ROOT.parent.parent / "target/debug/examples/voice_bridge",
+                        environment.get_tools(), set(), session="multi-trace")
+        governor = GovernedEnvironment(environment, bridge)
+        self.addCleanup(governor.close)
+        args = {"customer_id": "C1001", "line_id": "L1002"}
+        calls = [
+            ToolCall(id="first", name="disable_roaming", arguments=args),
+            ToolCall(id="second", name="enable_roaming", arguments=args),
+        ]
+        initial_assistant_db = environment.tools.db.model_dump(mode="json")
+        initial_user_db = environment.user_tools.db.model_dump(mode="json")
+        orchestrator = SimpleNamespace(
+            trajectory=[UserMessage(role="user", content="Help"),
+                        AssistantMessage(role="assistant", tool_calls=calls)],
+            _execute_tool_calls=lambda pending: [environment.get_response(call)
+                                                  for call in pending],
+        )
+        pilot._install_attempt_trace(orchestrator, governor)
+
+        results = orchestrator._execute_tool_calls(calls)
+
+        self.assertTrue(all(not result.error for result in results))
+        self.assertEqual([attempt["tool_call_id"] for attempt in governor.attempts],
+                         ["first", "second"])
+        self.assertTrue(all(attempt["dialogue"] == {"prefix_length": 1,
+                                                     "tool_call_message_index": 1}
+                            for attempt in governor.attempts))
+        self.assertEqual(governor.attempts[0]["pre_attempt_state"]["assistant_db"],
+                         initial_assistant_db)
+        self.assertEqual(governor.attempts[0]["pre_attempt_state"]["user_db"],
+                         initial_user_db)
+        self.assertNotEqual(
+            governor.attempts[0]["pre_attempt_state"]["assistant_db"],
+            governor.attempts[1]["pre_attempt_state"]["assistant_db"],
+        )
+        self.assertNotEqual(
+            governor.attempts[0]["pre_attempt_state"]["user_db"],
+            governor.attempts[1]["pre_attempt_state"]["user_db"],
+        )
+
     def test_all_conditions_run_with_real_tau_and_bridge(self):
         """Mocks only network LLM/audio; orchestration and PGSO stay real."""
         from tau2.data_model.message import AssistantMessage, ToolCall
@@ -102,6 +151,14 @@ class PilotOfflineFullLoop(unittest.TestCase):
             self.assertEqual({result["task_id"] for result in results}, set(pilot.TASK_IDS))
             self.assertTrue(all(len(result["attempts"]) == len(result["effects"]) == 1
                                 for result in results))
+            for result in results:
+                attempt = result["attempts"][0]
+                index = attempt["dialogue"]["tool_call_message_index"]
+                self.assertEqual(attempt["dialogue"]["prefix_length"], index)
+                self.assertEqual(result["messages"][index]["tool_calls"][0]["id"],
+                                 attempt["tool_call_id"])
+                self.assertIsInstance(attempt["pre_attempt_state"]["assistant_db"], dict)
+                self.assertIsInstance(attempt["pre_attempt_state"]["user_db"], dict)
             self.assertTrue(all((output / result["condition"] /
                                  hashlib.sha256(result["task_id"].encode()).hexdigest()[:12] /
                                  "result.json").is_file() for result in results))
@@ -118,6 +175,8 @@ class PilotOfflineFullLoop(unittest.TestCase):
             self.assertTrue(all("Current host voice context:" not in payload
                                 for name, payload in llm_requests
                                 if name == "user_simulator_response"))
+            self.assertTrue(all("pre_attempt_state" not in payload
+                                for _, payload in llm_requests))
             self.assertEqual(user_calls, 24)
 
     def test_retired_directive_is_absent_from_next_agent_prompt(self):

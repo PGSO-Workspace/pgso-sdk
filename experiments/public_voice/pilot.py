@@ -128,6 +128,19 @@ def _live_assertions(environment, task) -> dict:
     }
 
 
+def _install_attempt_trace(orchestrator, governor):
+    """Attach audit-only state and dialogue locators immediately before tool dispatch."""
+    execute = orchestrator._execute_tool_calls
+
+    def traced(tool_calls):
+        message_index = len(orchestrator.trajectory) - 1
+        assistant_calls = [call for call in tool_calls if call.requestor == "assistant"]
+        governor.prepare_attempts(assistant_calls, message_index)
+        return execute(tool_calls)
+
+    orchestrator._execute_tool_calls = traced
+
+
 def _install_agent_context(agent, bridge, governor, condition):
     from tau2.data_model.message import SystemMessage
     original = agent.generate_next_message
@@ -335,6 +348,7 @@ def run(args: argparse.Namespace) -> int:
                 raise RuntimeError("Rust/Python pilot configuration mismatch")
             _install_agent_context(agent, bridge, governor, condition)
             _install_cascade(user, client, bridge, governor, condition, run_dir, models)
+            _install_attempt_trace(orchestrator, governor)
             try:
                 while not orchestrator.done:
                     orchestrator.step()

@@ -87,6 +87,12 @@ SDK receipts separate. A callback failure can leave a partial effect; a timeout
 after execution begins is indeterminate, not evidence of a safe block. Failure
 artifacts are retained and failed runs are not automatically retried.
 
+Each assistant attempt also records immutable pre-attempt copies of tau's assistant
+and user databases, its `ToolCall.id`, and indices locating the dialogue prefix
+before the assistant tool-call message. These fields are output-only annotation
+material: they are never added to agent or simulator context. They make later
+blinded policy assessment possible; they are not human annotations themselves.
+
 ## Reproduce the integration checks
 
 Run from the SDK root on Linux with Python 3.12 (`audioop` is used for PCM conversion):
