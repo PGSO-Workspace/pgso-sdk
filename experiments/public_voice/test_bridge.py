@@ -95,6 +95,10 @@ class RealEnvironmentChecks(unittest.TestCase):
                                                   requestor="assistant")).error)
         self.assertEqual(env.get_db_hash(), before)
         self.assertEqual(len(host.effects), effects)
+        self.assertEqual(host.attempts[-1]["pre_attempt_state"]["assistant_db"],
+                         env.tools.db.model_dump(mode="json"))
+        self.assertEqual(host.attempts[-1]["pre_attempt_state"]["user_db"],
+                         env.user_tools.db.model_dump(mode="json"))
         self.assertEqual(score(), [False, False])
 
         host.timestamp_ms = 5600

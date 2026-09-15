@@ -106,9 +106,30 @@ class GovernedEnvironment:
         self.timestamp_ms = 0
         self.effects = []
         self.attempts = []
+        self._attempt_contexts = []
         self.blocked_tools = set()
         self._original = environment.make_tool_call
         environment.make_tool_call = self._call
+
+    def prepare_attempts(self, tool_calls, tool_call_message_index):
+        if self._attempt_contexts:
+            raise RuntimeError("unconsumed tool-call trace context")
+        self._attempt_contexts = [
+            {"tool": call.name, "arguments": call.arguments,
+             "tool_call_id": call.id or None,
+             "dialogue": {"prefix_length": tool_call_message_index,
+                          "tool_call_message_index": tool_call_message_index}}
+            for call in tool_calls
+        ]
+
+    def _snapshot(self):
+        env = self.environment
+        return {
+            "assistant_db": (env.tools.db.model_dump(mode="json")
+                             if env.tools is not None and env.tools.db is not None else None),
+            "user_db": (env.user_tools.db.model_dump(mode="json")
+                        if env.user_tools is not None and env.user_tools.db is not None else None),
+        }
 
     def _execute(self, name, arguments, requestor):
         env = self.environment
@@ -139,8 +160,14 @@ class GovernedEnvironment:
             return self._execute(tool_name, arguments, requestor)
         if requestor != "assistant":
             raise ValueError("invalid tool requestor")
+        context = (self._attempt_contexts.pop(0) if self._attempt_contexts else
+                   {"tool": tool_name, "arguments": arguments,
+                    "tool_call_id": None, "dialogue": None})
+        if context.pop("tool") != tool_name or context.pop("arguments") != arguments:
+            raise RuntimeError("tool-call trace context mismatch")
         attempt = {"tool": tool_name, "arguments": arguments,
-                   "timestamp_ms": self.timestamp_ms}
+                   "timestamp_ms": self.timestamp_ms,
+                   "pre_attempt_state": self._snapshot(), **context}
         self.attempts.append(attempt)
         if tool_name in self.blocked_tools:
             attempt["error"] = "instantaneous threshold intervention"
