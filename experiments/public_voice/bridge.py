@@ -4,6 +4,7 @@ The Rust callback remains on the Runtime::call stack while Python executes the
 actual sandbox effect. This is not an authorization-token/check-then-call bridge.
 """
 import json
+from pathlib import Path
 import select
 import subprocess
 
@@ -94,15 +95,102 @@ class Bridge:
         self.process.stdout.close()
 
 
+class FrameworkPolicy:
+    """Concrete persistent NeMo/Invariant policy sidecar for one task session."""
+    def __init__(self, mode, python, governed_tools, all_tools, config, stderr_path,
+                 timeout=30):
+        if mode not in {"nemo", "invariant"}:
+            raise ValueError("framework mode must be nemo or invariant")
+        executable = Path(python)
+        if not executable.is_file():
+            raise ValueError(f"framework Python does not exist: {executable}")
+        self.mode = mode
+        self.timeout = timeout
+        self.state = {}
+        self.audit = []
+        worker = Path(__file__).with_name("framework_sidecar.py")
+        self._stderr = Path(stderr_path).open("w", encoding="utf-8")
+        self.process = subprocess.Popen(
+            [str(executable), str(worker), mode], stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE, stderr=self._stderr, text=True, bufsize=1,
+        )
+        try:
+            response = self.request({"op": "init", "governed_tools": sorted(governed_tools),
+                                     "all_tools": sorted(all_tools), "config": config})
+            self.framework = response["framework"]
+        except BaseException:
+            self.close()
+            raise
+
+    def request(self, command):
+        try:
+            self.process.stdin.write(json.dumps(command, allow_nan=False) + "\n")
+            self.process.stdin.flush()
+        except (BrokenPipeError, ValueError) as error:
+            self.close()
+            raise RuntimeError(f"{self.mode} policy sidecar unavailable; call denied") from error
+        if not select.select([self.process.stdout], [], [], self.timeout)[0]:
+            self.close()
+            raise TimeoutError(f"{self.mode} policy sidecar timed out; call denied")
+        line = self.process.stdout.readline()
+        if not line:
+            self.close()
+            raise RuntimeError(f"{self.mode} policy sidecar exited; call denied")
+        try:
+            response = json.loads(line)
+        except json.JSONDecodeError as error:
+            self.close()
+            raise RuntimeError(f"unexpected {self.mode} sidecar output; call denied") from error
+        if not response.get("ok"):
+            error = response.get("error", f"{self.mode} policy failed; call denied")
+            self.close()
+            raise RuntimeError(error)
+        self.state = response.get("state", self.state)
+        if "record" in response:
+            self.audit.append(response["record"])
+        return response
+
+    def observe(self, event):
+        return self.request({"op": "observe", **event})
+
+    def decide(self, name, timestamp_ms):
+        response = self.request({"op": "call", "name": name,
+                                 "timestamp_ms": timestamp_ms})
+        if response.get("action") not in {"allow", "block"}:
+            self.close()
+            raise RuntimeError(f"invalid {self.mode} policy decision; call denied")
+        return response["action"]
+
+    def close(self):
+        if getattr(self, "process", None) is None:
+            return
+        if self.process.poll() is None:
+            self.process.terminate()
+            try:
+                self.process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                self.process.kill()
+                self.process.wait()
+        for stream in (self.process.stdin, self.process.stdout):
+            if stream:
+                try:
+                    stream.close()
+                except BrokenPipeError:
+                    pass
+        if not self._stderr.closed:
+            self._stderr.close()
+
+
 class GovernedEnvironment:
     """Install only after tau initialization; one environment/bridge per session.
 
     User tools are outside agent governance. Host code and benchmark initialization
     are trusted; this is not a sandbox against arbitrary malicious Python code.
     """
-    def __init__(self, environment, bridge):
+    def __init__(self, environment, bridge, framework_policy=None):
         self.environment = environment
         self.bridge = bridge
+        self.framework_policy = framework_policy
         self.timestamp_ms = 0
         self.effects = []
         self.attempts = []
@@ -110,6 +198,16 @@ class GovernedEnvironment:
         self.blocked_tools = set()
         self._original = environment.make_tool_call
         environment.make_tool_call = self._call
+
+    def observe(self, event):
+        if self.framework_policy is not None:
+            return self.framework_policy.observe(event)
+        return self.bridge.request({"op": "observe", **event})
+
+    @property
+    def policy_state(self):
+        return (self.framework_policy.state if self.framework_policy is not None
+                else self.bridge.state)
 
     def prepare_attempts(self, tool_calls, tool_call_message_index):
         if self._attempt_contexts:
@@ -172,6 +270,12 @@ class GovernedEnvironment:
         if tool_name in self.blocked_tools:
             attempt["error"] = "instantaneous threshold intervention"
             raise ValueError(attempt["error"])
+        if self.framework_policy is not None:
+            action = self.framework_policy.decide(tool_name, self.timestamp_ms)
+            attempt["framework_policy"] = self.framework_policy.audit[-1]
+            if action == "block":
+                attempt["error"] = f"{self.framework_policy.mode} policy intervention"
+                raise ValueError(attempt["error"])
         response = self.bridge.request(
             {"op": "call", "name": tool_name, "arguments": arguments,
              "timestamp_ms": self.timestamp_ms},
@@ -184,4 +288,8 @@ class GovernedEnvironment:
 
     def close(self):
         self.environment.make_tool_call = self._original
-        self.bridge.close()
+        try:
+            self.bridge.close()
+        finally:
+            if self.framework_policy is not None:
+                self.framework_policy.close()
