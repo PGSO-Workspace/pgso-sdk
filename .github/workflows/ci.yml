@@ -35,11 +35,14 @@ jobs:
         run: cargo test --workspace
 
       - name: Validation trace input contract
-        run: cargo test -p pgso-core --example validation_trace
+        run: |
+          cargo test -p pgso-core --example validation_trace
+          cargo test -p pgso-actuator-http --example lifecycle_comparison
 
       - name: Reproducible engineering evaluation
         run: |
           python3 experiments/reproducibility/test_package.py
+          python3 experiments/reproducibility/test_comparison.py
           python3 experiments/reproducibility/run.py --profile dev --output "${{ runner.temp }}/pgso-evaluation"
 
       - name: Doc (deny warnings; enforces #![deny(missing_docs)])

@@ -1,0 +1,12 @@
+[
+  {
+    "events": [
+      {
+        "kind": "call",
+        "timestamp_ms": 18446744073709551616,
+        "tool": "quote"
+      }
+    ],
+    "id": "bad"
+  }
+]

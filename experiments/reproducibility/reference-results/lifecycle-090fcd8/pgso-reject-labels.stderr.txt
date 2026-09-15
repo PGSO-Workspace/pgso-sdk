@@ -1,0 +1,1 @@
+Error: Custom { kind: InvalidData, error: "INVALID_INPUT: invalid JSON contract: unknown field `expected`, expected `id` or `events` at line 21 column 14" }

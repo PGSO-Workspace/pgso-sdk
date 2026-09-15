@@ -1,0 +1,24 @@
+[
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.5
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "human"
+      }
+    ],
+    "expected": [],
+    "id": "nominal"
+  }
+]

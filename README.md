@@ -241,3 +241,5 @@ If you use PGSO in academic work, cite the project and record the commit used:
   url    = {https://github.com/PGSO-Workspace/pgso-sdk}
 }
 ```
+
+The [matched lifecycle and dispatch comparison](experiments/reproducibility/README.md#matched-lifecycle-and-dispatch-comparison) evaluates actual PGSO, NeMo, and Invariant integrations against a shared finite contract. The [human pilot procedure](experiments/reproducibility/pilot-procedure.md) describes the separate, prospective conversational evaluation.

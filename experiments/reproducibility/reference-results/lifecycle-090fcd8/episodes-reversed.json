@@ -1,0 +1,1358 @@
+[
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2000,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 3200,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 3600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 4000,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 4400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 4800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 5200,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 5600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 6000,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 6400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 6800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 7200,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 7600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 8000,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 8400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 8800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 9200,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 9600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 10000,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 10400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 10800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 11200,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 11600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 12000,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 12400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 12800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 13200,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 13600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 14000,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 14400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 14800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 15200,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 15600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 16000,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 16400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 16800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 17200,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 17600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 18000,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 18400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 18800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 19200,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 19600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 20000,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 20400,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 20400,
+        "tool": "human"
+      }
+    ],
+    "id": "sustained_long"
+  },
+  {
+    "events": [
+      {
+        "cutoff_ms": 5000,
+        "kind": "expire"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 5000,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 5000,
+        "tool": "human"
+      }
+    ],
+    "id": "expiry_without_policy"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "human"
+      }
+    ],
+    "id": "equal_timestamps_count_as_readings"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.799999
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.799999
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.799999
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "id": "below_value_boundary"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.8
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.8
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.8
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "id": "value_boundary"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.5,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.5,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.5,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "id": "confidence_boundary"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1600,
+        "value": 0.05
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1600,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1600,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2000,
+        "value": 0.05
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2000,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2000,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2400,
+        "value": 0.05
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2400,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2400,
+        "tool": "human"
+      }
+    ],
+    "id": "opposite_direction_pending_hold"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.05
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.05
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.05
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "id": "falling_does_not_trigger_rising_rule"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2401,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2401,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2401,
+        "tool": "human"
+      },
+      {
+        "cutoff_ms": 1201,
+        "kind": "expire"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2402,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2402,
+        "tool": "human"
+      }
+    ],
+    "id": "expiry_uses_contribution_age"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "cutoff_ms": 1201,
+        "kind": "expire"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1202,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1202,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1600,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1600,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1600,
+        "tool": "human"
+      }
+    ],
+    "id": "expiry_retains_engine_counter"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "cutoff_ms": 1200,
+        "kind": "expire"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1201,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1201,
+        "tool": "human"
+      },
+      {
+        "cutoff_ms": 1201,
+        "kind": "expire"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1202,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1202,
+        "tool": "human"
+      }
+    ],
+    "id": "expire_strict_boundary"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1600,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2800,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2800,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2800,
+        "tool": "human"
+      }
+    ],
+    "id": "gap_boundary_inclusive"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2401,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2401,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2401,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2801,
+        "value": 0.5
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2801,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2801,
+        "tool": "human"
+      }
+    ],
+    "id": "gap_preserves_active"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2001,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2001,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2001,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2401,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2401,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2401,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2801,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2801,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2801,
+        "tool": "human"
+      }
+    ],
+    "id": "gap_resets_pending"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "kind": "silence"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 5000,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 5000,
+        "tool": "human"
+      }
+    ],
+    "id": "silence_holds_active"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 700,
+        "value": 0.5
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "id": "backward_preserves_pending"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1100,
+        "value": 0.5
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1300,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1300,
+        "tool": "human"
+      }
+    ],
+    "id": "backward_holds_active"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.49,
+        "kind": "observation",
+        "timestamp_ms": 1000,
+        "value": 0.5
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      }
+    ],
+    "id": "low_confidence_preserves_pending"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.49,
+        "kind": "observation",
+        "timestamp_ms": 1600,
+        "value": 0.5
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1600,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1600,
+        "tool": "human"
+      }
+    ],
+    "id": "low_confidence_holds_active"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.5
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "human"
+      }
+    ],
+    "id": "isolated_spike"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 800,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 800,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1200,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1200,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 1600,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1600,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 1600,
+        "tool": "human"
+      },
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 2000,
+        "value": 0.5
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2000,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 2000,
+        "tool": "human"
+      }
+    ],
+    "id": "sustained_and_recovery"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.49,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.95
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "human"
+      }
+    ],
+    "id": "cold_low_confidence"
+  },
+  {
+    "events": [
+      {
+        "confidence": 0.9,
+        "kind": "observation",
+        "timestamp_ms": 400,
+        "value": 0.5
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "quote"
+      },
+      {
+        "kind": "call",
+        "timestamp_ms": 400,
+        "tool": "human"
+      }
+    ],
+    "id": "nominal"
+  }
+]

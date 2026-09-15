@@ -108,3 +108,119 @@ commercial voice systems. Those studies must specify their own independent
 targets, shared inputs, unsupported capabilities, speaker/task splits, and
 statistical analysis. This finite engineering package is a prerequisite for
 those evaluations, not their replacement.
+
+## Matched lifecycle and dispatch comparison
+
+`compare_lifecycle.py` adds a separate, finite comparison of PGSO, NeMo
+Guardrails, and Invariant, plus an instantaneous-threshold engineering ablation
+and a voice-agnostic control. The two controls are not competing products.
+The comparison contains 23 authored scenarios and 96 candidate calls per arm.
+Every allowed call executes an in-memory callback; every blocked call must leave
+its counter unchanged. Deterministic receipts identify the callback and ordinal. These are source-inspected, in-process instrumentation: their internal consistency is checked, but this is not an independent attestation channel against a malicious replacement executable.
+
+Use separate Python environments with `nemoguardrails==0.24.0` and
+`invariant-ai==0.3.5`, respectively. The recorded run uses Python 3.12 for both.
+The manifest records all installed distribution versions and hashes the installed
+framework source/configuration files. These installed bytes, not an assumed
+upstream Git revision, identify the evaluated frameworks. Different dependency
+resolutions constitute a new environment and must be reported as such.
+
+```bash
+python3 experiments/reproducibility/compare_lifecycle.py \
+  --nemo-python /path/to/nemo-environment/bin/python \
+  --invariant-python /path/to/invariant-environment/bin/python
+```
+
+The runner builds the actual `lifecycle_comparison` Rust example from the
+checkout. `--output` requires a new directory; `--profile dev` selects a debug
+build. Framework policy evaluation uses no LLM and requires no API credentials.
+Framework stderr, including NeMo's expected missing-LLM notices, is retained.
+
+### Exact common engineering contract
+
+- One arousal axis, fixed baseline `0.5`, EMA alpha `0`, no warm-up, inclusive
+  absolute deviation `0.3`, inclusive confidence `0.5`, hysteresis of three
+  accepted readings, and maximum accepted gap `1200 ms`.
+- Inputs are validated in double precision before conversion to IEEE binary32;
+  comparator arithmetic uses binary32 at the same observation/deviation boundary.
+- Deviation magnitude and direction determine the hysteresis run. A direction
+  reversal restarts it. Only a sustained rising run activates the quote rule.
+- Pending readings, low-confidence readings, backward timestamps, and silence
+  preserve existing policy. Accepted gaps greater than the maximum reset the
+  run, then process the new reading. Equal timestamps count as separate readings.
+- A nominal accepted observation retires the rule. A sustained falling run also
+  retires it; its pending readings preserve the previous policy.
+- Explicit `expire` retires a contribution strictly older than `cutoff_ms`.
+  Contribution age is its last rule-trigger timestamp, not the last accepted
+  reading. Expiry does not reset the engine counter or accepted timestamp.
+- A governed quote is blocked; protected human handoff is always callable in
+  this fixture. Confirmations, directives, multiple axes, and adaptive baselines
+  are outside this common comparison. The original execution suite tests PGSO's
+  confirmation handling separately.
+
+The NeMo and Invariant adapters share a host implementation of this temporal
+contract. Real Colang and Invariant DSL policies decide the candidate tool call
+from host context, then the host invokes the callback only after permission.
+Neither adapter consumes PGSO output. This evaluates **framework integrations**,
+not independent native implementations of paralinguistic state. The host code
+is part of each treatment and must be counted when describing integration cost.
+Catalog hiding alone is never scored as successful dispatch prevention.
+
+The threshold engineering ablation removes hysteresis and uses a fixed `0.8`
+cutoff, retaining confidence/backward-observation hold and explicit expiry.
+Consequently it is not the fully stateless instantaneous arm proposed for the
+future human experiment. The voice-agnostic control ignores observations for
+its tool decisions. Neither control establishes that voice awareness improves
+conversation quality merely by differing from the authored contract.
+
+### Evidence and acceptance
+
+`contract-cases.json` retains authored expected decisions. `episodes.json` and
+its reversed copy omit those labels; adapters reject unknown fields, including
+injected expectations. The framework output files retain decisions, callback
+counts and receipts. `differences.json` reports every mismatch, including
+ablations. `results.json` reports allowed and blocked opportunity counts,
+missed blocks, unnecessary blocks, and repeat-process agreement. The manifest
+hashes source, binary, environment inventory, raw inputs, outputs, and stderr.
+Sources and framework inventories are rechecked before a run can pass.
+
+Each arm must reject seven malformed inputs with an explicit validation-error marker. A crash or dependency-import failure does not count as input rejection. The complete payload is validated before any callback executes. PGSO, matched NeMo, and matched
+Invariant must satisfy all authored decisions. Ablations may differ; their
+mismatches remain visible. A fresh process repeats each arm with reversed
+episode order. Repetition is a reproducibility check, not an independent sample.
+The finite counts are not estimates of population error rates; no confidence
+interval, significance test, latency ranking, or superiority claim is justified.
+
+Run the dependency-free evidence-gate checks with:
+
+```bash
+python3 experiments/reproducibility/test_comparison.py
+```
+
+The [pilot procedure](pilot-procedure.md) supplies the proposed human-rater
+instructions, blinding, data schema, and preregistration gates. Its broader
+conversational experiment still requires authorized natural speech, fixed-model
+access, and human raters. Passing this engineering comparison does not supply
+those observations or approve the confirmatory protocol.
+
+### Recorded lifecycle comparison
+
+The clean release execution at `090fcd8` is preserved in
+[reference-results/lifecycle-090fcd8](reference-results/lifecycle-090fcd8/results.json),
+including the complete manifest, raw calls, receipts, differences, and stderr.
+Each arm processed the same 23 scenarios and 96 calls, repeated in a fresh
+process with reversed episode order, and rejected seven malformed payloads.
+
+| Configured arm | Callbacks executed | Calls blocked | Missed authored blocks | Additional authored blocks |
+|---|---:|---:|---:|---:|
+| PGSO | 68 | 28 | 0 | 0 |
+| NeMo + host lifecycle | 68 | 28 | 0 | 0 |
+| Invariant + host lifecycle | 68 | 28 | 0 | 0 |
+| Threshold engineering ablation | 61 | 35 | 2 | 9 |
+| Voice-agnostic control | 96 | 0 | 28 | 0 |
+
+PGSO and the matched integrations agree within this finite contract. This result
+provides no evidence of PGSO superiority over either integration. The ablation
+counts show disagreement with authored temporal rules, not measured harms or
+inferior human experience. Natural-speech and human-preference evidence remains
+uncollected by this package.

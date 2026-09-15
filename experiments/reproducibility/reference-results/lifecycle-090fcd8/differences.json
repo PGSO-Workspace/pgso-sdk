@@ -1,0 +1,275 @@
+[
+  {
+    "actual": "block",
+    "call": 0,
+    "controller": "threshold",
+    "episode": "sustained_and_recovery",
+    "expected": "allow"
+  },
+  {
+    "actual": "block",
+    "call": 2,
+    "controller": "threshold",
+    "episode": "sustained_and_recovery",
+    "expected": "allow"
+  },
+  {
+    "actual": "block",
+    "call": 0,
+    "controller": "threshold",
+    "episode": "isolated_spike",
+    "expected": "allow"
+  },
+  {
+    "actual": "block",
+    "call": 0,
+    "controller": "threshold",
+    "episode": "low_confidence_preserves_pending",
+    "expected": "allow"
+  },
+  {
+    "actual": "block",
+    "call": 0,
+    "controller": "threshold",
+    "episode": "backward_preserves_pending",
+    "expected": "allow"
+  },
+  {
+    "actual": "block",
+    "call": 0,
+    "controller": "threshold",
+    "episode": "gap_resets_pending",
+    "expected": "allow"
+  },
+  {
+    "actual": "block",
+    "call": 2,
+    "controller": "threshold",
+    "episode": "gap_resets_pending",
+    "expected": "allow"
+  },
+  {
+    "actual": "block",
+    "call": 4,
+    "controller": "threshold",
+    "episode": "gap_resets_pending",
+    "expected": "allow"
+  },
+  {
+    "actual": "block",
+    "call": 4,
+    "controller": "threshold",
+    "episode": "expiry_uses_contribution_age",
+    "expected": "allow"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "threshold",
+    "episode": "opposite_direction_pending_hold",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 4,
+    "controller": "threshold",
+    "episode": "opposite_direction_pending_hold",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 4,
+    "controller": "voice_agnostic",
+    "episode": "sustained_and_recovery",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 6,
+    "controller": "voice_agnostic",
+    "episode": "sustained_and_recovery",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "low_confidence_holds_active",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "low_confidence_holds_active",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "low_confidence_preserves_pending",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "backward_holds_active",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "backward_holds_active",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "backward_preserves_pending",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "silence_holds_active",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "silence_holds_active",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 6,
+    "controller": "voice_agnostic",
+    "episode": "gap_resets_pending",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "gap_preserves_active",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "gap_preserves_active",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "gap_boundary_inclusive",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "expire_strict_boundary",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "expire_strict_boundary",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "expiry_retains_engine_counter",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 4,
+    "controller": "voice_agnostic",
+    "episode": "expiry_retains_engine_counter",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "expiry_uses_contribution_age",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "expiry_uses_contribution_age",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "opposite_direction_pending_hold",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "opposite_direction_pending_hold",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 4,
+    "controller": "voice_agnostic",
+    "episode": "opposite_direction_pending_hold",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "confidence_boundary",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "value_boundary",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "equal_timestamps_count_as_readings",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 0,
+    "controller": "voice_agnostic",
+    "episode": "sustained_long",
+    "expected": "block"
+  },
+  {
+    "actual": "allow",
+    "call": 2,
+    "controller": "voice_agnostic",
+    "episode": "sustained_long",
+    "expected": "block"
+  }
+]
