@@ -59,11 +59,15 @@ class FrameworkComparatorTests(unittest.TestCase):
             self.assertEqual(policy.audit[-1]["native_decision"], "SKIP")
             environment.make_tool_call(
                 "transfer_to_human_agents", requestor="assistant", summary="test")
-            self.assertEqual(policy.audit[-1]["native_decision"], "CONTINUE")
+            self.assertIsNone(policy.audit[-1]["native_decision"])
+            self.assertEqual(policy.audit[-1]["decision_origin"],
+                             "host_no_matching_rule")
             governor.observe({"timestamp_ms": 2001, "readings": []})
             environment.make_tool_call(
                 "disable_roaming", requestor="assistant", **args)
-            self.assertEqual(policy.audit[-1]["native_decision"], "CONTINUE")
+            self.assertIsNone(policy.audit[-1]["native_decision"])
+            self.assertEqual(policy.audit[-1]["decision_origin"],
+                             "host_no_active_rule")
             external = policy.framework["external_runtime"]
             self.assertEqual(external["revision"],
                              "e6fa3902e2cfb9681f454b355691b771f70543f8")
@@ -80,6 +84,25 @@ class FrameworkComparatorTests(unittest.TestCase):
                 RUNTIME_CONFIG, Path(directory) / "agentspec.stderr.log",
                 agentspec_checkout=checkout, agentspec_revision="0" * 40,
             )
+
+    def test_agentspec_rejects_untracked_source_shadow(self):
+        python = os.environ.get("PGSO_AGENTSPEC_PYTHON")
+        checkout_value = os.environ.get("PGSO_AGENTSPEC_CHECKOUT")
+        if not python or not checkout_value:
+            self.skipTest("missing reconstructed AgentSpec interpreter/checkout")
+        checkout = Path(checkout_value)
+        probe = checkout / "src/pgso_untracked_probe.py"
+        probe.write_text("raise RuntimeError('must never load')\n")
+        try:
+            with tempfile.TemporaryDirectory() as directory, self.assertRaises(RuntimeError):
+                FrameworkPolicy(
+                    "agentspec", python, GOVERNED_TOOLS, GOVERNED_TOOLS,
+                    RUNTIME_CONFIG, Path(directory) / "agentspec.stderr.log",
+                    agentspec_checkout=checkout,
+                    agentspec_revision="e6fa3902e2cfb9681f454b355691b771f70543f8",
+                )
+        finally:
+            probe.unlink()
 
     def test_partial_sidecar_line_respects_deadline(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -111,6 +111,17 @@ class Session:
             check=True, text=True, capture_output=True).stdout.strip()
         if dirty:
             raise ValueError("AgentSpec tracked files differ from the pinned revision")
+        untracked = subprocess.run(
+            ["git", "ls-files", "--others", "--exclude-standard", "--", "src"],
+            cwd=checkout, check=True, text=True, capture_output=True).stdout.splitlines()
+        unsafe_untracked = [path for path in untracked if (
+            Path(path).suffix in {".py", ".g4"} or
+            (Path(path).suffix == ".pyc" and "__pycache__" not in Path(path).parts))]
+        if unsafe_untracked:
+            raise ValueError("AgentSpec checkout contains untracked Python or grammar source")
+        tracked = set(subprocess.run(
+            ["git", "ls-files", "--", "src"], cwd=checkout, check=True,
+            text=True, capture_output=True).stdout.splitlines())
         source = checkout / "src"
         sys.path.insert(0, str(source))
         with redirect_stdout(sys.stderr):
@@ -119,6 +130,14 @@ class Session:
             from interpreter import RuleInterpreter
             from rule import Rule
             from state import RuleState
+            for module_name in ("agent", "enforcement", "interpreter", "rule", "state"):
+                module_path = Path(sys.modules[module_name].__file__).resolve()
+                try:
+                    relative = str(module_path.relative_to(checkout))
+                except ValueError as error:
+                    raise ValueError("AgentSpec module resolved outside the pinned checkout") from error
+                if relative not in tracked:
+                    raise ValueError("AgentSpec module did not resolve to tracked source")
             rules = {}
             texts = {}
             for tool in sorted(self.configured_tools):
@@ -129,8 +148,10 @@ class Session:
         self.rules = rules
         digest = hashlib.sha256()
         files = []
-        for path in sorted(source.rglob("*.py")) + [source / "spec_lang/AgentSpec.g4"]:
-            relative = str(path.relative_to(checkout))
+        audited_sources = sorted(path for path in tracked
+                                 if Path(path).suffix in {".py", ".g4"})
+        for relative in audited_sources:
+            path = checkout / relative
             digest.update(relative.encode())
             digest.update(b"\0")
             digest.update(path.read_bytes())
@@ -164,7 +185,7 @@ class Session:
     def _agentspec_decide(self, name):
         _tool_names([name])
         if not self.active:
-            return "allow", "CONTINUE"
+            return "allow", None, "host_no_active_rule"
         classes = self.agentspec["classes"]
         matched = None
         with redirect_stdout(sys.stderr):
@@ -173,14 +194,14 @@ class Session:
                     matched = rule
                     break
             if matched is None:
-                return "allow", "CONTINUE"
+                return "allow", None, "host_no_matching_rule"
             action = classes["Action"](name=name, input="", action=None)
             state = classes["RuleState"](action=action, intermediate_steps=[])
             result, replacement = classes["RuleInterpreter"](
                 matched, state).verify_and_enforce(action)
         if result != classes["EnforceResult"].SKIP or not replacement.is_skip():
             raise RuntimeError("AgentSpec exact-tool rule did not return native SKIP")
-        return "block", result.name
+        return "block", result.name, "upstream_interpreter"
 
     def state(self):
         return {
@@ -244,13 +265,15 @@ class Session:
             raise ValueError("call has invalid fields")
         timestamp = _timestamp(command["timestamp_ms"], "timestamp_ms")
         if self.mode == "agentspec":
-            action, native_decision = self._agentspec_decide(command["name"])
+            action, native_decision, decision_origin = self._agentspec_decide(command["name"])
         else:
             action = self.decide(command["name"], self.active)
             native_decision = action.upper()
+            decision_origin = "framework_dsl"
         record = {"op": "call", "tool": command["name"], "timestamp_ms": timestamp,
                   "governed": self.active, "action": action,
-                  "native_decision": native_decision}
+                  "native_decision": native_decision,
+                  "decision_origin": decision_origin}
         self.audit.append(record)
         return {"ok": True, "action": action, "record": record, "state": self.state()}
 

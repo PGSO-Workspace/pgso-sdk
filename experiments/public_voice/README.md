@@ -53,8 +53,10 @@ error or non-JSON stdout fails the call closed and remains in the run artifacts.
 The opt-in S arm follows the same host-state boundary but loads the official
 AgentSpec parser and interpreter from a researcher-supplied external checkout at
 the required commit. Six fixed exact-tool rules use AgentSpec's native
-`check true` and `enforce skip`; the resulting SKIP or CONTINUE decision gates
-the real sandbox callback. AgentSpec output is redirected to the sidecar stderr
+`check true` and `enforce skip`; an applicable rule's native SKIP gates the real
+sandbox callback. When temporal state is inactive or no exact rule matches, the
+host permits the call without attributing a CONTINUE decision to AgentSpec.
+AgentSpec output is redirected to the sidecar stderr
 artifact so it cannot corrupt the framed JSON channel. The upstream repository
 has no recorded license file, so no AgentSpec source is copied or distributed
 here. This does not prevent a researcher from evaluating their own external
@@ -215,7 +217,8 @@ this comparison.
 Append S with both `--agentspec-python /path/to/python` and
 `--agentspec-checkout /path/to/checkout`. The pilot verifies the default pinned
 commit and a clean tracked checkout, then records the Git tree, dependency set,
-rule text/hash and upstream source hash. Omitting the two AgentSpec paths leaves
+rule text/hash and upstream source hash. Untracked Python or grammar source under
+`src` is rejected so imports cannot shadow the pinned revision. Omitting the two AgentSpec paths leaves
 B0/B1/T/P and any independently selected N/I arms unchanged.
 
 This invokes metered agent, user-simulator, speech synthesis and transcription
