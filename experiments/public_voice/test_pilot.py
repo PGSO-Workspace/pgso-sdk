@@ -142,6 +142,11 @@ class PilotOfflineFullLoop(unittest.TestCase):
         for flag, path in framework_paths.items():
             if path:
                 args.extend([flag, path])
+        agentspec_python = os.environ.get("PGSO_AGENTSPEC_PYTHON")
+        agentspec_checkout = os.environ.get("PGSO_AGENTSPEC_CHECKOUT")
+        if agentspec_python and agentspec_checkout:
+            args.extend(["--agentspec-python", agentspec_python,
+                         "--agentspec-checkout", agentspec_checkout])
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "pilot"
             args[args.index("PLACEHOLDER")] = str(output)
@@ -164,6 +169,12 @@ class PilotOfflineFullLoop(unittest.TestCase):
                 expected_conditions.add("N")
             if framework_paths["--invariant-python"]:
                 expected_conditions.add("I")
+            if agentspec_python and agentspec_checkout:
+                expected_conditions.add("S")
+                external = manifest["frameworks"]["S"]["external_runtime"]
+                self.assertEqual(external["revision"], pilot.AGENTSPEC_REVISION)
+                self.assertEqual(len(external["rules"]), len(pilot.GOVERNED_TOOLS))
+                self.assertFalse(external["license_file_present"])
             self.assertEqual(len(results), 3 * len(expected_conditions))
             self.assertEqual({result["condition"] for result in results}, expected_conditions)
             self.assertEqual({result["task_id"] for result in results}, set(pilot.TASK_IDS))

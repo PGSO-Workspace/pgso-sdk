@@ -98,11 +98,15 @@ class Bridge:
 
 
 class FrameworkPolicy:
-    """Concrete persistent NeMo/Invariant policy sidecar for one task session."""
+    """Concrete persistent framework policy sidecar for one task session."""
     def __init__(self, mode, python, governed_tools, all_tools, config, stderr_path,
-                 timeout=30):
-        if mode not in {"nemo", "invariant"}:
-            raise ValueError("framework mode must be nemo or invariant")
+                 timeout=30, agentspec_checkout=None, agentspec_revision=None):
+        if mode not in {"nemo", "invariant", "agentspec"}:
+            raise ValueError("framework mode must be nemo, invariant, or agentspec")
+        if mode == "agentspec" and (agentspec_checkout is None or agentspec_revision is None):
+            raise ValueError("AgentSpec requires an external checkout and pinned revision")
+        if mode != "agentspec" and (agentspec_checkout is not None or agentspec_revision is not None):
+            raise ValueError("AgentSpec checkout options require agentspec mode")
         executable = Path(python)
         if not executable.is_file():
             raise ValueError(f"framework Python does not exist: {executable}")
@@ -118,8 +122,12 @@ class FrameworkPolicy:
             stdout=subprocess.PIPE, stderr=self._stderr,
         )
         try:
-            response = self.request({"op": "init", "governed_tools": sorted(governed_tools),
-                                     "all_tools": sorted(all_tools), "config": config})
+            command = {"op": "init", "governed_tools": sorted(governed_tools),
+                       "all_tools": sorted(all_tools), "config": config}
+            if mode == "agentspec":
+                command.update({"agentspec_checkout": str(agentspec_checkout),
+                                "agentspec_revision": agentspec_revision})
+            response = self.request(command)
             self.framework = response["framework"]
         except BaseException:
             self.close()

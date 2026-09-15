@@ -18,6 +18,69 @@ from pilot import GOVERNED_TOOLS, RUNTIME_CONFIG  # noqa: E402
 
 
 class FrameworkComparatorTests(unittest.TestCase):
+    def agentspec_policy(self, governed_tools, all_tools, directory):
+        python = os.environ.get("PGSO_AGENTSPEC_PYTHON")
+        checkout = os.environ.get("PGSO_AGENTSPEC_CHECKOUT")
+        if not python or not checkout or not Path(python).is_file():
+            self.skipTest("missing reconstructed AgentSpec interpreter/checkout")
+        return FrameworkPolicy(
+            "agentspec", python, governed_tools, all_tools, RUNTIME_CONFIG,
+            Path(directory) / "agentspec.stderr.log",
+            agentspec_checkout=checkout,
+            agentspec_revision="e6fa3902e2cfb9681f454b355691b771f70543f8",
+        )
+
+    def test_agentspec_native_skip_expiry_and_real_tau_effect(self):
+        from tau2.domains.telecom.environment import get_environment, get_tasks
+        binary = HERE.parent.parent / "target/debug/examples/voice_bridge"
+        with tempfile.TemporaryDirectory() as directory:
+            environment = get_environment()
+            initial = get_tasks()[0].initial_state
+            environment.set_state(initial.initialization_data,
+                                  initial.initialization_actions,
+                                  initial.message_history or [])
+            tools = environment.get_tools()
+            policy = self.agentspec_policy(
+                GOVERNED_TOOLS, {tool.name for tool in tools}, directory)
+            bridge = Bridge(binary, tools, set(), session="test-agentspec")
+            governor = GovernedEnvironment(environment, bridge, policy)
+            self.addCleanup(governor.close)
+            high = lambda timestamp: {"timestamp_ms": timestamp, "readings": [{
+                "axis": "Arousal", "value": .95, "confidence": .9,
+                "timestamp_ms": timestamp}]}
+            governor.observe(high(400))
+            governor.observe(high(800))
+            args = {"customer_id": "C1001", "line_id": "L1002"}
+            before = environment.get_db_hash()
+            with self.assertRaises(ValueError):
+                environment.make_tool_call(
+                    "disable_roaming", requestor="assistant", **args)
+            self.assertEqual(environment.get_db_hash(), before)
+            self.assertEqual(policy.audit[-1]["native_decision"], "SKIP")
+            environment.make_tool_call(
+                "transfer_to_human_agents", requestor="assistant", summary="test")
+            self.assertEqual(policy.audit[-1]["native_decision"], "CONTINUE")
+            governor.observe({"timestamp_ms": 2001, "readings": []})
+            environment.make_tool_call(
+                "disable_roaming", requestor="assistant", **args)
+            self.assertEqual(policy.audit[-1]["native_decision"], "CONTINUE")
+            external = policy.framework["external_runtime"]
+            self.assertEqual(external["revision"],
+                             "e6fa3902e2cfb9681f454b355691b771f70543f8")
+            self.assertEqual(len(external["rules"]), len(GOVERNED_TOOLS))
+
+    def test_agentspec_rejects_wrong_checkout_revision(self):
+        python = os.environ.get("PGSO_AGENTSPEC_PYTHON")
+        checkout = os.environ.get("PGSO_AGENTSPEC_CHECKOUT")
+        if not python or not checkout:
+            self.skipTest("missing reconstructed AgentSpec interpreter/checkout")
+        with tempfile.TemporaryDirectory() as directory, self.assertRaises(RuntimeError):
+            FrameworkPolicy(
+                "agentspec", python, GOVERNED_TOOLS, GOVERNED_TOOLS,
+                RUNTIME_CONFIG, Path(directory) / "agentspec.stderr.log",
+                agentspec_checkout=checkout, agentspec_revision="0" * 40,
+            )
+
     def test_partial_sidecar_line_respects_deadline(self):
         with tempfile.TemporaryDirectory() as directory:
             policy = FrameworkPolicy.__new__(FrameworkPolicy)

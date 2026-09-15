@@ -50,6 +50,19 @@ does not claim native framework temporal state or protection from another host
 thread mutating the sandbox between those operations. A sidecar timeout, exit,
 error or non-JSON stdout fails the call closed and remains in the run artifacts.
 
+The opt-in S arm follows the same host-state boundary but loads the official
+AgentSpec parser and interpreter from a researcher-supplied external checkout at
+the required commit. Six fixed exact-tool rules use AgentSpec's native
+`check true` and `enforce skip`; the resulting SKIP or CONTINUE decision gates
+the real sandbox callback. AgentSpec output is redirected to the sidecar stderr
+artifact so it cannot corrupt the framed JSON channel. The upstream repository
+has no recorded license file, so no AgentSpec source is copied or distributed
+here. This does not prevent a researcher from evaluating their own external
+checkout. The working environment below reconstructs the paper's LangChain
+0.3.13 generation because the upstream dependencies are not locked; it is not an
+official environment lock. AgentSpec does not own the temporal state, catalog,
+directive or observation-history construction in this arm.
+
 The offline sandbox checks reproduce this limitation in the second selected task:
 sustained injected signal withholds its required `enable_roaming` repair and leaves
 both original live environment assertions false until the signal returns to nominal
@@ -155,6 +168,23 @@ PGSO_INVARIANT_PYTHON=/tmp/pgso-invariant-venv/bin/python \
 /tmp/pgso-tau-venv/bin/python experiments/public_voice/test_pilot.py
 ```
 
+For S, obtain the official checkout and reconstruct the inspected paper-era
+environment without installing or invoking a model provider:
+
+```bash
+git clone https://github.com/haoyuwang99/AgentSpec.git /tmp/pgso-agentspec
+git -C /tmp/pgso-agentspec checkout e6fa3902e2cfb9681f454b355691b771f70543f8
+uv venv --python 3.12 /tmp/pgso-agentspec-venv
+uv pip install --python /tmp/pgso-agentspec-venv/bin/python \
+  antlr4-python3-runtime==4.13 langchain==0.3.13 \
+  langchain-community==0.3.13 langchain-experimental==0.3.4 \
+  langchain-openai==0.2.14
+
+PGSO_AGENTSPEC_PYTHON=/tmp/pgso-agentspec-venv/bin/python \
+PGSO_AGENTSPEC_CHECKOUT=/tmp/pgso-agentspec \
+/tmp/pgso-tau-venv/bin/python experiments/public_voice/test_framework_comparators.py
+```
+
 These checks exercise real tools, PGSO and the simulator control loop while
 replacing paid generation in the loop test. They do not produce research estimates
 of task utility. The dependency snapshot includes upstream's import-time voice
@@ -181,6 +211,12 @@ hash, DSL source hash, configuration and stderr path are recorded. These arms us
 the same effective composite tau policy text and hash stored for every condition.
 They remain prune-only; the separate opt-in step-up bridge capability is outside
 this comparison.
+
+Append S with both `--agentspec-python /path/to/python` and
+`--agentspec-checkout /path/to/checkout`. The pilot verifies the default pinned
+commit and a clean tracked checkout, then records the Git tree, dependency set,
+rule text/hash and upstream source hash. Omitting the two AgentSpec paths leaves
+B0/B1/T/P and any independently selected N/I arms unchanged.
 
 This invokes metered agent, user-simulator, speech synthesis and transcription
 services. It stores WAV files, original/ASR transcripts, observations, trajectories,
