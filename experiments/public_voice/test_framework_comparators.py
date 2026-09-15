@@ -104,6 +104,29 @@ class FrameworkComparatorTests(unittest.TestCase):
         finally:
             probe.unlink()
 
+    def test_agentspec_rejects_ignored_source_shadow(self):
+        python = os.environ.get("PGSO_AGENTSPEC_PYTHON")
+        checkout_value = os.environ.get("PGSO_AGENTSPEC_CHECKOUT")
+        if not python or not checkout_value:
+            self.skipTest("missing reconstructed AgentSpec interpreter/checkout")
+        checkout = Path(checkout_value)
+        probe = checkout / "src/pgso_ignored_probe.py"
+        exclude = checkout / ".git/info/exclude"
+        original_exclude = exclude.read_bytes()
+        probe.write_text("raise RuntimeError('must never load')\n")
+        exclude.write_bytes(original_exclude + b"\nsrc/pgso_ignored_probe.py\n")
+        try:
+            with tempfile.TemporaryDirectory() as directory, self.assertRaises(RuntimeError):
+                FrameworkPolicy(
+                    "agentspec", python, GOVERNED_TOOLS, GOVERNED_TOOLS,
+                    RUNTIME_CONFIG, Path(directory) / "agentspec.stderr.log",
+                    agentspec_checkout=checkout,
+                    agentspec_revision="e6fa3902e2cfb9681f454b355691b771f70543f8",
+                )
+        finally:
+            probe.unlink()
+            exclude.write_bytes(original_exclude)
+
     def test_partial_sidecar_line_respects_deadline(self):
         with tempfile.TemporaryDirectory() as directory:
             policy = FrameworkPolicy.__new__(FrameworkPolicy)

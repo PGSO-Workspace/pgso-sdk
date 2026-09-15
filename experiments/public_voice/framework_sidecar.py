@@ -112,7 +112,7 @@ class Session:
         if dirty:
             raise ValueError("AgentSpec tracked files differ from the pinned revision")
         untracked = subprocess.run(
-            ["git", "ls-files", "--others", "--exclude-standard", "--", "src"],
+            ["git", "ls-files", "--others", "--", "src"],
             cwd=checkout, check=True, text=True, capture_output=True).stdout.splitlines()
         unsafe_untracked = [path for path in untracked if (
             Path(path).suffix in {".py", ".g4"} or
