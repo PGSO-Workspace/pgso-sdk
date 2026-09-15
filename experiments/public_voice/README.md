@@ -44,6 +44,14 @@ both original live environment assertions false until the signal returns to nomi
 and the same repair executes. This is a treatment diagnostic, not evidence that the
 block is appropriate or that task utility improves.
 
+For development comparisons, the trusted bridge can instead be initialized with
+`intervention="step_up"`. This maps the same governed tools to the SDK's existing
+step-up action. Calls remain blocked during the signal until a trusted host issues
+a short-lived approval for the exact tool arguments; the bridge never derives
+approval from model output or transcript text. The pilot continues to default to
+pruning, and this capability has not validated natural-language consent or a
+replacement treatment.
+
 ## Actual effects and independent scoring
 
 ```mermaid

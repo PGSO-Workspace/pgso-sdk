@@ -109,6 +109,80 @@ class RealEnvironmentChecks(unittest.TestCase):
                                                    requestor="assistant")).error)
         self.assertEqual(score(), [True, True])
 
+    def test_trusted_step_up_approval_is_bound_and_single_use(self):
+        tasks = {task.id: task for task in get_task_split("telecom", task_split_name="small")}
+        task = tasks[TASK_IDS[1]]
+        env = get_environment()
+        initial = task.initial_state
+        env.set_state(initial.initialization_data, initial.initialization_actions,
+                      initial.message_history or [])
+        bridge = Bridge(BINARY, env.get_tools(), GOVERNED_TOOLS, session="step-up",
+                        intervention="step_up")
+        host = GovernedEnvironment(env, bridge)
+        self.addCleanup(host.close)
+        assertions = task.evaluation_criteria.env_assertions
+        score = lambda: [env.run_env_assertion(a, raise_assertion_error=False)
+                         for a in assertions]
+        args = {"customer_id": "C1001", "line_id": "L1002"}
+
+        for timestamp in range(800, 5600, 400):
+            host.timestamp_ms = timestamp
+            response = bridge.request({
+                "op": "observe", "timestamp_ms": timestamp,
+                "readings": [{"axis": "Arousal", "value": 0.95, "confidence": 0.9,
+                              "timestamp_ms": timestamp}],
+            })
+            self.assertTrue(response["ok"], response)
+        self.assertIn("enable_roaming", bridge.state["tools"])
+        self.assertIn("enable_roaming", bridge.state["step_up_tools"])
+        self.assertEqual(bridge.state["intervention"], "step_up")
+        effects = len(host.effects)
+        self.assertTrue(env.get_response(ToolCall(name="enable_roaming", arguments=args,
+                                                  requestor="assistant")).error)
+        self.assertEqual(len(host.effects), effects)
+        self.assertEqual(bridge.receipts[-1]["reason"], "confirmation_missing")
+
+        token = bridge.approve("enable_roaming", args, 5200, 100)
+        command = {"op": "call", "name": "enable_roaming", "arguments": args,
+                   "timestamp_ms": 5200, "confirmation": token}
+        response = bridge.request(
+            command, callback=lambda name, values: host._execute(name, values, "assistant"))
+        self.assertTrue(response["ok"], response)
+        self.assertEqual(score(), [True, True])
+
+        effects = len(host.effects)
+        response = bridge.request(
+            command, callback=lambda name, values: host._execute(name, values, "assistant"))
+        self.assertFalse(response["ok"], response)
+        self.assertEqual(response["audit"][0]["reason"], "confirmation_missing")
+        self.assertEqual(len(host.effects), effects)
+
+        token = bridge.approve("enable_roaming", args, 5200, 100)
+        changed = {**args, "line_id": "L1001"}
+        response = bridge.request(
+            {"op": "call", "name": "enable_roaming", "arguments": changed,
+             "timestamp_ms": 5200, "confirmation": token},
+            callback=lambda name, values: host._execute(name, values, "assistant"),
+        )
+        self.assertFalse(response["ok"], response)
+        self.assertEqual(response["audit"][0]["reason"],
+                         "invalid_or_expired_confirmation")
+        self.assertEqual(len(host.effects), effects)
+
+    def test_invalid_intervention_and_approval_are_rejected(self):
+        with self.assertRaises(RuntimeError):
+            Bridge(BINARY, self.env.get_tools(), {"disable_roaming"},
+                   intervention="automatic_consent")
+        with self.assertRaises(ValueError):
+            self.bridge.approve("missing_tool", {}, 0, 100)
+        untrusted = Bridge(BINARY, self.env.get_tools(), {"disable_roaming"},
+                           intervention="step_up")
+        self.addCleanup(untrusted.close)
+        with self.assertRaises(RuntimeError):
+            untrusted.request({"op": "call", "name": "disable_roaming",
+                               "arguments": {"customer_id": "C1001", "line_id": "L1002"},
+                               "timestamp_ms": 0, "confirmed": True})
+
     def test_bad_calls_have_no_callback_and_user_tools_still_work(self):
         before = len(self.host.effects)
         self.assertTrue(self.call("disable_roaming", {"customer_id": 3}).error)

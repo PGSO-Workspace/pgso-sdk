@@ -9,7 +9,8 @@ import subprocess
 
 
 class Bridge:
-    def __init__(self, binary, tools, governed_tools, session="pilot", timeout=30):
+    def __init__(self, binary, tools, governed_tools, session="pilot", timeout=30,
+                 intervention="prune"):
         self.timeout = timeout
         self.state = {}
         self.receipts = []
@@ -24,7 +25,8 @@ class Bridge:
         try:
             response = self.request({"tools": definitions,
                                      "governed_tools": sorted(governed_tools),
-                                     "session": session})
+                                     "session": session,
+                                     "intervention": intervention})
             if not response["ok"]:
                 raise RuntimeError(response.get("error", "bridge initialization failed"))
             self.config = response.get("config", {})
@@ -71,6 +73,14 @@ class Bridge:
                     self.close()
                     raise RuntimeError("callback/receipt mismatch; execution is indeterminate")
             return response
+
+    def approve(self, name, arguments, timestamp_ms, ttl_ms):
+        """Trusted-host approval; never expose this method as an agent or transcript tool."""
+        response = self.request({"op": "approve", "name": name, "arguments": arguments,
+                                 "timestamp_ms": timestamp_ms, "ttl_ms": ttl_ms})
+        if not response["ok"]:
+            raise ValueError(response.get("error", "PGSO approval failed"))
+        return response["confirmation"]
 
     def close(self):
         if self.process.poll() is None:

@@ -22,6 +22,25 @@ struct Init {
     session: String,
     tools: Vec<InitTool>,
     governed_tools: Vec<String>,
+    #[serde(default)]
+    intervention: Intervention,
+}
+
+#[derive(Clone, Copy, Default, Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum Intervention {
+    #[default]
+    Prune,
+    StepUp,
+}
+
+impl Intervention {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Prune => "prune",
+            Self::StepUp => "step_up",
+        }
+    }
 }
 
 #[derive(Clone, Deserialize)]
@@ -48,6 +67,14 @@ enum Command {
         name: String,
         arguments: Value,
         timestamp_ms: u64,
+        #[serde(default)]
+        confirmation: Option<String>,
+    },
+    Approve {
+        name: String,
+        arguments: Value,
+        timestamp_ms: u64,
+        ttl_ms: u64,
     },
     State,
     Reset,
@@ -139,15 +166,25 @@ fn config() -> Value {
     })
 }
 
-fn state(runtime: &Runtime<ReadingQueue>) -> Value {
-    let tools: Vec<_> = runtime.tools_list()["tools"]
+fn state(runtime: &Runtime<ReadingQueue>, intervention: Intervention) -> Value {
+    let listed = runtime.tools_list();
+    let tools: Vec<_> = listed["tools"]
         .as_array()
         .into_iter()
         .flatten()
         .filter_map(|tool| tool["name"].as_str().map(str::to_owned))
         .collect();
+    let step_up_tools: Vec<_> = listed["tools"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter(|tool| tool["_meta"]["pgso/requiresStepUp"] == true)
+        .filter_map(|tool| tool["name"].as_str().map(str::to_owned))
+        .collect();
     json!({
         "tools": tools,
+        "step_up_tools": step_up_tools,
+        "intervention": intervention.as_str(),
         "directives": runtime.directives()
     })
 }
@@ -156,7 +193,7 @@ fn build_runtime(
     init: Init,
     reader: Arc<Mutex<BufReader<io::Stdin>>>,
     stdout: Arc<Mutex<io::Stdout>>,
-) -> Result<(Runtime<ReadingQueue>, Queue), String> {
+) -> Result<(Runtime<ReadingQueue>, Queue, Intervention), String> {
     if init.tools.is_empty() {
         return Err("tools must not be empty".into());
     }
@@ -180,7 +217,10 @@ fn build_runtime(
     let mut actions: Vec<_> = governed
         .iter()
         .cloned()
-        .map(|name| Action::Prune(ToolId::from(name)))
+        .map(|name| match init.intervention {
+            Intervention::Prune => Action::Prune(ToolId::from(name)),
+            Intervention::StepUp => Action::RequireStepUp(ToolId::from(name)),
+        })
         .collect();
     actions.push(Action::InjectDirective(
         "Ask the user for clarification before continuing.".into(),
@@ -223,6 +263,7 @@ fn build_runtime(
     Ok((
         Runtime::new(init.session, pipeline, bindings, allowed)?,
         queue,
+        init.intervention,
     ))
 }
 
@@ -231,12 +272,13 @@ fn run() -> Result<(), String> {
     let stdout = Arc::new(Mutex::new(io::stdout()));
     let init: Init =
         serde_json::from_str(&read_line(&reader)?).map_err(|error| error.to_string())?;
-    let (mut runtime, queue) = build_runtime(init, Arc::clone(&reader), Arc::clone(&stdout))?;
+    let (mut runtime, queue, intervention) =
+        build_runtime(init, Arc::clone(&reader), Arc::clone(&stdout))?;
     let mut extractor = EgemapsSignal::new(16_000);
     let mut last_timestamp = None;
     send(
         &stdout,
-        &json!({"ok":true,"state":state(&runtime),"audit":[],"config":config()}),
+        &json!({"ok":true,"state":state(&runtime, intervention),"audit":[],"config":config()}),
     )?;
 
     loop {
@@ -322,13 +364,14 @@ fn run() -> Result<(), String> {
                 last_timestamp = Some(timestamp_ms);
                 send(
                     &stdout,
-                    &json!({"ok":true,"state":state(&runtime),"audit":[]}),
+                    &json!({"ok":true,"state":state(&runtime, intervention),"audit":[]}),
                 )?;
             }
             Command::Call {
                 name,
                 arguments,
                 timestamp_ms,
+                confirmation,
             } => {
                 if last_timestamp.is_some_and(|last| timestamp_ms < last) {
                     return Err("host timestamp moved backwards".into());
@@ -340,24 +383,49 @@ fn run() -> Result<(), String> {
                         session: runtime.session().to_string(),
                         tool: name,
                         arguments,
-                        confirmation: None,
+                        confirmation,
                     },
                     timestamp_ms,
                 );
                 let audit = runtime.drain_execution_log();
                 let response = match result {
                     Ok(result) => {
-                        json!({"ok":true,"result":result,"state":state(&runtime),"audit":audit})
+                        json!({"ok":true,"result":result,"state":state(&runtime, intervention),"audit":audit})
                     }
                     Err(error) => {
-                        json!({"ok":false,"error":error,"state":state(&runtime),"audit":audit})
+                        json!({"ok":false,"error":error,"state":state(&runtime, intervention),"audit":audit})
                     }
+                };
+                send(&stdout, &response)?;
+            }
+            Command::Approve {
+                name,
+                arguments,
+                timestamp_ms,
+                ttl_ms,
+            } => {
+                if last_timestamp.is_some_and(|last| timestamp_ms < last) {
+                    return Err("host timestamp moved backwards".into());
+                }
+                last_timestamp = Some(timestamp_ms);
+                runtime.expire_before(timestamp_ms.saturating_sub(1_200))?;
+                let request = CallRequest {
+                    session: runtime.session().to_string(),
+                    tool: name,
+                    arguments,
+                    confirmation: None,
+                };
+                let response = match runtime.approve(&request, timestamp_ms, ttl_ms) {
+                    Ok(confirmation) => json!({"ok":true,"confirmation":confirmation,
+                                               "state":state(&runtime, intervention),"audit":[]}),
+                    Err(error) => json!({"ok":false,"error":error,
+                                        "state":state(&runtime, intervention),"audit":[]}),
                 };
                 send(&stdout, &response)?;
             }
             Command::State => send(
                 &stdout,
-                &json!({"ok":true,"state":state(&runtime),"audit":[]}),
+                &json!({"ok":true,"state":state(&runtime, intervention),"audit":[]}),
             )?,
             Command::Reset => {
                 send(
