@@ -22,6 +22,22 @@ A gap equal to the configured maximum is accepted. Hosts must select a limit
 appropriate to the sampling cadence. `expire_before` is a separate policy API;
 it can restore nominal exposure but cannot override hard host permissions.
 
+`expire_before(cutoff_ms, timestamp_ms)` takes two distinct times: the exclusive
+evidence-age cutoff and the current trusted host time. Contributions exactly at
+the cutoff survive. Expiry transitions record host time in `timestamp_ms` and
+the cutoff in `expiry_cutoff_ms`; observation transitions have no expiry cutoff.
+A future cutoff is rejected without changing policy. The HTTP runtime also
+rejects host-clock rollback, revoking approvals as it does at dispatch.
+Migration from the previous one-argument API requires passing current host time;
+do not substitute the cutoff for it. Legacy synthetic lifecycle fixtures carry
+only a cutoff, so their harness uses the latest event time or cutoff, whichever
+is later, as its logical execution time; this is not a wall-clock measurement.
+
+Pipeline construction validates the actuator's initial catalog: tool IDs must
+be unique and nonblank, and all rule action targets and rule-engine protected
+IDs must exist. Supply an actuator exposing its initial, unrestricted catalog.
+Repeated restrictions of a valid tool remain idempotent during processing.
+
 Nominal means below the engine's numerical deviation threshold; it does not mean
 that a person is calm. Only nominal readings contribute to baseline warm-up/EMA.
 A sustained outlying level is deliberately not treated as a new normal. Initial

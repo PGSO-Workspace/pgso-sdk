@@ -66,6 +66,74 @@ fn step(p: &mut Pgso<Scripted, LocalActuator>) -> Catalog {
 }
 
 #[test]
+fn builder_rejects_ambiguous_catalogs_and_unknown_rule_targets() {
+    let build = |catalog, actions, protected| {
+        Pgso::builder()
+            .signal(Scripted(VecDeque::new()))
+            .engine(DecisionEngine::new(config()))
+            .rules(RuleEngine::new(
+                RuleSet::new(vec![Rule::new("test", Axis::Arousal, 0.2, 0.5, actions)]),
+                protected,
+            ))
+            .actuator(LocalActuator::new(catalog, HashSet::new()))
+            .build()
+    };
+    for action in [
+        Action::Prune("typo".into()),
+        Action::RequireStepUp("typo".into()),
+    ] {
+        assert!(build(catalog(), vec![action], HashSet::new()).is_err());
+    }
+    for tools in [
+        vec![Tool::new("quote", "A"), Tool::new("quote", "B")],
+        vec![Tool::new(" ", "Blank")],
+    ] {
+        assert!(build(Catalog::new(tools), vec![Action::Allow], HashSet::new()).is_err());
+    }
+    assert!(build(
+        catalog(),
+        vec![Action::Allow],
+        HashSet::from(["typo".into()])
+    )
+    .is_err());
+    assert!(build(
+        catalog(),
+        vec![Action::Prune("quote".into())],
+        HashSet::new()
+    )
+    .is_ok());
+}
+
+#[test]
+fn expiry_records_execution_time_separately_from_evidence_cutoff() {
+    let mut p = pipeline(
+        vec![
+            vec![reading(0.95, 0.9, 1_000)],
+            vec![reading(0.95, 0.9, 1_400)],
+        ],
+        vec![prune()],
+    );
+    step(&mut p);
+    step(&mut p);
+    // Repeated valid pruning remains idempotent and refreshes its evidence age.
+    assert_eq!(p.audit_log().transitions().len(), 1);
+    assert!(p.expire_before(30_000, 25_000).is_err());
+    assert!(!p.current_catalog().contains(&"quote".into()));
+    p.expire_before(1_400, 24_000).unwrap();
+    assert!(!p.current_catalog().contains(&"quote".into()));
+    p.expire_before(5_000, 25_000).unwrap();
+    assert!(p.current_catalog().contains(&"quote".into()));
+    let transitions = p.audit_log().transitions();
+    assert_eq!(transitions[0].expiry_cutoff_ms, None);
+    assert_eq!(transitions[1].timestamp_ms, 25_000);
+    assert_eq!(transitions[1].expiry_cutoff_ms, Some(5_000));
+    assert_eq!(
+        p.audit_log().entries().last().unwrap().audit.timestamp_ms,
+        25_000
+    );
+}
+
+#[test]
 fn control_valid_nominal_reading_restores_catalog() {
     let mut p = pipeline(
         vec![vec![reading(0.95, 0.9, 1)], vec![reading(0.5, 0.9, 2)]],
@@ -227,7 +295,7 @@ fn independent_axis_contributions_survive_recovery_and_expire_explicitly() {
     assert_eq!(p.actuator().directives(), &["Clarify."]);
     step(&mut p);
     assert_eq!(p.actuator().directives(), &["Clarify."]);
-    p.expire_before(3).unwrap();
+    p.expire_before(3, 4).unwrap();
     assert!(p.actuator().directives().is_empty());
     assert!(p
         .audit_log()

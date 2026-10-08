@@ -256,13 +256,18 @@ impl<S: Signal> Runtime<S> {
     }
 
     /// Expire stale contributions under the same exclusive access as dispatch.
+    /// `timestamp_ms` is current trusted host time; `cutoff_ms` is evidence age.
     ///
     /// # Errors
-    /// Propagates reconciliation errors without granting permission.
-    pub fn expire_before(&mut self, cutoff_ms: u64) -> Result<(), String> {
+    /// Rejects clock rollback and future cutoffs; propagates reconciliation errors.
+    pub fn expire_before(&mut self, cutoff_ms: u64, timestamp_ms: u64) -> Result<(), String> {
+        if cutoff_ms > timestamp_ms {
+            return Err("expiry cutoff exceeds host time".into());
+        }
+        self.observe_host_time(timestamp_ms)?;
         let before = self.pipeline.audit_log().transitions().len();
         self.pipeline
-            .expire_before(cutoff_ms)
+            .expire_before(cutoff_ms, timestamp_ms)
             .map_err(|e| e.to_string())?;
         if self.pipeline.audit_log().transitions().len() != before {
             self.revoke_approvals();

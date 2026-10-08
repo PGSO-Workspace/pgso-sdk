@@ -46,7 +46,7 @@ use crate::{
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum PgsoBuildError {
-    /// Engine or rule configuration is invalid.
+    /// Engine, rule, or catalog configuration is invalid.
     #[error(transparent)]
     InvalidConfig(#[from] crate::ConfigError),
     /// No [`Signal`] source was supplied via [`PgsoBuilder::signal`].
@@ -123,7 +123,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
                     }
                 }
             }
-            self.commit_policy(next, reading.timestamp_ms, Some(reading.clone()))?;
+            self.commit_policy(next, reading.timestamp_ms, Some(reading.clone()), None)?;
             self.engine = engine;
         }
 
@@ -135,6 +135,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
         next: BTreeMap<Axis, Vec<ScopeDecision>>,
         timestamp_ms: u64,
         reading: Option<SignalReading>,
+        expiry_cutoff_ms: Option<u64>,
     ) -> Result<(), ActuatorError> {
         let active: Vec<_> = next.values().flatten().cloned().collect();
         let before = self.actuator.current_state();
@@ -153,6 +154,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
             }
             self.audit_log.transition(crate::audit::PolicyTransition {
                 timestamp_ms,
+                expiry_cutoff_ms,
                 reading,
                 before,
                 after,
@@ -164,14 +166,24 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
     }
 
     /// Retire contributions older than the trusted host's cutoff. Silence alone
-    /// never grants permissions. Call this under the same lock as dispatch.
+    /// never grants permissions. `timestamp_ms` is the trusted host's current
+    /// time, distinct from the evidence-age cutoff. Call under the dispatch lock.
     ///
     /// # Errors
-    /// Leaves policy unchanged if reconciliation fails.
-    pub fn expire_before(&mut self, cutoff_ms: u64) -> Result<Catalog, ActuatorError> {
+    /// Leaves policy unchanged if the cutoff is in the future or reconciliation fails.
+    pub fn expire_before(
+        &mut self,
+        cutoff_ms: u64,
+        timestamp_ms: u64,
+    ) -> Result<Catalog, ActuatorError> {
+        if cutoff_ms > timestamp_ms {
+            return Err(ActuatorError::Internal(
+                "expiry cutoff exceeds host time".into(),
+            ));
+        }
         let mut next = self.active.clone();
         next.retain(|_, decisions| decisions.iter().any(|d| d.audit.timestamp_ms >= cutoff_ms));
-        self.commit_policy(next, cutoff_ms, None)?;
+        self.commit_policy(next, timestamp_ms, None, Some(cutoff_ms))?;
         Ok(self.current_catalog())
     }
 
@@ -252,12 +264,14 @@ impl<S: Signal, A: Actuator> PgsoBuilder<S, A> {
     }
 
     /// Build the pipeline.
+    /// The actuator must expose its initial catalog, with unique nonblank IDs.
+    /// Rule actions and protected IDs must refer to tools in that catalog.
     ///
     /// # Errors
     ///
     /// Returns the corresponding [`PgsoBuildError`] variant if any stage was
-    /// not supplied. This never panics, so a wiring mistake cannot crash the
-    /// host process (master spec §5).
+    /// not supplied, or configuration references are invalid. This never panics,
+    /// so a wiring mistake cannot crash the host process (master spec §5).
     pub fn build(self) -> Result<Pgso<S, A>, PgsoBuildError> {
         self.engine
             .as_ref()
@@ -267,6 +281,16 @@ impl<S: Signal, A: Actuator> PgsoBuilder<S, A> {
             .as_ref()
             .ok_or(PgsoBuildError::MissingRules)?
             .validate()?;
+        self.rules
+            .as_ref()
+            .ok_or(PgsoBuildError::MissingRules)?
+            .validate_catalog(
+                &self
+                    .actuator
+                    .as_ref()
+                    .ok_or(PgsoBuildError::MissingActuator)?
+                    .current_catalog(),
+            )?;
         Ok(Pgso {
             signal: self.signal.ok_or(PgsoBuildError::MissingSignal)?,
             engine: self.engine.ok_or(PgsoBuildError::MissingEngine)?,

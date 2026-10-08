@@ -12,6 +12,8 @@ use crate::action::ScopeDecision;
 pub struct PolicyTransition {
     /// Caller-supplied observation or expiry time.
     pub timestamp_ms: u64,
+    /// Evidence-age cutoff used for expiry; None for observation transitions.
+    pub expiry_cutoff_ms: Option<u64>,
     /// Observation; None denotes explicit expiry by the trusted host.
     pub reading: Option<crate::SignalReading>,
     /// State before reconciliation.

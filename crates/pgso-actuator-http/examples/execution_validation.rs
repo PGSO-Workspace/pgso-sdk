@@ -277,7 +277,9 @@ fn main() {
     restrict(&mut runtime, 1);
     let base = request("recovery", "human", 1);
     let token = runtime.approve(&base, 2, 100).expect("approval issued");
-    runtime.expire_before(2).expect("policy recovery accepted");
+    runtime
+        .expire_before(2, 2)
+        .expect("policy recovery accepted");
     restrict(&mut runtime, 3);
     let mut stale = base;
     stale.confirmation = Some(token);

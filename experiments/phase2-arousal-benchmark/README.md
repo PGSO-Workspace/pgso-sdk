@@ -1,5 +1,62 @@
 # Phase 2 — Arousal-signal benchmark (spontaneous speech)
 
+## Validation revision — 2026-10-08
+
+The historical design and bands below are retained for provenance. They are **not
+evidence that any correlation is governance-grade**, and the legacy
+`benchmark.py` does not implement the revised validation protocol. Its utterance
+bootstrap, unpinned model loading, aggregate failure reporting and whole-utterance
+timing are insufficient for a confirmatory streaming comparison. Do not use its
+"REAL" or "ceiling" output as a scientific conclusion.
+
+The revised [protocol](../../docs/validation/charter-validation-protocol.md) is a
+development draft, not an approved preregistration. No new corpus/model evaluation
+has been executed under it. `evaluate_predictions.py` evaluates **already recorded**
+predictions without loading models or calling providers. It preserves coverage,
+separates errors from abstentions, validates aligned utterance identities and
+speaker-disjoint splits, and uses paired speaker-cluster bootstrap intervals.
+Every candidate must supply a row for every utterance, including failures.
+
+Required CSV columns:
+
+```text
+corpus,split,scene,speaker,candidate,human_arousal,prediction,status
+```
+
+`split` is `train`, `development`, or `test`. `status` is `ok`, `abstained`, or
+`error`; only `ok` contains a prediction. IDs must be stable, labels and speaker
+identities identical across candidates. A speaker must belong to only one split
+within a corpus. This validator does not detect identity overlap between corpora,
+audio duplicates or overlap with model pretraining: those require the protocol's
+dataset/model provenance review. Prediction files must come with the pinned
+extraction manifest described there. Correlations are conditional on emitted
+predictions; paired differences are conditional on common coverage.
+
+Example for a future authorized recorded-prediction evaluation:
+
+```sh
+python evaluate_predictions.py predictions.csv --output results.json
+```
+
+The command refuses to overwrite results, records input/evaluator/statistics
+hashes and emits strict JSON. Undefined statistics are explicit, not NaN or a
+successful verdict. If any bootstrap replicate is undefined, the interval is
+withheld and its count reported. Small/degenerate samples need methodological
+review, not silent filtering. Results are labeled development and do not select a
+winner automatically. Vault datasets/analyses must still run only through a
+declared PhDude analysis; this command is not a bypass.
+
+Run software checks only (synthetic records, no audio or providers):
+
+```sh
+python3 -m unittest discover -s experiments/phase2-arousal-benchmark -p 'test_evaluate_predictions.py' -v
+```
+
+The test command is run from the repository root. The evaluator needs NumPy; it
+does not need torch, librosa, matplotlib or downloaded model weights.
+
+## Historical design (not the revised protocol)
+
 **Question:** how well does each of several prosodic arousal signals track *human*
 arousal on the same spontaneous corpus, same axis, same pre-registered bands? A
 **benchmark + root-cause read**, not a tuned win.
