@@ -1,0 +1,75 @@
+crates/pgso-actuator-mcp/tests/governance_regressions.rs
+  s_ac4c3eee4b09c9::t_e0e089a36bd515 68-117,119,121-122,125,127,129,131-132,298
+  s_ac4c3eee4b09c9::t_c958cebc7008b8 118,120,123-124,126,128,130,133-135
+crates/pgso-actuator-http/examples/execution_validation.rs
+  s_ac4c3eee4b09c9::t_138a19555279c0 280
+  s_ac4c3eee4b09c9::t_7f7cb221c80b1a 281-282
+crates/pgso-core/src/audit.rs
+  s_ac4c3eee4b09c9::t_c439284b32b596 15-16
+docs/validation/live-readiness.md
+  s_ac4c3eee4b09c9::t_b6f778f404fbe4 1-116
+experiments/phase2-arousal-benchmark/evaluate_predictions.py
+  s_ac4c3eee4b09c9::t_11371871fd877c 1-11,13-30,35-165,167-174
+  s_ac4c3eee4b09c9::t_6ddefa9a1e7fc7 31-34
+  s_ac4c3eee4b09c9::t_38ac9a7143a54c 12,166
+crates/pgso-actuator-http/src/runtime.rs
+  s_ac4c3eee4b09c9::t_ad973eaa7117b5 259,262,264-267
+  s_ac4c3eee4b09c9::t_c439284b32b596 263,270
+crates/pgso-actuator-http/tests/execution.rs
+  s_ac4c3eee4b09c9::t_ad973eaa7117b5 303-322
+  s_ac4c3eee4b09c9::t_138a19555279c0 293
+  s_ac4c3eee4b09c9::t_c74143017fffeb 302
+crates/pgso-actuator-http/examples/lifecycle_comparison.rs
+  s_ac4c3eee4b09c9::t_138a19555279c0 293
+  s_ac4c3eee4b09c9::t_6ac83a472a213a 294-295
+crates/pgso-actuator-http/examples/check_voice_bridge.py
+  s_ac4c3eee4b09c9::t_7c6b78543950e8 3-221
+  s_ac4c3eee4b09c9::t_465f25fb06e3af 1-2,222-227
+experiments/phase2-arousal-benchmark/README.md
+  s_ac4c3eee4b09c9::t_ba0b698150066b 3-59
+experiments/phase2-arousal-benchmark/test_evaluate_predictions.py
+  s_ac4c3eee4b09c9::t_38ac9a7143a54c 73-102
+  s_ac4c3eee4b09c9::t_6ddefa9a1e7fc7 1-72,103-136
+docs/governance-contract.md
+  s_ac4c3eee4b09c9::t_ad973eaa7117b5 25-40
+crates/pgso-core/src/rules.rs
+  s_ac4c3eee4b09c9::t_c439284b32b596 127-143
+  s_ac4c3eee4b09c9::t_e2edc3791700fd 144-146
+crates/pgso-core/src/types.rs
+  s_ac4c3eee4b09c9::t_c439284b32b596 63-76
+crates/pgso-core/src/pipeline.rs
+  s_ac4c3eee4b09c9::t_feddc95c7f8c06 273-274
+  s_ac4c3eee4b09c9::t_ad973eaa7117b5 49,174-178,180-182,267-268,288-292
+  s_ac4c3eee4b09c9::t_c439284b32b596 126,138,157,169-170,173,179,183,186,284-287,293
+crates/pgso-actuator-http/examples/voice_bridge.rs
+  s_ac4c3eee4b09c9::t_138a19555279c0 374,400,431
+  s_ac4c3eee4b09c9::t_a211b24fe301da 27-45,170,184,294,301
+docs/validation/charter-validation-protocol.md
+  s_ac4c3eee4b09c9::t_ba0b698150066b 1-171
+experiments/public_voice/bridge.py
+  s_0fa6fe246a33c1::t_026b29430ddf44 16-18,31-35,39-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c5240c00754ce210cbcfd5ff40e9e0b10b387767",
+  "prompts": {},
+  "sessions": {
+    "s_0fa6fe246a33c1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0fb4e-ef7a-7491-ba88-0f5264eba745",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    },
+    "s_ac4c3eee4b09c9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a11a3d-b06c-74f1-ab48-22ef78627225",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
