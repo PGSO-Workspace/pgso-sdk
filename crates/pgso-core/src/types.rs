@@ -60,6 +60,20 @@ pub struct Catalog {
 }
 
 impl Catalog {
+    /// Validate that tool identities are nonblank and unambiguous.
+    ///
+    /// # Errors
+    /// Rejects blank or duplicate tool IDs.
+    pub fn validate(&self) -> Result<(), crate::ConfigError> {
+        let mut ids = std::collections::HashSet::new();
+        for tool in &self.tools {
+            if tool.id.as_str().trim().is_empty() || !ids.insert(&tool.id) {
+                return Err(crate::ConfigError("duplicate or blank tool id"));
+            }
+        }
+        Ok(())
+    }
+
     /// Create a catalog from an ordered list of tools.
     #[must_use]
     pub const fn new(tools: Vec<Tool>) -> Self {

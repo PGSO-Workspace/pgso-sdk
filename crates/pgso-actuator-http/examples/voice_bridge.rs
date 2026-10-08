@@ -24,6 +24,25 @@ struct Init {
     governed_tools: Vec<String>,
     #[serde(default)]
     intervention: Intervention,
+    #[serde(
+        default = "default_stale_after_ms",
+        deserialize_with = "stale_after_ms"
+    )]
+    stale_after_ms: u64,
+}
+
+fn default_stale_after_ms() -> u64 {
+    1_200
+}
+
+fn stale_after_ms<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<u64, D::Error> {
+    let value = u64::deserialize(deserializer)?;
+    if !(1..=60_000).contains(&value) {
+        return Err(serde::de::Error::custom(
+            "stale_after_ms must be between 1 and 60000",
+        ));
+    }
+    Ok(value)
 }
 
 #[derive(Clone, Copy, Default, Deserialize)]
@@ -148,7 +167,7 @@ fn callback(
     })
 }
 
-fn config() -> Value {
+fn config(stale_after_ms: u64) -> Value {
     json!({
         "sample_rate": 16000,
         "window_samples": 12800,
@@ -162,7 +181,7 @@ fn config() -> Value {
         "ema_alpha": 0.0,
         "direction": "Rising",
         "max_gap_ms": 1200,
-        "stale_after_ms": 1200
+        "stale_after_ms": stale_after_ms
     })
 }
 
@@ -272,13 +291,14 @@ fn run() -> Result<(), String> {
     let stdout = Arc::new(Mutex::new(io::stdout()));
     let init: Init =
         serde_json::from_str(&read_line(&reader)?).map_err(|error| error.to_string())?;
+    let stale_after_ms = init.stale_after_ms;
     let (mut runtime, queue, intervention) =
         build_runtime(init, Arc::clone(&reader), Arc::clone(&stdout))?;
     let mut extractor = EgemapsSignal::new(16_000);
     let mut last_timestamp = None;
     send(
         &stdout,
-        &json!({"ok":true,"state":state(&runtime, intervention),"audit":[],"config":config()}),
+        &json!({"ok":true,"state":state(&runtime, intervention),"audit":[],"config":config(stale_after_ms)}),
     )?;
 
     loop {
@@ -351,7 +371,7 @@ fn run() -> Result<(), String> {
                         timestamp_ms: reading.timestamp_ms,
                     })
                     .collect();
-                runtime.expire_before(timestamp_ms.saturating_sub(1_200))?;
+                runtime.expire_before(timestamp_ms.saturating_sub(stale_after_ms), timestamp_ms)?;
                 queue
                     .lock()
                     .map_err(|_| "reading queue lock poisoned")?
@@ -377,7 +397,7 @@ fn run() -> Result<(), String> {
                     return Err("host timestamp moved backwards".into());
                 }
                 last_timestamp = Some(timestamp_ms);
-                runtime.expire_before(timestamp_ms.saturating_sub(1_200))?;
+                runtime.expire_before(timestamp_ms.saturating_sub(stale_after_ms), timestamp_ms)?;
                 let result = runtime.call(
                     CallRequest {
                         session: runtime.session().to_string(),
@@ -408,7 +428,7 @@ fn run() -> Result<(), String> {
                     return Err("host timestamp moved backwards".into());
                 }
                 last_timestamp = Some(timestamp_ms);
-                runtime.expire_before(timestamp_ms.saturating_sub(1_200))?;
+                runtime.expire_before(timestamp_ms.saturating_sub(stale_after_ms), timestamp_ms)?;
                 let request = CallRequest {
                     session: runtime.session().to_string(),
                     tool: name,

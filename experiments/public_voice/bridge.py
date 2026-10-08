@@ -13,7 +13,9 @@ import time
 
 class Bridge:
     def __init__(self, binary, tools, governed_tools, session="pilot", timeout=30,
-                 intervention="prune"):
+                 intervention="prune", stale_after_ms=1200):
+        if type(stale_after_ms) is not int or not 1 <= stale_after_ms <= 60000:
+            raise ValueError("stale_after_ms must be an integer between 1 and 60000")
         self.timeout = timeout
         self.state = {}
         self.receipts = []
@@ -26,13 +28,17 @@ class Bridge:
         self.process = subprocess.Popen([str(binary)], stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE, text=True, bufsize=1)
         try:
-            response = self.request({"tools": definitions,
-                                     "governed_tools": sorted(governed_tools),
-                                     "session": session,
-                                     "intervention": intervention})
+            command = {"tools": definitions, "governed_tools": sorted(governed_tools),
+                       "session": session, "intervention": intervention}
+            if stale_after_ms != 1200:
+                command["stale_after_ms"] = stale_after_ms
+            response = self.request(command)
             if not response["ok"]:
                 raise RuntimeError(response.get("error", "bridge initialization failed"))
             self.config = response.get("config", {})
+            if (type(self.config) is not dict or type(self.config.get("stale_after_ms")) is not int
+                    or self.config["stale_after_ms"] != stale_after_ms):
+                raise RuntimeError("bridge stale_after_ms configuration mismatch")
         except BaseException:
             self.close()
             raise

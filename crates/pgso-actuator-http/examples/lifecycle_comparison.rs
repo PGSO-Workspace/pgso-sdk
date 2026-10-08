@@ -290,7 +290,9 @@ fn evaluate(episodes: Vec<Episode>) -> Result<Vec<EpisodeOutput>, Box<dyn Error>
                         timestamp_ms: latest_timestamp,
                     })?;
                 }
-                Event::Expire(event) => runtime.expire_before(event.cutoff_ms)?,
+                Event::Expire(event) => {
+                    runtime.expire_before(event.cutoff_ms, latest_timestamp.max(event.cutoff_ms))?
+                }
                 Event::Call(event) => {
                     let CallEvent {
                         tool, timestamp_ms, ..

@@ -290,13 +290,34 @@ fn stale_discovery_and_confirmation_cannot_bypass_new_restriction() {
         .unwrap();
     assert!(runtime.tools_list()["tools"].as_array().unwrap().is_empty());
     assert!(runtime.call(r.clone(), 3).is_err());
-    runtime.expire_before(3).unwrap();
+    runtime.expire_before(3, 3).unwrap();
     assert!(runtime.call(r, 4).is_err());
     assert_eq!(effects.load(Ordering::SeqCst), 0);
     assert!(runtime
         .drain_execution_log()
         .iter()
         .any(|record| record.reason == ExecutionReason::ToolUnavailable));
+}
+
+#[test]
+fn expiry_rejects_host_clock_rollback_and_records_both_times() {
+    let (mut runtime, effects) = setup();
+    runtime
+        .observe(&AudioWindow {
+            samples: vec![0.95],
+            sample_rate: 16000,
+            timestamp_ms: 1_000,
+        })
+        .unwrap();
+    assert!(runtime.call(request(), 20_000).is_err());
+    assert!(runtime.expire_before(5_000, 19_000).is_err());
+    assert!(runtime.tools_list()["tools"].as_array().unwrap().is_empty());
+    assert!(runtime.expire_before(26_000, 25_000).is_err());
+    runtime.expire_before(5_000, 25_000).unwrap();
+    let transition = runtime.policy_audit().transitions().last().unwrap();
+    assert_eq!(transition.timestamp_ms, 25_000);
+    assert_eq!(transition.expiry_cutoff_ms, Some(5_000));
+    assert_eq!(effects.load(Ordering::SeqCst), 0);
 }
 
 #[test]

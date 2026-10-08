@@ -124,6 +124,26 @@ pub struct RuleEngine {
 }
 
 impl RuleEngine {
+    pub(crate) fn validate_catalog(
+        &self,
+        catalog: &crate::Catalog,
+    ) -> Result<(), crate::ConfigError> {
+        catalog.validate()?;
+        if self.protected.iter().any(|id| !catalog.contains(id)) {
+            return Err(crate::ConfigError("unknown protected tool id"));
+        }
+        for rule in self.rules.rules() {
+            for action in &rule.actions {
+                if let Action::Prune(id) | Action::RequireStepUp(id) = action {
+                    if !catalog.contains(id) {
+                        return Err(crate::ConfigError("unknown rule action tool id"));
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+
     /// Check unique rule identities and finite, meaningful thresholds.
     ///
     /// # Errors
