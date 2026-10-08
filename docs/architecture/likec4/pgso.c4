@@ -1,0 +1,231 @@
+specification {
+  element projection
+  element step
+}
+model {
+  logic = projection "Responsabilidades del SDK" {
+    host = step "Host del agente de voz"
+    signal = step "Signal"
+    pipe = step "Pgso"
+    engine = step "DecisionEngine"
+    rules = step "RuleEngine"
+    act = step "Actuator"
+    runtime = step "Runtime"
+    effect = step "Callback"
+    audit = step "Auditoría en memoria"
+    host -> pipe "PCM y timestamps"
+    pipe -> signal "extract"
+    signal -> pipe "SignalReading"
+    pipe -> engine "Procesar lectura"
+    pipe -> rules "Solo Triggered"
+    rules -> pipe "Contribuciones"
+    pipe -> act "reconcile atómico"
+    runtime -> act "Consultar estado"
+    runtime -> effect "Solo autorizado"
+    pipe -> audit "Commit de política"
+    runtime -> audit "Recibo de intento"
+  }
+  observation = projection "Resultado de observación" {
+    input = step "Lectura"
+    valid = step "Validar calidad y tiempo"
+    abstain = step "Abstained: conservar"
+    gap = step "Evaluar gap y racha"
+    dev = step "Medir desviación"
+    nominal = step "Nominal: adaptar baseline"
+    count = step "Congelar baseline y contar"
+    pending = step "Pending: conservar política"
+    trigger = step "Triggered: evaluar reglas"
+    input -> valid "Recibida"
+    valid -> abstain "Inválida o baja confianza"
+    valid -> gap "Aceptada"
+    gap -> dev "Reiniciar racha si gap excedido"
+    dev -> nominal "Debajo del umbral"
+    dev -> count "Alcanza el umbral"
+    count -> pending "Racha insuficiente"
+    count -> trigger "Histéresis satisfecha"
+  }
+  policy = projection "Política efectiva por eje" {
+    none = step "Sin contribución"
+    active = step "Con contribución; reemplazable"
+    hold = step "Abstención, Pending o silencio"
+    error = step "Reconciliación fallida"
+    none -> active "Triggered con acciones y commit"
+    active -> none "Nominal, sin acciones o expiry; commit"
+    hold -> active "Conservar contribución previa"
+    hold -> none "Conservar ausencia previa"
+    error -> active "Sin commit; conservar estado previo"
+    error -> none "Sin commit; conservar estado previo"
+  }
+  development = projection "Dependencias de código" {
+    core = step "pgso-core"
+    signal = step "pgso-signal-egemaps"
+    local = step "pgso-actuator-local"
+    mcp = step "pgso-actuator-mcp"
+    http = step "pgso-actuator-http"
+    bridge = step "Ejemplo voice_bridge"
+    std = step "std y thiserror"
+    signal -> core "Depende de"
+    local -> core "Depende de"
+    mcp -> core "Depende de"
+    http -> core "Depende de"
+    http -> mcp "Depende de"
+    bridge -> http "Enlaza"
+    bridge -> signal "Dependencia de desarrollo"
+    bridge -> mcp "Enlaza"
+    bridge -> core "Enlaza"
+    core -> std "Depende de"
+  }
+  processes = projection "Serialización de una sesión HTTP" {
+    client = step "Cliente HTTP o MCP"
+    router = step "Router autenticado"
+    host = step "Host confiable"
+    lock = step "Mutex por Runtime"
+    rt = step "Política y autorización"
+    cb = step "Callback síncrono"
+    out = step "Resultado y recibo"
+    client -> router "Petición"
+    router -> lock "Adquirir acceso"
+    host -> lock "observe, expiry, approve"
+    lock -> rt "Acceso exclusivo"
+    rt -> cb "Mantener exclusión durante efecto"
+    cb -> out "Finalizar intento"
+  }
+  bridge = projection "Protocolo del bridge NDJSON" {
+    extract = step "1. Host envía extract"
+    readings = step "2. Bridge devuelve readings"
+    observe = step "3. Host envía observe"
+    policy = step "4. Bridge actualiza política"
+    call = step "5. Host envía call"
+    auth = step "6. Runtime autoriza"
+    deny = step "Denegar sin callback"
+    effect = step "7. Host ejecuta callback"
+    reply = step "8. Host envía result o error"
+    receipt = step "9. Bridge devuelve recibo"
+    extract -> readings "PCM y tiempo original"
+    readings -> observe "Mismo timestamp"
+    observe -> policy "Expiry y observación"
+    policy -> call "Estado efectivo"
+    call -> auth "Expiry antes de call"
+    auth -> deny "No autorizado"
+    auth -> effect "NDJSON: tool y argumentos exactos"
+    effect -> reply "Un solo efecto"
+    reply -> receipt "Runtime.call sigue abierto hasta respuesta"
+  }
+  embedded = projection "Despliegue de referencia: embebido" {
+    app = step "Máquina: proceso del agente de voz"
+    sdk = step "SDK dentro del mismo proceso"
+    effect = step "Callbacks del host"
+    business = step "Servicios de negocio externos"
+    store = step "Persistencia del integrador"
+    app -> sdk "API Rust, sin red entre ambos"
+    sdk -> effect "Autorización antes del efecto"
+    effect -> business "Credenciales del host"
+    app -> store "Persistir registros"
+  }
+  subprocess = projection "Despliegue de referencia: bridge" {
+    host = step "Máquina: proceso del agente de voz"
+    bridge = step "Misma máquina: subproceso voice_bridge"
+    business = step "Servicios de negocio externos"
+    store = step "Persistencia del integrador"
+    host -> bridge "stdin: comandos y respuesta callback"
+    bridge -> host "stdout: estado, callback y recibo"
+    host -> business "Efectos y credenciales del host"
+    host -> store "Persistir trazas"
+  }
+  dispatch = projection "S1–S2: autorización antes de efectos" {
+    discovery = step "1. Agente descubre catálogo"
+    change = step "2. Host puede cambiar política"
+    call = step "3. Agente intenta llamada"
+    identity = step "4. Runtime verifica tiempo y sesión"
+    token = step "5. Consume token presentado"
+    check = step "6. Permisos, catálogo, esquema y step-up"
+    effect = step "7a. Callback autorizado"
+    deny = step "7b. Denegación sin callback"
+    receipt = step "8. Respuesta y recibo"
+    discovery -> change "Catálogo puede quedar obsoleto"
+    change -> call "No concede autorización"
+    call -> identity "Tiempo del host"
+    identity -> token "Solo sesión correcta"
+    token -> check "Confirmación de un uso"
+    check -> effect "Permitido"
+    check -> deny "Denegado"
+    effect -> receipt "Resultado o error"
+    deny -> receipt "Razón de denegación"
+  }
+  expiry = projection "S3–S4: abstención y expiración" {
+    active = step "1. Restricción confirmada"
+    abs = step "2. Baja confianza o silencio"
+    hold = step "3. Conservar restricción"
+    expire = step "4. Host solicita expiry"
+    cut = step "5. Retirar anteriores al cutoff"
+    reconcile = step "6. Reconciliar ejes restantes"
+    audit = step "7. Auditar cambio efectivo"
+    active -> abs "Observación posterior"
+    abs -> hold "No es recuperación"
+    hold -> expire "Política temporal explícita"
+    expire -> cut "cutoff y tiempo actual distintos"
+    cut -> reconcile "Igual al cutoff sobrevive"
+    reconcile -> audit "Solo tras commit exitoso"
+  }
+  lost_receipt = projection "S5: recibo perdido después del efecto" {
+    call = step "1. Host envía call"
+    cb = step "2. Bridge autoriza callback"
+    effect = step "3. Host ejecuta una vez"
+    result = step "4. Resultado nativo"
+    reply = step "5. Host responde al bridge"
+    lost = step "6. Recibo ausente o inválido"
+    unknown = step "7. Ejecución indeterminada"
+    call -> cb "Autorización vigente"
+    cb -> effect "Tool y argumentos exactos"
+    effect -> result "Efecto ya pudo ocurrir"
+    result -> reply "result o error"
+    reply -> lost "Fallo de transporte o protocolo"
+    lost -> unknown "No repetir automáticamente"
+  }
+}
+views {
+  view logic_view of logic {
+    title "Responsabilidades del SDK"
+    include logic.*
+  }
+  view observation_view of observation {
+    title "Resultado de observación"
+    include observation.*
+  }
+  view policy_view of policy {
+    title "Política efectiva por eje"
+    include policy.*
+  }
+  view development_view of development {
+    title "Dependencias de código"
+    include development.*
+  }
+  view processes_view of processes {
+    title "Serialización de una sesión HTTP"
+    include processes.*
+  }
+  view bridge_view of bridge {
+    title "Protocolo del bridge NDJSON"
+    include bridge.*
+  }
+  view embedded_view of embedded {
+    title "Despliegue de referencia: embebido"
+    include embedded.*
+  }
+  view subprocess_view of subprocess {
+    title "Despliegue de referencia: bridge"
+    include subprocess.*
+  }
+  view dispatch_view of dispatch {
+    title "S1–S2: autorización antes de efectos"
+    include dispatch.*
+  }
+  view expiry_view of expiry {
+    title "S3–S4: abstención y expiración"
+    include expiry.*
+  }
+  view lost_receipt_view of lost_receipt {
+    title "S5: recibo perdido después del efecto"
+    include lost_receipt.*
+  }
+}

@@ -81,19 +81,10 @@ replacement treatment.
 
 ## Actual effects and independent scoring
 
-```mermaid
-flowchart LR
-    U[Simulated user] --> V[Shared TTS / PCM / ASR]
-    V --> O[Acoustic observations]
-    V --> A[Same base agent]
-    O --> C[Assigned adaptation]
-    C --> A
-    A --> R[Runtime::call]
-    R --> H[Trusted callback]
-    H --> E[Real telecom sandbox effects]
-    E --> J[Original live task predicates]
-    E --> L[Independent before/after effect log]
-```
+The simulated user feeds shared TTS/PCM/ASR. Acoustic observations reach the
+assigned adaptation, while the base agent proposes tool calls. `Runtime::call`
+authorizes the trusted callback before telecom sandbox effects. Original live
+task predicates and an independent before/after log evaluate those actual effects.
 
 The Rust callback remains inside `Runtime::call` while the trusted Python host
 executes the environment tool. No reusable "allowed" token authorizes a later

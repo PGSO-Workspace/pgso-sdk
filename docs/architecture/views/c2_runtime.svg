@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="-12 -12 774 866" width="774" height="866" font-family="Helvetica,Arial,sans-serif">
+<title>C2 · Proceso de referencia HTTP</title>
+<rect width="100%" height="100%" fill="white"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#333"/></marker></defs>
+<rect x="212" y="0" width="326" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="375.0" y="96.0" text-anchor="middle" font-size="18" fill="#111">Agente de IA de voz</text>
+<rect x="215" y="340" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="375.0" y="436.0" text-anchor="middle" font-size="18" fill="#111">Proceso con Runtime PGSO</text>
+<rect x="0" y="662" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="160.0" y="758.0" text-anchor="middle" font-size="18" fill="#111">Servicios de negocio</text>
+<rect x="430" y="662" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="590.0" y="758.0" text-anchor="middle" font-size="18" fill="#111">Persistencia del host</text>
+<path d="M 375,180 L 375,226 L 375,282 L 375,329" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="373" y="239" width="226" height="39" fill="white"/>
+<text x="376" y="255" font-size="14" fill="#222">Descubrir herramientas y</text>
+<text x="376" y="273" font-size="14" fill="#222">proponer  llamadas</text>
+<path d="M 285,519 L 268,538 L 251,559 L 238,580 L 223,602 L 209,628 L 198,653" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="236" y="579" width="219" height="22" fill="white"/>
+<text x="239" y="595" font-size="14" fill="#222">Callback después de</text>
+<text x="239" y="613" font-size="14" fill="#222">autorización</text>
+<path d="M 436,520 L 449,539 L 463,560 L 476,580 L 492,604 L 509,630 L 526,654" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="486" y="579" width="156" height="22" fill="white"/>
+<text x="489" y="595" font-size="14" fill="#222">El host drena y</text>
+<text x="489" y="613" font-size="14" fill="#222">persiste</text>
+</svg>

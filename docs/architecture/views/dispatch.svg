@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="-12 -12 774 2464" width="774" height="2464" font-family="Helvetica,Arial,sans-serif">
+<title>S1–S2: autorización antes de efectos</title>
+<rect width="100%" height="100%" fill="white"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#333"/></marker></defs>
+<rect x="214" y="0" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="374.0" y="96.0" text-anchor="middle" font-size="18" fill="#111">1. Agente descubre catálogo</text>
+<rect x="214" y="323" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="374.0" y="407.5" text-anchor="middle" font-size="18" fill="#111">2. Host puede cambiar</text>
+<text x="374.0" y="430.5" text-anchor="middle" font-size="18" fill="#111">política</text>
+<rect x="214" y="646" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="374.0" y="742.0" text-anchor="middle" font-size="18" fill="#111">3. Agente intenta llamada</text>
+<rect x="203" y="968" width="342" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="374.0" y="1052.5" text-anchor="middle" font-size="18" fill="#111">4. Runtime verifica tiempo y</text>
+<text x="374.0" y="1075.5" text-anchor="middle" font-size="18" fill="#111">sesión</text>
+<rect x="214" y="1291" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="374.0" y="1387.0" text-anchor="middle" font-size="18" fill="#111">5. Consume token presentado</text>
+<rect x="171" y="1614" width="405" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="373.5" y="1698.5" text-anchor="middle" font-size="18" fill="#111">6. Permisos, catálogo, esquema y</text>
+<text x="373.5" y="1721.5" text-anchor="middle" font-size="18" fill="#111">step-up</text>
+<rect x="0" y="1937" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="160.0" y="2033.0" text-anchor="middle" font-size="18" fill="#111">7a. Callback autorizado</text>
+<rect x="430" y="1937" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="590.0" y="2033.0" text-anchor="middle" font-size="18" fill="#111">7b. Denegación sin callback</text>
+<rect x="214" y="2260" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="374.0" y="2356.0" text-anchor="middle" font-size="18" fill="#111">8. Respuesta y recibo</text>
+<path d="M 374,180 L 374,221 L 374,270 L 374,313" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="372" y="239" width="213" height="22" fill="white"/>
+<text x="375" y="255" font-size="14" fill="#222">Catálogo puede quedar</text>
+<text x="375" y="273" font-size="14" fill="#222">obsoleto</text>
+<path d="M 374,503 L 374,544 L 374,593 L 374,635" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="372" y="562" width="164" height="22" fill="white"/>
+<text x="375" y="578" font-size="14" fill="#222">No concede</text>
+<text x="375" y="596" font-size="14" fill="#222">autorización</text>
+<path d="M 374,826 L 374,867 L 374,916 L 374,958" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="372" y="885" width="110" height="22" fill="white"/>
+<text x="375" y="901" font-size="14" fill="#222">Tiempo del</text>
+<text x="375" y="919" font-size="14" fill="#222">host</text>
+<path d="M 374,1148 L 374,1190 L 374,1239 L 374,1281" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="372" y="1207" width="137" height="22" fill="white"/>
+<text x="375" y="1223" font-size="14" fill="#222">Solo sesión</text>
+<text x="375" y="1241" font-size="14" fill="#222">correcta</text>
+<path d="M 374,1471 L 374,1512 L 374,1561 L 374,1604" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="372" y="1530" width="158" height="22" fill="white"/>
+<text x="375" y="1546" font-size="14" fill="#222">Confirmación de un</text>
+<text x="375" y="1564" font-size="14" fill="#222">uso</text>
+<path d="M 315,1794 L 287,1836 L 254,1885 L 225,1928" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="271" y="1853" width="69" height="22" fill="white"/>
+<text x="274" y="1869" font-size="14" fill="#222">Permitido</text>
+<path d="M 434,1794 L 462,1836 L 496,1885 L 524,1928" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="487" y="1853" width="75" height="22" fill="white"/>
+<text x="490" y="1869" font-size="14" fill="#222">Denegado</text>
+<path d="M 219,2117 L 247,2158 L 280,2208 L 309,2251" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="271" y="2176" width="118" height="22" fill="white"/>
+<text x="274" y="2192" font-size="14" fill="#222">Resultado o</text>
+<text x="274" y="2210" font-size="14" fill="#222">error</text>
+<path d="M 530,2117 L 502,2158 L 469,2208 L 440,2251" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="487" y="2176" width="146" height="22" fill="white"/>
+<text x="490" y="2192" font-size="14" fill="#222">Razón de denegación</text>
+</svg>

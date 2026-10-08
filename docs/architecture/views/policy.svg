@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="-12 -12 1141 850" width="1141" height="850" font-family="Helvetica,Arial,sans-serif">
+<title>Política efectiva por eje</title>
+<rect width="100%" height="100%" fill="white"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#333"/></marker></defs>
+<rect x="0" y="0" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="160.0" y="84.5" text-anchor="middle" font-size="18" fill="#111">Abstención, Pending o</text>
+<text x="160.0" y="107.5" text-anchor="middle" font-size="18" fill="#111">silencio</text>
+<rect x="446" y="0" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="606.0" y="96.0" text-anchor="middle" font-size="18" fill="#111">Reconciliación fallida</text>
+<rect x="325" y="323" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="485.0" y="419.0" text-anchor="middle" font-size="18" fill="#111">Sin contribución</text>
+<rect x="215" y="646" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="375.0" y="730.5" text-anchor="middle" font-size="18" fill="#111">Con contribución;</text>
+<text x="375.0" y="753.5" text-anchor="middle" font-size="18" fill="#111">reemplazable</text>
+<path d="M 325,457 L 273,480 L 220,513 L 190,563 L 171,593 L 183,621 L 207,646" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="188" y="562" width="215" height="22" fill="white"/>
+<text x="191" y="578" font-size="14" fill="#222">Triggered con acciones y</text>
+<text x="191" y="596" font-size="14" fill="#222">commit</text>
+<path d="M 405,646 L 420,604 L 437,555 L 451,513" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="431" y="562" width="252" height="22" fill="white"/>
+<text x="434" y="578" font-size="14" fill="#222">Nominal, sin acciones o expiry;</text>
+<text x="434" y="596" font-size="14" fill="#222">commit</text>
+<path d="M 250,180 L 293,222 L 344,273 L 388,316" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="330" y="239" width="177" height="22" fill="white"/>
+<text x="333" y="255" font-size="14" fill="#222">Conservar ausencia</text>
+<text x="333" y="273" font-size="14" fill="#222">previa</text>
+<path d="M 572,180 L 565,199 L 557,220 L 550,240 L 541,264 L 531,289 L 522,313" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="548" y="239" width="236" height="22" fill="white"/>
+<text x="551" y="255" font-size="14" fill="#222">Sin commit; conservar estado</text>
+<text x="551" y="273" font-size="14" fill="#222">previo</text>
+<path d="M 114,180 L 77,265 L 36,396 L 78,503 L 102,564 L 153,614 L 207,650" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="76" y="400" width="196" height="22" fill="white"/>
+<text x="79" y="416" font-size="14" fill="#222">Conservar contribución</text>
+<text x="79" y="434" font-size="14" fill="#222">previa</text>
+<path d="M 758,180 L 777,197 L 794,217 L 805,240 L 831,291 L 1020,230 L 708,586 L 665,634 L 603,668 L 545,691" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="883" y="400" width="236" height="22" fill="white"/>
+<text x="886" y="416" font-size="14" fill="#222">Sin commit; conservar estado</text>
+<text x="886" y="434" font-size="14" fill="#222">previo</text>
+</svg>

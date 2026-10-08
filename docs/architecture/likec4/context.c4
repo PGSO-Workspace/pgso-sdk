@@ -1,0 +1,58 @@
+specification {
+  element person { style { shape person } }
+  element system
+  element container
+  element component
+}
+model {
+  interlocutor = person 'Interlocutor humano'
+  integrator = person 'Integrador del agente'
+  voice_agent = system 'Agente de IA de voz' {
+    description 'Consumidor principal del SDK mediante su host; propone llamadas a herramientas'
+  }
+  services = system 'Servicios de negocio'
+  records = system 'Persistencia del host'
+  pgso_app = system 'Integración PGSO de referencia HTTP' {
+    description 'Variante ejecutable; PGSO también se integra como biblioteca dentro del agente'
+    pgso_process = container 'Proceso con Runtime PGSO' {
+      transport = component 'Router HTTP y MCP'
+      execution = component 'Runtime: autorización y recibos'
+      pipeline = component 'Pgso: contribuciones por eje'
+      signal = component 'Signal intercambiable'
+      engine = component 'DecisionEngine'
+      rules = component 'RuleEngine'
+      actuator = component 'McpActuator: catálogo y directivas'
+      audit = component 'Auditoría en memoria'
+    }
+  }
+  interlocutor -> voice_agent 'Conversación por voz'
+  integrator -> voice_agent 'Configura e integra'
+  voice_agent -> pgso_app 'Audio, catálogo y llamadas'
+  voice_agent -> pgso_process 'Descubrir herramientas y proponer llamadas'
+  voice_agent -> pipeline 'Host confiable: audio, observación y expiry'
+  transport -> execution 'Dispatch bajo mutex de sesión'
+  execution -> pipeline 'observe y expire_before'
+  pipeline -> signal 'extract'
+  pipeline -> engine 'Procesar lecturas'
+  pipeline -> rules 'Evaluar Triggered'
+  pipeline -> actuator 'reconcile atómico'
+  pipeline -> audit 'Commit efectivo'
+  execution -> actuator 'Consultar política vigente'
+  execution -> audit 'Recibo por intento'
+  execution -> services 'Callback después de autorización'
+  pgso_process -> records 'El host drena y persiste'
+}
+views {
+  view c1_context {
+    title 'C1 · Agente de IA de voz como consumidor'
+    include interlocutor, integrator, voice_agent, pgso_app, services, records
+  }
+  view c2_runtime of pgso_app {
+    title 'C2 · Proceso de referencia HTTP'
+    include pgso_app.*, voice_agent, services, records
+  }
+  view c3_runtime of pgso_process {
+    title 'C3 · Responsabilidades dentro del proceso'
+    include pgso_process.*, voice_agent, services
+  }
+}

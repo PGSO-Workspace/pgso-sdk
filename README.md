@@ -27,6 +27,11 @@ comparative task-utility result.
 
 ## Architecture
 
+See the [4+1 architecture views](docs/architecture/README.md) for logical state,
+crate dependencies, concurrency, deployment alternatives, execution scenarios,
+and links to their tests. The [C4 model](docs/pgso-c4.dsl) describes the HTTP
+reference integration; it does not represent a verified production deployment.
+
 The `Signal` and `Actuator` traits separate perception from policy application.
 `pgso-core` depends on `thiserror` and the Rust standard library; the decision
 engine reads caller-supplied timestamps and does not consult a clock or random
@@ -34,18 +39,7 @@ number generator. Its output depends on the reading sequence, configuration,
 rules, and prior state. Agreement across build profiles on one host does not
 establish cross-platform bitwise reproducibility.
 
-```mermaid
-flowchart LR
-    AUDIO[Mono PCM audio] --> SIGNAL[pgso-signal-egemaps]
-    SIGNAL -->|SignalReading| CORE[pgso-core: baseline, hysteresis, rules]
-    CORE --> LOCAL[pgso-actuator-local]
-    CORE --> MCP[pgso-actuator-mcp]
-    CORE --> HTTP[pgso-actuator-http runtime]
-    LOCAL --> CATALOG[Catalog and directives]
-    MCP --> CATALOG
-    HTTP --> DISPATCH[Permission and confirmation checks before callbacks]
-    CORE --> AUDIT[In-memory policy audit]
-```
+![Arquitectura lógica del SDK](docs/architecture/views/logic.svg)
 
 | Crate | Implemented role |
 |---|---|

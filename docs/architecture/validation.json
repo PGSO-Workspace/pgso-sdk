@@ -1,0 +1,39 @@
+{
+  "likec4_version": "1.59.4",
+  "likec4_syntax_validation": "passed",
+  "likec4_exported_svg_views": 14,
+  "svg_checks": "XML parse, nonempty views, title height",
+  "archify_delivery": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "deliver",
+    "type": "architecture",
+    "input": "/home/lucio/workspace/pgso-sdk/docs/architecture/archify/context.json",
+    "output": "/home/lucio/workspace/pgso-sdk/docs/architecture/views/context.html",
+    "specification": {
+      "sha256": "ed43a00a2e1de24598e8305f5a581d4b8e1d933c747d0738cf8ca93bfdc6b266",
+      "bytes": 2303
+    },
+    "artifact": {
+      "sha256": "32637c36b3ebc9630dc428f743973ed5f0418cd4eb36c92e55e6d1add5de3ce2",
+      "bytes": 798847
+    },
+    "validation": {
+      "checksPassed": 9,
+      "checkCount": 9,
+      "compositionProfile": "showcase",
+      "compositionStatus": "pass",
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "archify_browser_status": "pass",
+  "archify_browser_receipt": "views/context.visual-check.json",
+  "visual_review": {
+    "archify": "Reviewed light 1440x900 and dark 2048x1320 screenshots",
+    "likec4": "Representative visual review: C1 context, logic, policy and dispatch; not all 14 views individually inspected"
+  },
+  "vault": "Read-only reference; no scripts or analyses executed there",
+  "rust_builds_run": false,
+  "mermaid_blocks_remaining_in_documentation": 0
+}

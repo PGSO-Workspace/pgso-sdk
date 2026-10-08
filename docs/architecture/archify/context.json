@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "PGSO · Agente de IA de voz",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1350,
+      490
+    ]
+  },
+  "components": [
+    {
+      "id": "person",
+      "type": "external",
+      "label": "Interlocutor",
+      "sublabel": "Persona que conversa",
+      "pos": [
+        40,
+        340
+      ],
+      "size": [
+        220,
+        80
+      ]
+    },
+    {
+      "id": "agent",
+      "type": "backend",
+      "label": "Agente de IA de voz",
+      "sublabel": "Consumidor principal del SDK",
+      "pos": [
+        390,
+        340
+      ],
+      "size": [
+        220,
+        80
+      ]
+    },
+    {
+      "id": "integrator",
+      "type": "external",
+      "label": "Integrador",
+      "sublabel": "Configura el agente y PGSO",
+      "pos": [
+        740,
+        80
+      ],
+      "size": [
+        220,
+        80
+      ]
+    },
+    {
+      "id": "pgso",
+      "type": "security",
+      "label": "SDK PGSO",
+      "sublabel": "Percepción y gobernanza",
+      "pos": [
+        740,
+        340
+      ],
+      "size": [
+        220,
+        80
+      ]
+    },
+    {
+      "id": "callback",
+      "type": "backend",
+      "label": "Callback confiable",
+      "sublabel": "Ejecuta el efecto autorizado",
+      "pos": [
+        1090,
+        340
+      ],
+      "size": [
+        220,
+        80
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "person",
+      "to": "agent",
+      "label": "Voz"
+    },
+    {
+      "from": "integrator",
+      "to": "pgso",
+      "label": "Configuración",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 90
+    },
+    {
+      "from": "agent",
+      "to": "pgso",
+      "label": "Audio y llamadas"
+    },
+    {
+      "from": "pgso",
+      "to": "callback",
+      "label": "Ejecutar si autorizado"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Consumo del SDK",
+      "items": [
+        "El agente integra PGSO mediante su host.",
+        "El interlocutor no usa directamente la API."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Frontera de la garantía",
+      "items": [
+        "Arousal no identifica intención ni emoción.",
+        "Una directiva no garantiza obediencia del modelo."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="-12 -12 2502 850" width="2502" height="850" font-family="Helvetica,Arial,sans-serif">
+<title>Responsabilidades del SDK</title>
+<rect width="100%" height="100%" fill="white"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#333"/></marker></defs>
+<rect x="647" y="0" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="807.0" y="96.0" text-anchor="middle" font-size="18" fill="#111">Host del agente de voz</text>
+<rect x="430" y="646" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="590.0" y="742.0" text-anchor="middle" font-size="18" fill="#111">Signal</text>
+<rect x="1826" y="0" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="1986.0" y="96.0" text-anchor="middle" font-size="18" fill="#111">Runtime</text>
+<rect x="647" y="323" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="807.0" y="419.0" text-anchor="middle" font-size="18" fill="#111">Pgso</text>
+<rect x="2158" y="646" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="2318.0" y="742.0" text-anchor="middle" font-size="18" fill="#111">Callback</text>
+<rect x="0" y="646" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="160.0" y="742.0" text-anchor="middle" font-size="18" fill="#111">DecisionEngine</text>
+<rect x="860" y="646" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="1020.0" y="742.0" text-anchor="middle" font-size="18" fill="#111">RuleEngine</text>
+<rect x="1726" y="646" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="1886.0" y="742.0" text-anchor="middle" font-size="18" fill="#111">Actuator</text>
+<rect x="1292" y="646" width="320" height="180" rx="4" fill="#f5f5f5" stroke="#333"/>
+<text x="1452.0" y="742.0" text-anchor="middle" font-size="18" fill="#111">Auditoría en memoria</text>
+<path d="M 807,180 L 807,221 L 807,270 L 807,313" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="805" y="239" width="127" height="22" fill="white"/>
+<text x="808" y="255" font-size="14" fill="#222">PCM y timestamps</text>
+<path d="M 430,649 L 402,623 L 389,594 L 410,563 L 461,489 L 554,451 L 637,433" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="408" y="562" width="101" height="22" fill="white"/>
+<text x="411" y="578" font-size="14" fill="#222">SignalReading</text>
+<path d="M 744,502 L 730,522 L 715,543 L 702,563 L 686,587 L 669,613 L 653,637" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="700" y="562" width="52" height="22" fill="white"/>
+<text x="703" y="578" font-size="14" fill="#222">extract</text>
+<path d="M 647,426 L 531,443 L 376,479 L 265,563 L 240,582 L 219,610 L 203,637" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="263" y="562" width="112" height="22" fill="white"/>
+<text x="266" y="578" font-size="14" fill="#222">Procesar</text>
+<text x="266" y="596" font-size="14" fill="#222">lectura</text>
+<path d="M 776,502 L 771,530 L 771,561 L 785,586 L 801,614 L 825,638 L 852,658" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="783" y="562" width="102" height="22" fill="white"/>
+<text x="786" y="578" font-size="14" fill="#222">Solo</text>
+<text x="786" y="596" font-size="14" fill="#222">Triggered</text>
+<path d="M 967,451 L 1141,492 L 1426,565 L 1667,646 L 1683,651 L 1700,657 L 1716,663" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="1455" y="562" width="119" height="22" fill="white"/>
+<text x="1458" y="578" font-size="14" fill="#222">reconcile</text>
+<text x="1458" y="596" font-size="14" fill="#222">atómico</text>
+<path d="M 967,493 L 1063,541 L 1185,602 L 1283,650" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="1147" y="562" width="130" height="22" fill="white"/>
+<text x="1150" y="578" font-size="14" fill="#222">Commit de</text>
+<text x="1150" y="596" font-size="14" fill="#222">política</text>
+<path d="M 961,646 L 943,619 L 924,590 L 906,563 L 895,546 L 883,528 L 872,511" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="916" y="562" width="103" height="22" fill="white"/>
+<text x="919" y="578" font-size="14" fill="#222">Contribucione</text>
+<text x="919" y="596" font-size="14" fill="#222">s</text>
+<path d="M 1972,180 L 1954,299 L 1921,511 L 1901,635" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="1947" y="400" width="116" height="22" fill="white"/>
+<text x="1950" y="416" font-size="14" fill="#222">Consultar</text>
+<text x="1950" y="434" font-size="14" fill="#222">estado</text>
+<path d="M 2032,180 L 2094,300 L 2203,512 L 2267,637" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="2194" y="400" width="107" height="22" fill="white"/>
+<text x="2197" y="416" font-size="14" fill="#222">Solo</text>
+<text x="2197" y="434" font-size="14" fill="#222">autorizado</text>
+<path d="M 1904,180 L 1866,222 L 1820,274 L 1781,323 L 1691,435 L 1683,474 L 1591,586 L 1577,603 L 1561,621 L 1545,638" fill="none" stroke="#333" stroke-width="1.3" marker-end="url(#arrow)"/>
+<rect x="1779" y="400" width="119" height="22" fill="white"/>
+<text x="1782" y="416" font-size="14" fill="#222">Recibo de</text>
+<text x="1782" y="434" font-size="14" fill="#222">intento</text>
+</svg>
