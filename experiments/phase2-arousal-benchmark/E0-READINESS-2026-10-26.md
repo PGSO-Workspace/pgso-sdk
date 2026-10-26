@@ -24,6 +24,23 @@ The historical `benchmark.py` mixes whole-utterance learned estimates with windo
 | [IEMOCAP](https://sail.usc.edu/iemocap/iemocap_release.htm) | Secondary acted/improvised development control | Access conditions; do not call it spontaneous natural conversation |
 | CREMA-D and MUStARD++ | Retrospective diagnostics only | Acted speech; cannot substitute independent naturalistic evidence |
 
+## Time-constrained, no-permission fast path (proposed; not a replacement for Charter commitments)
+
+The primary research goal is a deterministic, auditable **tool-governance mechanism**, not state-of-the-art emotion recognition. Do **not** block the engineering mechanism paper indefinitely on gated naturalistic audio. If academic access is infeasible, document the naturalistic and zero-shot cross-corpus objectives as **not met**, rather than silently claiming success.
+
+**Existing usable evidence without new institutional approvals:** the previously acquired CREMA-D fixed-sentence intensity diagnostic (273 clips, 91 speakers, 89 complete triplets) and MUStARD++ acted-speech association are already recorded as **candidate/development** evidence in the Vault and have different annotations. Reconcile their source commits, licenses and raw outputs before citing; do not pool or directly compare their numeric metrics. The known-speech contrast controls lexical content but **does not measure appropriateness of restricting a tool**.
+
+**Free-to-download additional acted controls:** [RAVDESS](https://zenodo.org/records/1188976) offers audio and intensity under CC BY-NC-SA 4.0 for research; it is not natural speech and is not automatically compatible with continuous arousal labels. [MELD](https://affective-meld.github.io/) provides downloadable conversational TV-dialogue audio with categorical emotion labels; drama is not spontaneous speech and categorical labels are not continuous arousal. Respect copyright/reuse terms. Neither is mandatory for a minimum engineering demonstration.
+
+**Recommended short-track paper validation:**
+1. Reproduce and archive E1 structural properties and dispatch receipts on an exact SDK commit (G1, G2a, G2b, G3, G4, G5 with explicit limitations).
+2. Use existing acted audio and fixed-text contrast as **formative signal sensitivity and end-to-end feasibility**, not emotion recognition/generalization. Re-run only if source provenance is missing or results are inconsistent.
+3. Add synthetic corruption/low-confidence ablation and a negative control with shuffled observation timing to characterize policy stability and abstention.
+4. Measure full SDK integration time alongside core time. Keep real speech perception and task appropriateness as separate constructs.
+5. Do not claim improved empathy, tool appropriateness, real-world safety, or spontaneous-speech robustness. Summative human utility belongs to a separately approved future experiment.
+
+**Institutional Charter vs publication:** the October Charter-validation draft retains a three-extractor and cross-corpus commitment. A short-track mechanism manuscript **does not fulfill that commitment by omission**. Researcher/supervisor must either approve a scoped publication experiment, or supply access/resources for the full academic thesis validation. The two deliverables must not be conflated.
+
 ## Required dataset/provenance manifest
 
 Each utterance must have corpus, version, stable scene ID, speaker and session ID, split (train/development/test), path and SHA256 of audio, annotation scale and annotation type, annotator provenance, permissions and license reference. Reject duplicate IDs; disallow speaker overlap across splits within corpus, and detect duplicate audio across splits. Independently inspect cross-corpus overlap, training exposure and source permissions before declaring readiness.
