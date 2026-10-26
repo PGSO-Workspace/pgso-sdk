@@ -13,7 +13,7 @@ from pathlib import Path
 FIELDS = {"corpus", "split", "scene", "speaker", "wav_path", "audio_sha256", "human_arousal", "license_ref", "permission_status"}
 SPLITS = {"train", "development", "test"}
 PERMISSIONS = {"documented", "pending", "unknown"}
-SHA_RE = re.compile(r"[0-9a-fA-F]{64}\\Z")
+SHA_RE = re.compile(r"[0-9a-fA-F]{64}\Z")
 
 
 class ManifestError(ValueError):
@@ -94,7 +94,7 @@ def main() -> None:
     report = preflight(args.manifest, verify_audio=args.verify_audio)
     with args.output.open("x", encoding="utf-8") as handle:
         json.dump(report, handle, indent=2, ensure_ascii=False)
-        handle.write("\\n")
+        handle.write("\n")
 
 
 if __name__ == "__main__":
