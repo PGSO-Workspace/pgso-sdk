@@ -431,14 +431,17 @@ fn protected_prune_keeps_discovery_but_requires_trusted_confirmation_at_dispatch
     let protected = HashSet::from([id.clone()]);
     let pipeline = Pgso::builder()
         .signal(Empty)
-        .engine(DecisionEngine::try_new(EngineConfig {
-            confidence_threshold: 0.5,
-            deviation_threshold: 0.2,
-            hysteresis_window: 1,
-            ema_alpha: 0.0,
-            warmup_readings: 0,
-            population_prior: 0.5,
-        }).unwrap())
+        .engine(
+            DecisionEngine::try_new(EngineConfig {
+                confidence_threshold: 0.5,
+                deviation_threshold: 0.2,
+                hysteresis_window: 1,
+                ema_alpha: 0.0,
+                warmup_readings: 0,
+                population_prior: 0.5,
+            })
+            .unwrap(),
+        )
         .rules(RuleEngine::new(
             RuleSet::new(vec![Rule::new(
                 "attempt_protected_prune",
@@ -474,7 +477,8 @@ fn protected_prune_keeps_discovery_but_requires_trusted_confirmation_at_dispatch
         pipeline,
         vec![binding],
         HashSet::from([id.clone()]),
-    ).unwrap();
+    )
+    .unwrap();
     let call = CallRequest {
         session: "s1".into(),
         tool: "handoff".into(),
@@ -490,11 +494,13 @@ fn protected_prune_keeps_discovery_but_requires_trusted_confirmation_at_dispatch
     assert!(runtime.call(call.clone(), 1).is_ok());
     assert_eq!(effects.load(Ordering::SeqCst), 1);
 
-    runtime.observe(&AudioWindow {
-        samples: vec![0.95],
-        sample_rate: 16_000,
-        timestamp_ms: 2,
-    }).unwrap();
+    runtime
+        .observe(&AudioWindow {
+            samples: vec![0.95],
+            sample_rate: 16_000,
+            timestamp_ms: 2,
+        })
+        .unwrap();
 
     let exposed = runtime.tools_list();
     assert_eq!(exposed["tools"].as_array().unwrap().len(), 1);
@@ -503,7 +509,10 @@ fn protected_prune_keeps_discovery_but_requires_trusted_confirmation_at_dispatch
 
     let audit = runtime.policy_audit().entries();
     assert_eq!(audit.len(), 1);
-    assert_eq!(audit[0].audit.requested_action, Some(Action::Prune(id.clone())));
+    assert_eq!(
+        audit[0].audit.requested_action,
+        Some(Action::Prune(id.clone()))
+    );
     assert_eq!(audit[0].action, Action::RequireStepUp(id.clone()));
 
     // Stale discovery and the mere presence of the protected tool do NOT authorize
@@ -516,11 +525,13 @@ fn protected_prune_keeps_discovery_but_requires_trusted_confirmation_at_dispatch
     assert_eq!(effects.load(Ordering::SeqCst), 2);
 
     // An accepted nominal observation retires the policy contribution.
-    runtime.observe(&AudioWindow {
-        samples: vec![0.5],
-        sample_rate: 16_000,
-        timestamp_ms: 6,
-    }).unwrap();
+    runtime
+        .observe(&AudioWindow {
+            samples: vec![0.5],
+            sample_rate: 16_000,
+            timestamp_ms: 6,
+        })
+        .unwrap();
     assert_eq!(
         runtime.tools_list()["tools"][0]["_meta"]["pgso/requiresStepUp"],
         false
@@ -531,7 +542,10 @@ fn protected_prune_keeps_discovery_but_requires_trusted_confirmation_at_dispatch
     let receipts = runtime.drain_execution_log();
     assert_eq!(receipts.len(), 4);
     assert_eq!(
-        receipts.iter().map(|receipt| receipt.reason).collect::<Vec<_>>(),
+        receipts
+            .iter()
+            .map(|receipt| receipt.reason)
+            .collect::<Vec<_>>(),
         vec![
             ExecutionReason::Completed,
             ExecutionReason::ConfirmationMissing,
