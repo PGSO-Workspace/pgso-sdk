@@ -46,6 +46,9 @@ jobs:
           python3 experiments/reproducibility/test_measure_operations.py
           python3 experiments/reproducibility/run.py --profile dev --output "${{ runner.temp }}/pgso-evaluation"
 
+      - name: Blinded permission-packet export tests (no providers or corpus)
+        run: python3 experiments/public_voice/test_export_permission_packets.py
+
       - name: Doc (deny warnings; enforces #![deny(missing_docs)])
         run: cargo doc --workspace --no-deps
         env:
