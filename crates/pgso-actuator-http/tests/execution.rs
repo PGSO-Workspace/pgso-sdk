@@ -421,3 +421,137 @@ fn transition_count_links_same_timestamp_receipts_across_drains() {
     assert_eq!(second.policy_transition_count, 1);
     assert_eq!(runtime.policy_audit().transitions().len(), 1);
 }
+
+#[test]
+fn protected_prune_keeps_discovery_but_requires_trusted_confirmation_at_dispatch() {
+    // G2a: a protected tool remains in tools/list even if a rule requests Prune.
+    // G2b: the real callback still needs host-issued approval while step-up is active.
+    // G3 (structural): nominal recovery removes the extra confirmation requirement.
+    let id = ToolId::from("handoff");
+    let protected = HashSet::from([id.clone()]);
+    let pipeline = Pgso::builder()
+        .signal(Empty)
+        .engine(
+            DecisionEngine::try_new(EngineConfig {
+                confidence_threshold: 0.5,
+                deviation_threshold: 0.2,
+                hysteresis_window: 1,
+                ema_alpha: 0.0,
+                warmup_readings: 0,
+                population_prior: 0.5,
+            })
+            .unwrap(),
+        )
+        .rules(RuleEngine::new(
+            RuleSet::new(vec![Rule::new(
+                "attempt_protected_prune",
+                Axis::Arousal,
+                0.2,
+                0.5,
+                vec![Action::Prune(id.clone())],
+            )]),
+            protected.clone(),
+        ))
+        .actuator(McpActuator::new(
+            Catalog::new(vec![Tool::new("handoff", "Human handoff")]),
+            protected,
+        ))
+        .build()
+        .unwrap();
+
+    let effects = Arc::new(AtomicUsize::new(0));
+    let counted = effects.clone();
+    let binding = ToolBinding {
+        id: id.clone(),
+        definition: ToolDefinition {
+            description: "Handoff to a human".into(),
+            input_schema: json!({"type":"object","properties":{}, "additionalProperties":false}),
+        },
+        handler: Box::new(move |_| {
+            counted.fetch_add(1, Ordering::SeqCst);
+            Ok(json!({"handed_off":true}))
+        }),
+    };
+    let mut runtime = Runtime::new(
+        "s1".into(),
+        pipeline,
+        vec![binding],
+        HashSet::from([id.clone()]),
+    )
+    .unwrap();
+    let call = CallRequest {
+        session: "s1".into(),
+        tool: "handoff".into(),
+        arguments: json!({}),
+        confirmation: None,
+    };
+
+    // No policy yet: a host-permitted tool may execute without step-up.
+    assert_eq!(
+        runtime.tools_list()["tools"][0]["_meta"]["pgso/requiresStepUp"],
+        false
+    );
+    assert!(runtime.call(call.clone(), 1).is_ok());
+    assert_eq!(effects.load(Ordering::SeqCst), 1);
+
+    runtime
+        .observe(&AudioWindow {
+            samples: vec![0.95],
+            sample_rate: 16_000,
+            timestamp_ms: 2,
+        })
+        .unwrap();
+
+    let exposed = runtime.tools_list();
+    assert_eq!(exposed["tools"].as_array().unwrap().len(), 1);
+    assert_eq!(exposed["tools"][0]["name"], "handoff");
+    assert_eq!(exposed["tools"][0]["_meta"]["pgso/requiresStepUp"], true);
+
+    let audit = runtime.policy_audit().entries();
+    assert_eq!(audit.len(), 1);
+    assert_eq!(
+        audit[0].audit.requested_action,
+        Some(Action::Prune(id.clone()))
+    );
+    assert_eq!(audit[0].action, Action::RequireStepUp(id.clone()));
+
+    // Stale discovery and the mere presence of the protected tool do NOT authorize
+    // an effect. A real callback must be impossible without a trusted approval.
+    assert!(runtime.call(call.clone(), 3).is_err());
+    assert_eq!(effects.load(Ordering::SeqCst), 1);
+    let mut approved = call.clone();
+    approved.confirmation = Some(runtime.approve(&call, 4, 20).unwrap());
+    assert!(runtime.call(approved, 5).is_ok());
+    assert_eq!(effects.load(Ordering::SeqCst), 2);
+
+    // An accepted nominal observation retires the policy contribution.
+    runtime
+        .observe(&AudioWindow {
+            samples: vec![0.5],
+            sample_rate: 16_000,
+            timestamp_ms: 6,
+        })
+        .unwrap();
+    assert_eq!(
+        runtime.tools_list()["tools"][0]["_meta"]["pgso/requiresStepUp"],
+        false
+    );
+    assert!(runtime.call(call, 7).is_ok());
+    assert_eq!(effects.load(Ordering::SeqCst), 3);
+
+    let receipts = runtime.drain_execution_log();
+    assert_eq!(receipts.len(), 4);
+    assert_eq!(
+        receipts
+            .iter()
+            .map(|receipt| receipt.reason)
+            .collect::<Vec<_>>(),
+        vec![
+            ExecutionReason::Completed,
+            ExecutionReason::ConfirmationMissing,
+            ExecutionReason::Completed,
+            ExecutionReason::Completed,
+        ]
+    );
+    // No customer outcome, empathy, or acoustic inference is tested here.
+}
