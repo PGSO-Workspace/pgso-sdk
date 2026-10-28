@@ -1,0 +1,25 @@
+name: Research comparator audit
+
+on:
+  pull_request:
+    paths:
+      - 'experiments/public_voice/pilot.py'
+      - 'experiments/reproducibility/audit_threshold_semantics.py'
+      - 'experiments/reproducibility/audit-20261028.md'
+      - '.github/workflows/research-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  comparator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Characterize historical comparator without provider calls
+        run: python3 experiments/reproducibility/audit_threshold_semantics.py --output "${{ runner.temp }}/threshold-characterization.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: threshold-characterization
+          path: ${{ runner.temp }}/threshold-characterization.json
+          if-no-files-found: error
