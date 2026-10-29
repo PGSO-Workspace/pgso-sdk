@@ -63,9 +63,10 @@ pub enum PgsoBuildError {
     MissingActuator,
 }
 
-/// Provenance of one active contribution (one axis), for audit only.
+/// Provenance of one active contribution (one axis and its matched rules), for audit only.
 ///
-/// `activated` is the reading that made the contribution active; `renewed` is
+/// `activated` is the reading that made the contribution, with these rule ids,
+/// active; a reading that changes the matched rules starts a new one. `renewed` is
 /// the latest reading that re-triggered it. Expiry compares `renewed`'s timestamp
 /// with the cutoff. Recording this never changes a governance decision.
 #[derive(Debug, Clone)]
@@ -209,25 +210,20 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
     }
 
     /// Update provenance after a committed reading. Audit-only bookkeeping.
+    /// Called only after a reading committed; a triggering reading always carries
+    /// the axis' current decisions. A changed rule set starts a new contribution.
     fn record_provenance(&mut self, reading: &SignalReading) {
         let Some(decisions) = self.active.get(&reading.axis) else {
             self.provenance.remove(&reading.axis);
             return;
         };
-        let rule_ids = decisions
+        let rule_ids: Vec<String> = decisions
             .iter()
             .filter_map(|d| d.audit.rule_id.clone())
             .collect();
-        let renewed = decisions
-            .iter()
-            .any(|d| d.audit.timestamp_ms == reading.timestamp_ms);
         match self.provenance.get_mut(&reading.axis) {
-            Some(entry) if renewed => {
-                entry.renewed = reading.clone();
-                entry.rule_ids = rule_ids;
-            }
-            Some(_) => {}
-            None => {
+            Some(entry) if entry.rule_ids == rule_ids => entry.renewed = reading.clone(),
+            _ => {
                 self.provenance.insert(
                     reading.axis,
                     ContributionProvenance {
