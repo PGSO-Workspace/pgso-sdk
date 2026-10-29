@@ -28,7 +28,7 @@ pub use action::*;
 pub use audit::AuditLog;
 pub use engine::{DecisionEngine, EngineConfig, EngineOutput};
 pub use error::*;
-pub use pipeline::{Pgso, PgsoBuildError, PgsoBuilder};
+pub use pipeline::{ContributionProvenance, Pgso, PgsoBuildError, PgsoBuilder};
 pub use rules::{Direction, Rule, RuleEngine, RulePredicate, RuleSet};
 pub use state::GovernanceState;
 pub use traits::*;

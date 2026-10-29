@@ -434,6 +434,11 @@ impl<S: Signal> Runtime<S> {
         std::mem::take(&mut self.log)
     }
 
+    /// Active contributions with activating and latest renewing readings (audit only).
+    pub fn policy_contributions(&self) -> impl Iterator<Item = &pgso_core::ContributionProvenance> {
+        self.pipeline.contributions()
+    }
+
     /// Policy transitions for persistence by the trusted host.
     pub fn policy_audit(&self) -> &pgso_core::AuditLog {
         self.pipeline.audit_log()
