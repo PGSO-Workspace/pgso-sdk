@@ -126,6 +126,60 @@ pub struct ExecutionRecord {
     pub duration_us: u128,
 }
 
+/// Schema identifier of [`ExecutionContext`].
+pub const EXECUTION_CONTEXT_SCHEMA: &str = "pgso.execution_context";
+/// Version of the [`ExecutionContext`] schema.
+pub const EXECUTION_CONTEXT_SCHEMA_VERSION: u32 = 1;
+
+/// One tool as currently exposed to the agent.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ContextTool {
+    /// Tool identifier.
+    pub name: String,
+    /// True while the current policy requires a trusted host confirmation to execute it.
+    pub confirmation_required: bool,
+}
+
+/// A host-registered confirmation that would still be accepted (no token is exposed).
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct PendingConfirmation {
+    /// Tool the confirmation is bound to.
+    pub tool: String,
+    /// Exact arguments the confirmation is bound to.
+    pub arguments: Value,
+    /// Trusted host time at which it stops being accepted.
+    pub expires_at_ms: u64,
+}
+
+/// Informational snapshot of the runtime's effective execution conditions, for the agent host.
+///
+/// It is **never an authorization**: [`Runtime::call`] re-checks session, permissions, policy,
+/// schema and confirmation at dispatch. It contains no tokens, readings or affective labels.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct ExecutionContext {
+    /// Always [`EXECUTION_CONTEXT_SCHEMA`].
+    pub schema: &'static str,
+    /// Always [`EXECUTION_CONTEXT_SCHEMA_VERSION`].
+    pub schema_version: u32,
+    /// Authenticated runtime session.
+    pub session: String,
+    /// Latest trusted host time observed by this runtime (None before any host-time event).
+    pub observed_at_ms: Option<u64>,
+    /// Authorization revision checked at dispatch; advances on every policy transition,
+    /// permission change and observed clock rollback, and revokes outstanding confirmations.
+    pub authorization_revision: u64,
+    /// Number of committed policy transitions so far.
+    pub policy_transition_count: usize,
+    /// Cause of the latest committed policy transition, if any.
+    pub last_transition_cause: Option<&'static str>,
+    /// Tools currently exposed (policy- and permission-filtered), in catalog order.
+    pub tools: Vec<ContextTool>,
+    /// Active directive blocks, verbatim.
+    pub directives: Vec<String>,
+    /// Confirmations that dispatch would still accept, ordered by expiry.
+    pub pending_confirmations: Vec<PendingConfirmation>,
+}
+
 /// One speaker/session, with exclusive mutable dispatch and policy update APIs.
 /// All actual calls must pass through this object; tool metadata alone is not authorization.
 pub struct Runtime<S: Signal> {
@@ -437,6 +491,54 @@ impl<S: Signal> Runtime<S> {
     /// Active contributions with activating and latest renewing readings (audit only).
     pub fn policy_contributions(&self) -> impl Iterator<Item = &pgso_core::ContributionProvenance> {
         self.pipeline.contributions()
+    }
+
+    /// Current effective execution conditions for the agent host (informational, never authorizing).
+    /// Read-only: it does not observe time, consume confirmations or change any state.
+    #[must_use]
+    pub fn execution_context(&self) -> ExecutionContext {
+        let transitions = self.pipeline.audit_log().transitions();
+        let tools = self
+            .pipeline
+            .current_catalog()
+            .tools()
+            .iter()
+            .filter(|tool| self.allowed.contains(&tool.id) && self.tools.contains_key(&tool.id))
+            .map(|tool| ContextTool {
+                name: tool.id.as_str().to_string(),
+                confirmation_required: tool.requires_step_up,
+            })
+            .collect();
+        let mut pending: Vec<PendingConfirmation> = self
+            .approvals
+            .values()
+            .filter(|a| a.revision == self.revision)
+            .filter(|a| self.last_host_time.is_none_or(|now| now < a.expires_at))
+            .map(|a| PendingConfirmation {
+                tool: a.tool.clone(),
+                arguments: a.arguments.clone(),
+                expires_at_ms: a.expires_at,
+            })
+            .collect();
+        pending.sort_by(|a, b| {
+            (a.expires_at_ms, &a.tool, a.arguments.to_string()).cmp(&(
+                b.expires_at_ms,
+                &b.tool,
+                b.arguments.to_string(),
+            ))
+        });
+        ExecutionContext {
+            schema: EXECUTION_CONTEXT_SCHEMA,
+            schema_version: EXECUTION_CONTEXT_SCHEMA_VERSION,
+            session: self.session.clone(),
+            observed_at_ms: self.last_host_time,
+            authorization_revision: self.revision,
+            policy_transition_count: transitions.len(),
+            last_transition_cause: transitions.last().map(|t| t.cause.as_str()),
+            tools,
+            directives: self.directives().to_vec(),
+            pending_confirmations: pending,
+        }
     }
 
     /// Policy transitions for persistence by the trusted host.
