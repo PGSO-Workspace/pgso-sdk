@@ -7,7 +7,9 @@
 #![deny(missing_docs)]
 mod runtime;
 pub use runtime::{
-    CallRequest, ExecutionReason, ExecutionRecord, Runtime, ToolBinding, ToolHandler,
+    CallRequest, ContextTool, ExecutionContext, ExecutionReason, ExecutionRecord,
+    PendingConfirmation, Runtime, ToolBinding, ToolHandler, EXECUTION_CONTEXT_SCHEMA,
+    EXECUTION_CONTEXT_SCHEMA_VERSION,
 };
 
 use axum::{

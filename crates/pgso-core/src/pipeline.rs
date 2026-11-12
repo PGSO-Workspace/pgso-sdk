@@ -29,7 +29,7 @@ use std::collections::BTreeMap;
 
 use crate::{
     action::{Action, AuditRecord, ScopeDecision},
-    audit::AuditLog,
+    audit::{AuditLog, TransitionCause},
     engine::{DecisionEngine, ProcessOutcome},
     error::ActuatorError,
     rules::RuleEngine,
@@ -63,6 +63,24 @@ pub enum PgsoBuildError {
     MissingActuator,
 }
 
+/// Provenance of one active contribution (one axis and its matched rules), for audit only.
+///
+/// `activated` is the reading that made the contribution, with these rule ids,
+/// active; a reading that changes the matched rules starts a new one. `renewed` is
+/// the latest reading that re-triggered it. Expiry compares `renewed`'s timestamp
+/// with the cutoff. Recording this never changes a governance decision.
+#[derive(Debug, Clone)]
+pub struct ContributionProvenance {
+    /// Axis whose contribution this is.
+    pub axis: Axis,
+    /// Reading that activated the contribution.
+    pub activated: SignalReading,
+    /// Latest reading that renewed it; equals `activated` until renewed.
+    pub renewed: SignalReading,
+    /// Rule identifiers of the current decisions.
+    pub rule_ids: Vec<String>,
+}
+
 /// The end-to-end governance pipeline.
 ///
 /// Construct one with [`Pgso::builder`], then drive it window-by-window with
@@ -76,6 +94,7 @@ pub struct Pgso<S: Signal, A: Actuator> {
     actuator: A,
     audit_log: AuditLog,
     active: BTreeMap<Axis, Vec<ScopeDecision>>,
+    provenance: BTreeMap<Axis, ContributionProvenance>,
 }
 
 impl<S: Signal, A: Actuator> Pgso<S, A> {
@@ -106,25 +125,40 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
             // not consume a reading or advance hysteresis/baselines.
             let mut engine = self.engine.clone();
             let mut next = self.active.clone();
-            match engine.process_outcome(reading) {
+            let cause = match engine.process_outcome(reading) {
                 ProcessOutcome::Abstained | ProcessOutcome::Pending => {
                     self.engine = engine;
                     continue;
                 }
                 ProcessOutcome::Nominal => {
                     next.remove(&reading.axis);
+                    TransitionCause::NominalReading
                 }
                 ProcessOutcome::Triggered(output) => {
                     let decisions = self.rules.evaluate(&output);
                     if decisions.is_empty() {
                         next.remove(&reading.axis);
+                        TransitionCause::NoMatchingRule
                     } else {
+                        let cause = if self.active.contains_key(&reading.axis) {
+                            TransitionCause::Replacement
+                        } else {
+                            TransitionCause::Activation
+                        };
                         next.insert(reading.axis, decisions);
+                        cause
                     }
                 }
-            }
-            self.commit_policy(next, reading.timestamp_ms, Some(reading.clone()), None)?;
+            };
+            self.commit_policy(
+                next,
+                reading.timestamp_ms,
+                Some(reading.clone()),
+                None,
+                cause,
+            )?;
             self.engine = engine;
+            self.record_provenance(reading);
         }
 
         Ok(self.actuator.current_catalog())
@@ -136,6 +170,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
         timestamp_ms: u64,
         reading: Option<SignalReading>,
         expiry_cutoff_ms: Option<u64>,
+        cause: TransitionCause,
     ) -> Result<(), ActuatorError> {
         let active: Vec<_> = next.values().flatten().cloned().collect();
         let before = self.actuator.current_state();
@@ -159,6 +194,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
                 before,
                 after,
                 active,
+                cause,
             });
         }
         self.active = next;
@@ -183,8 +219,49 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
         }
         let mut next = self.active.clone();
         next.retain(|_, decisions| decisions.iter().any(|d| d.audit.timestamp_ms >= cutoff_ms));
-        self.commit_policy(next, timestamp_ms, None, Some(cutoff_ms))?;
+        self.commit_policy(
+            next,
+            timestamp_ms,
+            None,
+            Some(cutoff_ms),
+            TransitionCause::HostExpiry,
+        )?;
+        let active = &self.active;
+        self.provenance.retain(|axis, _| active.contains_key(axis));
         Ok(self.current_catalog())
+    }
+
+    /// Update provenance after a committed reading. Audit-only bookkeeping.
+    /// Called only after a reading committed; a triggering reading always carries
+    /// the axis' current decisions. A changed rule set starts a new contribution.
+    fn record_provenance(&mut self, reading: &SignalReading) {
+        let Some(decisions) = self.active.get(&reading.axis) else {
+            self.provenance.remove(&reading.axis);
+            return;
+        };
+        let rule_ids: Vec<String> = decisions
+            .iter()
+            .filter_map(|d| d.audit.rule_id.clone())
+            .collect();
+        match self.provenance.get_mut(&reading.axis) {
+            Some(entry) if entry.rule_ids == rule_ids => entry.renewed = reading.clone(),
+            _ => {
+                self.provenance.insert(
+                    reading.axis,
+                    ContributionProvenance {
+                        axis: reading.axis,
+                        activated: reading.clone(),
+                        renewed: reading.clone(),
+                        rule_ids,
+                    },
+                );
+            }
+        }
+    }
+
+    /// Active contributions with their activating and latest renewing readings.
+    pub fn contributions(&self) -> impl Iterator<Item = &ContributionProvenance> {
+        self.provenance.values()
     }
 
     /// The catalog currently served by the actuator.
@@ -298,6 +375,7 @@ impl<S: Signal, A: Actuator> PgsoBuilder<S, A> {
             actuator: self.actuator.ok_or(PgsoBuildError::MissingActuator)?,
             audit_log: AuditLog::new(),
             active: BTreeMap::new(),
+            provenance: BTreeMap::new(),
         })
     }
 }

@@ -11,4 +11,4 @@ keywords = ["agent", "governance", "tools", "actuator", "catalog"]
 categories = ["algorithms"]
 
 [dependencies]
-pgso-core = { path = "../pgso-core" }
+pgso-core = { version = "0.1.0", path = "../pgso-core" }

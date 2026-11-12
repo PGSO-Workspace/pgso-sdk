@@ -421,3 +421,105 @@ fn transition_count_links_same_timestamp_receipts_across_drains() {
     assert_eq!(second.policy_transition_count, 1);
     assert_eq!(runtime.policy_audit().transitions().len(), 1);
 }
+
+#[test]
+fn execution_context_reports_state_without_secrets_and_never_authorizes() {
+    let (mut runtime, effects) = setup();
+    let ctx = runtime.execution_context();
+    assert_eq!(
+        (ctx.schema, ctx.schema_version),
+        (
+            pgso_actuator_http::EXECUTION_CONTEXT_SCHEMA,
+            pgso_actuator_http::EXECUTION_CONTEXT_SCHEMA_VERSION
+        )
+    );
+    assert_eq!(
+        (
+            ctx.observed_at_ms,
+            ctx.authorization_revision,
+            ctx.policy_transition_count
+        ),
+        (None, 0, 0)
+    );
+    assert_eq!(ctx.last_transition_cause, None);
+    assert_eq!(ctx.tools.len(), 1);
+    assert!(ctx.tools[0].confirmation_required); // step-up by catalog
+    let listed = runtime.tools_list();
+    assert_eq!(
+        listed["tools"][0]["_meta"]["pgso/requiresStepUp"],
+        json!(true)
+    );
+
+    // A host-registered confirmation is reported without its token, and reading the
+    // context neither consumes it nor changes anything.
+    let mut r = request();
+    let token = runtime.approve(&r, 10, 100).unwrap();
+    let ctx = runtime.execution_context();
+    assert_eq!(ctx, runtime.execution_context());
+    assert_eq!(ctx.observed_at_ms, Some(10));
+    assert_eq!(ctx.pending_confirmations.len(), 1);
+    assert_eq!(ctx.pending_confirmations[0].tool, "quote");
+    assert_eq!(ctx.pending_confirmations[0].arguments, json!({"amount":1}));
+    assert_eq!(ctx.pending_confirmations[0].expires_at_ms, 110);
+    assert!(!serde_json::to_string(&ctx).unwrap().contains(&token));
+
+    // The context is informational: dispatch still requires the token itself.
+    assert!(runtime.call(r.clone(), 11).is_err());
+    assert_eq!(effects.load(Ordering::SeqCst), 0);
+    r.confirmation = Some(runtime.approve(&r, 12, 100).unwrap());
+    assert!(runtime.call(r.clone(), 13).is_ok());
+    // The consumed one is gone; the first (never presented) is still pending.
+    let pending = runtime.execution_context().pending_confirmations;
+    assert_eq!(pending.len(), 1);
+    assert_eq!(pending[0].expires_at_ms, 110);
+
+    // A policy transition prunes the tool, advances the revision and revokes confirmations.
+    let _ = runtime.approve(&request(), 14, 100).unwrap();
+    runtime
+        .observe(&AudioWindow {
+            samples: vec![0.95],
+            sample_rate: 16_000,
+            timestamp_ms: 15,
+        })
+        .unwrap();
+    let ctx = runtime.execution_context();
+    assert!(ctx.tools.is_empty());
+    assert!(ctx.pending_confirmations.is_empty());
+    assert_eq!(ctx.policy_transition_count, 1);
+    assert_eq!(ctx.last_transition_cause, Some("activation"));
+    assert!(ctx.authorization_revision > 0);
+    assert_eq!(
+        runtime.drain_execution_log().last().unwrap().revision,
+        ctx.authorization_revision - 1
+    );
+
+    // Expiry retirement is reported with its cause.
+    runtime.expire_before(16, 20).unwrap();
+    let ctx = runtime.execution_context();
+    assert_eq!(ctx.last_transition_cause, Some("host_expiry"));
+    assert_eq!(ctx.tools.len(), 1);
+}
+
+#[test]
+fn execution_context_drops_expired_confirmations_and_permission_changes() {
+    let (mut runtime, _) = setup();
+    let _ = runtime.approve(&request(), 10, 5).unwrap();
+    assert_eq!(runtime.execution_context().pending_confirmations.len(), 1);
+    let _ = runtime.call(
+        CallRequest {
+            session: "s1".into(),
+            tool: "quote".into(),
+            arguments: json!({"amount":99}),
+            confirmation: None,
+        },
+        16,
+    ); // advances host time past expiry (denied: no confirmation)
+    assert!(runtime.execution_context().pending_confirmations.is_empty());
+    let _ = runtime.approve(&request(), 17, 50).unwrap();
+    let before = runtime.execution_context().authorization_revision;
+    runtime.set_permissions(HashSet::new()).unwrap();
+    let ctx = runtime.execution_context();
+    assert!(ctx.tools.is_empty() && ctx.pending_confirmations.is_empty());
+    assert_eq!(ctx.authorization_revision, before + 1);
+    assert_eq!(ctx.policy_transition_count, 0);
+}

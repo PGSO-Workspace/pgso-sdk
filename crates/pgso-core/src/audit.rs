@@ -7,6 +7,46 @@
 
 use crate::action::ScopeDecision;
 
+/// Why a committed transition happened, recorded at the event that caused it (never inferred later).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum TransitionCause {
+    /// A triggered reading produced contributions on an axis that had none.
+    Activation,
+    /// A triggered reading replaced the axis' contributions with a different, non-empty rule set.
+    Replacement,
+    /// The engine judged the reading nominal; the axis' contributions were retired.
+    NominalReading,
+    /// The engine triggered but no rule matched (e.g. an opposite-direction run under a
+    /// direction-restricted rule); the axis' contributions were retired.
+    NoMatchingRule,
+    /// The trusted host's explicit expiry retired contributions older than the cutoff.
+    HostExpiry,
+}
+
+impl TransitionCause {
+    /// Stable lowercase identifier for logs and exports.
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Activation => "activation",
+            Self::Replacement => "replacement",
+            Self::NominalReading => "nominal_reading",
+            Self::NoMatchingRule => "no_matching_rule",
+            Self::HostExpiry => "host_expiry",
+        }
+    }
+
+    /// True when the transition removed contributions rather than adding or replacing them.
+    #[must_use]
+    pub const fn is_retirement(self) -> bool {
+        matches!(
+            self,
+            Self::NominalReading | Self::NoMatchingRule | Self::HostExpiry
+        )
+    }
+}
+
 /// A committed state transition, including removals and their triggering input.
 #[derive(Debug, Clone)]
 pub struct PolicyTransition {
@@ -22,6 +62,8 @@ pub struct PolicyTransition {
     pub after: crate::GovernanceState,
     /// All surviving contributions, including their rule identifiers.
     pub active: Vec<ScopeDecision>,
+    /// Cause recorded at the triggering event (reading outcome or host expiry).
+    pub cause: TransitionCause,
 }
 
 /// An append-only, in-memory log of governance decisions.
