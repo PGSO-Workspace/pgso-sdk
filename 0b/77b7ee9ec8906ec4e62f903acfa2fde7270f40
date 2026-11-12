@@ -1,0 +1,25 @@
+crates/pgso-actuator-http/Cargo.toml
+  s_fa5ac74ec34d12::t_a5e233f77120dc 10-11
+crates/pgso-actuator-local/Cargo.toml
+  s_fa5ac74ec34d12::t_502905ff84be95 14
+crates/pgso-actuator-mcp/Cargo.toml
+  s_fa5ac74ec34d12::t_65bfa2a67f2b0b 14
+crates/pgso-signal-egemaps/Cargo.toml
+  s_fa5ac74ec34d12::t_983ced06346198 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0b77b7ee9ec8906ec4e62f903acfa2fde7270f40",
+  "prompts": {},
+  "sessions": {
+    "s_fa5ac74ec34d12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46b72a75-060b-4f17-aeec-ebd4fcf5094e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
