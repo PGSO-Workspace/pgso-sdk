@@ -7,8 +7,8 @@ license.workspace = true
 description = "Session-scoped PGSO execution with HTTP and MCP request adapters"
 
 [dependencies]
-pgso-core = { path = "../pgso-core" }
-pgso-actuator-mcp = { path = "../pgso-actuator-mcp" }
+pgso-core = { version = "0.1.0", path = "../pgso-core" }
+pgso-actuator-mcp = { version = "0.1.0", path = "../pgso-actuator-mcp" }
 axum = { version = "=0.8.4", default-features = false, features = ["http1", "json", "tokio"] }
 jsonschema = { version = "=0.29.1", default-features = false }
 serde = { version = "1", features = ["derive"] }

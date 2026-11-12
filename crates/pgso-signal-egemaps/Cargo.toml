@@ -20,7 +20,7 @@ default = ["egemaps"]
 egemaps = []
 
 [dependencies]
-pgso-core = { path = "../pgso-core" }
+pgso-core = { version = "0.1.0", path = "../pgso-core" }
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
