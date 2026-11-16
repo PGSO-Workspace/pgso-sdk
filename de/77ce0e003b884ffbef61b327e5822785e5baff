@@ -1,0 +1,33 @@
+crates/pgso-actuator-mcp/tests/governance_regressions.rs
+  s_841c4626cd4660::t_ba70e086b0d836 386,393-397
+crates/pgso-actuator-mcp/tests/output_identity.rs
+  s_841c4626cd4660::t_b1493d0f642551 7-8,166,175-188,205-210
+crates/pgso-core/src/engine.rs
+  s_841c4626cd4660::t_a32e68c01c4d06 100-137,239-245
+crates/pgso-core/src/lib.rs
+  s_841c4626cd4660::t_f6d22b6ef9a3d9 29,31
+crates/pgso-core/src/pipeline.rs
+  s_841c4626cd4660::t_b1ae28483e0949 33,84-96,111,136,143-150,153,185,291-297,410
+crates/pgso-signal-egemaps/src/features.rs
+  s_841c4626cd4660::t_8bc57802dac961 128-161
+crates/pgso-signal-egemaps/src/lib.rs
+  s_841c4626cd4660::t_2bd62e0ccae57a 128-137,319-355
+crates/pgso-signal-egemaps/tests/output_identity.rs
+  s_841c4626cd4660::t_54a9dd55565278 9,132,136-138,166-177
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "de77ce0e003b884ffbef61b327e5822785e5baff",
+  "prompts": {},
+  "sessions": {
+    "s_841c4626cd4660": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5801b4c9-1839-45e5-9004-28b7f012fba5",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
