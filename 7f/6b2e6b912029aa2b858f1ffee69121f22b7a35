@@ -1,0 +1,25 @@
+crates/pgso-core/src/pipeline.rs
+  s_841c4626cd4660::t_b21dee619130df 86-88,90
+crates/pgso-core/tests/contribution_provenance.rs
+  s_841c4626cd4660::t_e8d9189d0913dc 356-394
+crates/pgso-signal-egemaps/src/features.rs
+  s_841c4626cd4660::t_95755a9f58b8e5 131-132,156,237-243
+crates/pgso-signal-egemaps/src/lib.rs
+  s_841c4626cd4660::t_e99827973bd001 128-129,139-144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7f6b2e6b912029aa2b858f1ffee69121f22b7a35",
+  "prompts": {},
+  "sessions": {
+    "s_841c4626cd4660": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5801b4c9-1839-45e5-9004-28b7f012fba5",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
