@@ -1,0 +1,25 @@
+crates/pgso-actuator-mcp/tests/golden/output_identity.txt
+  s_841c4626cd4660::t_2d68581bd46955 1-955
+crates/pgso-actuator-mcp/tests/output_identity.rs
+  s_841c4626cd4660::t_a63250d92d2141 1-219
+crates/pgso-signal-egemaps/tests/golden/output_identity.txt
+  s_841c4626cd4660::t_4dfcf1097e19e7 1-100
+crates/pgso-signal-egemaps/tests/output_identity.rs
+  s_841c4626cd4660::t_88556d7a647ce6 1-196
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "34162695895385eeb418a8718e3112cbc8247c62",
+  "prompts": {},
+  "sessions": {
+    "s_841c4626cd4660": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5801b4c9-1839-45e5-9004-28b7f012fba5",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
