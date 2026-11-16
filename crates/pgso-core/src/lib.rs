@@ -26,9 +26,9 @@ pub mod types;
 
 pub use action::*;
 pub use audit::{AuditLog, PolicyTransition, TransitionCause};
-pub use engine::{DecisionEngine, EngineConfig, EngineOutput};
+pub use engine::{DecisionEngine, EngineConfig, EngineOutput, ReadingResult};
 pub use error::*;
-pub use pipeline::{ContributionProvenance, Pgso, PgsoBuildError, PgsoBuilder};
+pub use pipeline::{ContributionProvenance, Pgso, PgsoBuildError, PgsoBuilder, ReadingRecord};
 pub use rules::{Direction, Rule, RuleEngine, RulePredicate, RuleSet};
 pub use state::GovernanceState;
 pub use traits::*;

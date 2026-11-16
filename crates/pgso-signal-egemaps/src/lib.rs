@@ -125,6 +125,16 @@ impl EgemapsSignal {
         Ok(signal)
     }
 
+    /// Replace the default [`AxisMapping`].
+    ///
+    /// # Errors
+    /// Rejects a mapping that [`AxisMapping::new`] would reject.
+    pub fn with_mapping(mut self, mapping: AxisMapping) -> Result<Self, pgso_core::ConfigError> {
+        mapping.validate()?;
+        self.mapping = mapping;
+        Ok(self)
+    }
+
     fn validate(&self) -> Result<(), pgso_core::ConfigError> {
         let c = &self.config;
         if self.sample_rate == 0
@@ -304,6 +314,43 @@ mod tests {
         let mut config = EgemapsConfig::for_sample_rate(16000);
         config.window_hop = 0;
         assert!(EgemapsSignal::try_with_config(16000, config).is_err());
+    }
+
+    #[test]
+    fn mapping_is_configurable_and_validated() {
+        let audio = sine_window(180.0, 0.04, 16000, 16000, 0);
+        let default = EgemapsSignal::new(16000).extract_explained(&audio);
+        let same = EgemapsSignal::new(16000)
+            .with_mapping(AxisMapping::default())
+            .unwrap()
+            .extract_explained(&audio);
+        let mapping = AxisMapping::new(0.045, 50.0, 0.6, 0.4).unwrap();
+        let tuned = EgemapsSignal::new(16000)
+            .with_mapping(mapping.clone())
+            .unwrap()
+            .extract_explained(&audio);
+        assert!(!default.is_empty());
+        for ((d, s), t) in default.iter().zip(&same).zip(&tuned) {
+            assert_eq!(d.reading.value.to_bits(), s.reading.value.to_bits());
+            let expected = mapping.arousal(t.features.mean_energy, t.features.f0_std_hz);
+            assert_eq!(t.reading.value.to_bits(), expected.to_bits());
+            assert!(t.reading.value > d.reading.value);
+            assert_eq!(
+                d.reading.confidence.to_bits(),
+                t.reading.confidence.to_bits()
+            );
+        }
+        for bad in [0.0, -1.0, f32::NAN, f32::INFINITY] {
+            assert!(AxisMapping::new(bad, 50.0, 0.6, 0.4).is_err());
+            assert!(AxisMapping::new(0.3, bad, 0.6, 0.4).is_err());
+            let literal = AxisMapping {
+                energy_ref: bad,
+                ..AxisMapping::default()
+            };
+            assert!(EgemapsSignal::new(16000).with_mapping(literal).is_err());
+        }
+        assert!(AxisMapping::new(0.3, 50.0, -0.1, 0.4).is_err());
+        assert!(AxisMapping::new(0.3, 50.0, 0.6, f32::NAN).is_err());
     }
 
     #[test]

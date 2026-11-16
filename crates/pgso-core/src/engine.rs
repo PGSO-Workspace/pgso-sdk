@@ -97,6 +97,44 @@ pub(crate) enum ProcessOutcome {
     Triggered(EngineOutput),
 }
 
+impl ProcessOutcome {
+    pub(crate) const fn result(&self) -> ReadingResult {
+        match self {
+            Self::Abstained => ReadingResult::Abstained,
+            Self::Nominal => ReadingResult::Nominal,
+            Self::Pending => ReadingResult::Pending,
+            Self::Triggered(_) => ReadingResult::Triggered,
+        }
+    }
+}
+
+/// How the engine classified one reading, for per-reading logs.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum ReadingResult {
+    /// Invalid, low-confidence or backward-timestamp reading; all state held.
+    Abstained,
+    /// Deviation below the engine threshold; the reference adapted.
+    Nominal,
+    /// Deviation at or above the threshold, hysteresis not yet met; reference frozen.
+    Pending,
+    /// Sustained deviation; reference frozen.
+    Triggered,
+}
+
+impl ReadingResult {
+    /// Stable lowercase identifier for logs and exports.
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Abstained => "abstained",
+            Self::Nominal => "nominal",
+            Self::Pending => "pending",
+            Self::Triggered => "triggered",
+        }
+    }
+}
+
 /// Per-axis running state: adapted baseline, count of readings seen (for the
 /// warm-up/EMA switch), and the hysteresis run-length of above-threshold
 /// windows.
@@ -196,6 +234,13 @@ impl DecisionEngine {
     /// Returns the error cached at construction.
     pub fn validate(&self) -> Result<(), crate::ConfigError> {
         self.configuration_error.clone().map_or(Ok(()), Err)
+    }
+
+    /// Reference the next reading on `axis` would be measured against.
+    pub(crate) fn reference(&self, axis: Axis) -> f32 {
+        self.axes
+            .get(&axis)
+            .map_or(self.config.population_prior, |state| state.baseline)
     }
 
     /// Process one reading.

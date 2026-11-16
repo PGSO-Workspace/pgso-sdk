@@ -4,7 +4,8 @@
 use pgso_actuator_local::LocalActuator;
 use pgso_core::{
     Action, Actuator, AudioWindow, Axis, Catalog, DecisionEngine, Direction, EngineConfig,
-    GovernanceState, Pgso, Rule, RuleEngine, RuleSet, Signal, SignalReading, Tool, ToolId,
+    GovernanceState, Pgso, ReadingResult, Rule, RuleEngine, RuleSet, Signal, SignalReading, Tool,
+    ToolId,
 };
 use std::cell::RefCell;
 use std::collections::HashSet;
@@ -162,6 +163,7 @@ fn trace() -> String {
             let mut alone = engine(&config);
             for (step, (timestamp_ms, pair)) in readings(scenario).into_iter().enumerate() {
                 write!(out, "{label}/{name}#{step} t={timestamp_ms}").unwrap();
+                let mut expected = None;
                 if let Some((value, confidence)) = pair {
                     let reading = SignalReading {
                         value,
@@ -170,7 +172,20 @@ fn trace() -> String {
                         timestamp_ms,
                     };
                     let before = reference(&alone);
-                    let decision = alone.process(&reading).map_or_else(
+                    let output = alone.process(&reading);
+                    expected = Some((
+                        before.to_bits(),
+                        if confidence < config.confidence_threshold {
+                            ReadingResult::Abstained
+                        } else if (value - before).abs() < config.deviation_threshold {
+                            ReadingResult::Nominal
+                        } else if output.is_some() {
+                            ReadingResult::Triggered
+                        } else {
+                            ReadingResult::Pending
+                        },
+                    ));
+                    let decision = output.map_or_else(
                         || "-".to_string(),
                         |o| format!("{:08x}/{:08x}", o.deviation.to_bits(), o.baseline.to_bits()),
                     );
@@ -187,6 +202,12 @@ fn trace() -> String {
                     out.push_str(" silence");
                 }
                 let _ = pgso.process_window(&window).unwrap();
+                let logged: Vec<_> = pgso
+                    .last_readings()
+                    .iter()
+                    .map(|r| (r.reference.to_bits(), r.result))
+                    .collect();
+                assert_eq!(logged, Vec::from_iter(expected), "{label}/{name}#{step}");
                 writeln!(out, " served={}", served(&pgso.actuator().current_state())).unwrap();
             }
             writeln!(

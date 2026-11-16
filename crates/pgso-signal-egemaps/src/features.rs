@@ -125,6 +125,40 @@ impl Default for AxisMapping {
 }
 
 impl AxisMapping {
+    /// Build a mapping for the integrator's recording conditions.
+    ///
+    /// # Errors
+    /// References must be finite and positive; weights finite and non-negative.
+    pub fn new(
+        energy_ref: f32,
+        f0_std_ref: f32,
+        w_energy: f32,
+        w_f0_std: f32,
+    ) -> Result<Self, pgso_core::ConfigError> {
+        let mapping = Self {
+            energy_ref,
+            f0_std_ref,
+            w_energy,
+            w_f0_std,
+        };
+        mapping.validate()?;
+        Ok(mapping)
+    }
+
+    pub(crate) fn validate(&self) -> Result<(), pgso_core::ConfigError> {
+        let reference = |x: f32| x.is_finite() && x > 0.0;
+        let weight = |x: f32| x.is_finite() && x >= 0.0;
+        if reference(self.energy_ref)
+            && reference(self.f0_std_ref)
+            && weight(self.w_energy)
+            && weight(self.w_f0_std)
+        {
+            Ok(())
+        } else {
+            Err(pgso_core::ConfigError("axis mapping"))
+        }
+    }
+
     /// Map mean energy + F0 std to an Arousal scalar in `[0, 1]`.
     #[must_use]
     pub fn arousal(&self, mean_energy: f32, f0_std: f32) -> f32 {

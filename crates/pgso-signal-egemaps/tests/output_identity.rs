@@ -6,7 +6,7 @@
 use pgso_actuator_local::LocalActuator;
 use pgso_core::{
     Action, Actuator, AudioWindow, Axis, Catalog, DecisionEngine, Direction, EngineConfig, Pgso,
-    Rule, RuleEngine, RuleSet, SignalReading, Tool, ToolId,
+    ReadingResult, Rule, RuleEngine, RuleSet, SignalReading, Tool, ToolId,
 };
 use pgso_signal_egemaps::EgemapsSignal;
 use std::collections::HashSet;
@@ -129,10 +129,13 @@ fn trace() -> String {
         let mut alone = engine();
         let mut pgso = pipeline(sr);
         for (index, window) in clip(sr).iter().enumerate() {
+            let mut expected = Vec::new();
             for explained in extractor.extract_explained(window) {
                 let (r, f) = (&explained.reading, &explained.features);
                 let before = reference(&alone);
-                let decision = alone.process(r).map_or_else(
+                let output = alone.process(r);
+                expected.push((r.value.to_bits(), before.to_bits(), output.is_some()));
+                let decision = output.map_or_else(
                     || "-".to_string(),
                     |o| format!("{:08x}/{:08x}", o.deviation.to_bits(), o.baseline.to_bits()),
                 );
@@ -160,6 +163,18 @@ fn trace() -> String {
                 .unwrap();
             }
             let _ = pgso.process_window(window).unwrap();
+            let logged: Vec<_> = pgso
+                .last_readings()
+                .iter()
+                .map(|r| {
+                    (
+                        r.reading.value.to_bits(),
+                        r.reference.to_bits(),
+                        r.result == ReadingResult::Triggered,
+                    )
+                })
+                .collect();
+            assert_eq!(logged, expected, "{sr}#{index}");
             writeln!(
                 out,
                 "{sr}#{index} served={:?}",
