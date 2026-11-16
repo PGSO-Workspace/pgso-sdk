@@ -128,7 +128,8 @@ impl AxisMapping {
     /// Build a mapping for the integrator's recording conditions.
     ///
     /// # Errors
-    /// References must be finite and positive; weights finite and non-negative.
+    /// References must be finite and positive; weights finite, non-negative
+    /// and not both zero.
     pub fn new(
         energy_ref: f32,
         f0_std_ref: f32,
@@ -152,6 +153,7 @@ impl AxisMapping {
             && reference(self.f0_std_ref)
             && weight(self.w_energy)
             && weight(self.w_f0_std)
+            && self.w_energy + self.w_f0_std > 0.0
         {
             Ok(())
         } else {
@@ -230,6 +232,13 @@ mod tests {
         let mapping = AxisMapping::default();
         let arousal = mapping.arousal(0.3, 40.0); // mean_energy, f0_std
         assert!((0.0..=1.0).contains(&arousal));
+    }
+
+    #[test]
+    fn test_axis_mapping_rejects_zero_total_weight() {
+        assert!(AxisMapping::default().validate().is_ok());
+        assert!(AxisMapping::new(0.3, 50.0, 0.0, 0.0).is_err());
+        assert!(AxisMapping::new(0.3, 50.0, 0.0, 0.4).is_ok());
     }
 
     #[test]

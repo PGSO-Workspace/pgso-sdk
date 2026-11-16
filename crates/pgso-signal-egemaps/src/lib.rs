@@ -125,7 +125,8 @@ impl EgemapsSignal {
         Ok(signal)
     }
 
-    /// Replace the default [`AxisMapping`].
+    /// Replace the default [`AxisMapping`]. A non-default mapping must be
+    /// recorded in the run manifest.
     ///
     /// # Errors
     /// Rejects a mapping that [`AxisMapping::new`] would reject.
@@ -133,6 +134,12 @@ impl EgemapsSignal {
         mapping.validate()?;
         self.mapping = mapping;
         Ok(self)
+    }
+
+    /// The [`AxisMapping`] in force.
+    #[must_use]
+    pub const fn mapping(&self) -> &AxisMapping {
+        &self.mapping
     }
 
     fn validate(&self) -> Result<(), pgso_core::ConfigError> {

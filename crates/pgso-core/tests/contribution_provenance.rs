@@ -353,3 +353,42 @@ fn failed_commits_leave_provenance_unchanged() {
     );
     assert!(!p.current_catalog().contains(&ToolId::from("quote")));
 }
+
+#[test]
+fn rejected_reading_truncates_the_reading_log_and_holds_the_engine() {
+    let fail = std::rc::Rc::new(std::cell::Cell::new(true));
+    let actuator = Flaky {
+        inner: LocalActuator::new(
+            Catalog::new(vec![Tool::new("quote", "q"), Tool::new("refund", "r")]),
+            HashSet::new(),
+        ),
+        fail: std::rc::Rc::clone(&fail),
+    };
+    let rules = vec![rule("arousal_rule", Axis::Arousal, 0.3, "quote")];
+    let window = [high(400), high(800), high(1200), high(1600)].concat();
+    let mut p = pipeline_with(vec![window, high(1000)], rules, actuator);
+    let audio = AudioWindow {
+        samples: vec![],
+        sample_rate: 16_000,
+        timestamp_ms: 0,
+    };
+    assert!(p.process_window(&audio).is_err());
+    let logged: Vec<_> = p
+        .last_readings()
+        .iter()
+        .map(|l| (l.reading.timestamp_ms, l.result.as_str()))
+        .collect();
+    assert_eq!(logged, [(400, "pending"), (800, "pending")]);
+    assert!(p.current_catalog().contains(&ToolId::from("quote")));
+
+    // Had the engine consumed 1200 or 1600, timestamp 1000 would abstain.
+    fail.set(false);
+    assert!(!p
+        .process_window(&audio)
+        .unwrap()
+        .contains(&ToolId::from("quote")));
+    let [logged] = p.last_readings() else {
+        panic!("one committed reading");
+    };
+    assert_eq!(logged.result.as_str(), "triggered");
+}

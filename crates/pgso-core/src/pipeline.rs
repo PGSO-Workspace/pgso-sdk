@@ -83,7 +83,11 @@ pub struct ContributionProvenance {
 
 /// One committed reading as the engine saw it, for the integrator's reading log.
 /// Recording this never changes a governance decision.
+///
+/// It does not carry the abstention reason, a reading the actuator rejected,
+/// or the hysteresis count and side.
 #[derive(Debug, Clone)]
+#[non_exhaustive]
 pub struct ReadingRecord {
     /// The reading handed to the engine.
     pub reading: SignalReading,
