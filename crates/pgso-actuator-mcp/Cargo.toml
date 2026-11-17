@@ -1,6 +1,6 @@
 [package]
 name = "pgso-actuator-mcp"
-version = "0.1.0"
+version = "0.2.0"
 edition.workspace = true
 rust-version.workspace = true
 description = "PGSO Actuator that serves the governed tool catalog over the Model Context Protocol (tools/list) and tracks tools/list_changed notifications."
@@ -11,7 +11,7 @@ keywords = ["mcp", "agent", "governance", "tools"]
 categories = ["api-bindings"]
 
 [dependencies]
-pgso-core = { version = "0.1.0", path = "../pgso-core" }
+pgso-core = { version = "0.2.0", path = "../pgso-core" }
 serde_json = "1"
 
 [dev-dependencies]

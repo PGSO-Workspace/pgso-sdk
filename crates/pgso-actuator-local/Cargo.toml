@@ -1,6 +1,6 @@
 [package]
 name = "pgso-actuator-local"
-version = "0.1.0"
+version = "0.2.0"
 edition.workspace = true
 rust-version.workspace = true
 description = "Reference in-memory Actuator for PGSO: applies governance decisions to a served tool catalog and backstops the G2 inviolable allowlist."
@@ -11,4 +11,4 @@ keywords = ["agent", "governance", "tools", "actuator", "catalog"]
 categories = ["algorithms"]
 
 [dependencies]
-pgso-core = { version = "0.1.0", path = "../pgso-core" }
+pgso-core = { version = "0.2.0", path = "../pgso-core" }
