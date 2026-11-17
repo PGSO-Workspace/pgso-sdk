@@ -383,12 +383,18 @@ fn failed_reconciliation_does_not_advance_engine_or_commit_policy() {
     assert!(p.process_window(&audio).is_err());
     assert!(p.current_catalog().contains(&ToolId::from("quote")));
     assert!(p.audit_log().transitions().is_empty());
+    assert!(p.last_readings().is_empty());
     // If the failed commit consumed timestamp 20, timestamp 10 would be rejected.
     assert!(!p
         .process_window(&audio)
         .unwrap()
         .contains(&ToolId::from("quote")));
     assert_eq!(p.audit_log().transitions().len(), 1);
+    let [logged] = p.last_readings() else {
+        panic!("one committed reading");
+    };
+    assert_eq!(logged.reference, 0.5);
+    assert_eq!(logged.result.as_str(), "triggered");
 }
 
 #[test]

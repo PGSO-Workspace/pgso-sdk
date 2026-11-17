@@ -30,7 +30,7 @@ use std::collections::BTreeMap;
 use crate::{
     action::{Action, AuditRecord, ScopeDecision},
     audit::{AuditLog, TransitionCause},
-    engine::{DecisionEngine, ProcessOutcome},
+    engine::{DecisionEngine, ProcessOutcome, ReadingResult},
     error::ActuatorError,
     rules::RuleEngine,
     traits::{Actuator, Signal},
@@ -81,6 +81,23 @@ pub struct ContributionProvenance {
     pub rule_ids: Vec<String>,
 }
 
+/// One committed reading as the engine saw it, for the integrator's reading log.
+/// Recording this never changes a governance decision.
+///
+/// It does not carry the abstention reason, a reading the actuator rejected,
+/// or the hysteresis count and side.
+#[derive(Debug, Clone)]
+#[non_exhaustive]
+pub struct ReadingRecord {
+    /// The reading handed to the engine.
+    pub reading: SignalReading,
+    /// Reference in force when the reading arrived: the population prior until
+    /// the axis has adapted, and unchanged by this reading unless it is nominal.
+    pub reference: f32,
+    /// The engine's classification of the reading.
+    pub result: ReadingResult,
+}
+
 /// The end-to-end governance pipeline.
 ///
 /// Construct one with [`Pgso::builder`], then drive it window-by-window with
@@ -95,6 +112,7 @@ pub struct Pgso<S: Signal, A: Actuator> {
     audit_log: AuditLog,
     active: BTreeMap<Axis, Vec<ScopeDecision>>,
     provenance: BTreeMap<Axis, ContributionProvenance>,
+    last_readings: Vec<ReadingRecord>,
 }
 
 impl<S: Signal, A: Actuator> Pgso<S, A> {
@@ -119,15 +137,24 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
     #[must_use = "the returned catalog is the served catalog after this window"]
     pub fn process_window(&mut self, window: &AudioWindow) -> Result<Catalog, ActuatorError> {
         let readings = self.signal.extract(window);
+        self.last_readings.clear();
 
         for reading in &readings {
             // Stage the engine as well as policy: failed actuator commits must
             // not consume a reading or advance hysteresis/baselines.
             let mut engine = self.engine.clone();
             let mut next = self.active.clone();
-            let cause = match engine.process_outcome(reading) {
+            let reference = engine.reference(reading.axis);
+            let outcome = engine.process_outcome(reading);
+            let record = ReadingRecord {
+                reading: reading.clone(),
+                reference,
+                result: outcome.result(),
+            };
+            let cause = match outcome {
                 ProcessOutcome::Abstained | ProcessOutcome::Pending => {
                     self.engine = engine;
+                    self.last_readings.push(record);
                     continue;
                 }
                 ProcessOutcome::Nominal => {
@@ -159,6 +186,7 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
             )?;
             self.engine = engine;
             self.record_provenance(reading);
+            self.last_readings.push(record);
         }
 
         Ok(self.actuator.current_catalog())
@@ -262,6 +290,13 @@ impl<S: Signal, A: Actuator> Pgso<S, A> {
     /// Active contributions with their activating and latest renewing readings.
     pub fn contributions(&self) -> impl Iterator<Item = &ContributionProvenance> {
         self.provenance.values()
+    }
+
+    /// Readings committed by the latest [`Self::process_window`] call, in order.
+    /// After an actuator error, holds those committed before the rejected reading.
+    #[must_use]
+    pub fn last_readings(&self) -> &[ReadingRecord] {
+        &self.last_readings
     }
 
     /// The catalog currently served by the actuator.
@@ -376,6 +411,7 @@ impl<S: Signal, A: Actuator> PgsoBuilder<S, A> {
             audit_log: AuditLog::new(),
             active: BTreeMap::new(),
             provenance: BTreeMap::new(),
+            last_readings: Vec::new(),
         })
     }
 }
