@@ -1,0 +1,37 @@
+Cargo.lock
+  s_1b6a661fe0b65c::t_2122d289859a72 878,895,902,912,923
+crates/pgso-actuator-http/Cargo.toml
+  s_7a80d4335b92c7::t_ec580f8190af5f 3,10-11
+crates/pgso-actuator-local/Cargo.toml
+  s_7a80d4335b92c7::t_26756e66255024 3,14
+crates/pgso-actuator-mcp/Cargo.toml
+  s_7a80d4335b92c7::t_f93d2749089789 3,14
+crates/pgso-core/Cargo.toml
+  s_7a80d4335b92c7::t_3a4189c4a17245 3
+crates/pgso-signal-egemaps/Cargo.toml
+  s_7a80d4335b92c7::t_55a6c2c709be73 3,23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6d3c0bfd2c71863fe6471fa9d2f8b48238f734c4",
+  "prompts": {},
+  "sessions": {
+    "s_1b6a661fe0b65c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3099d54d-04c3-4bcd-86a0-47e83a758790",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    },
+    "s_7a80d4335b92c7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e839a8f7-0d9e-48d7-87d2-3f3429dd258e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Lucio <lucioyen1@gmail.com>"
+    }
+  }
+}
