@@ -1,0 +1,198 @@
+{
+  "scope": "nEMO (9 actores) y direcci\u00f3n inversa; desarrollo; etiqueta derivada de la categor\u00eda",
+  "modelo_congelado_sha256": "62daf2fdee79fa2beddf9a93eecb5c453dccd2e5e8f79846a39da10437e39012",
+  "transferencia_crema_a_nemo": {
+    "egemaps": {
+      "n": 4477,
+      "total": 4481,
+      "coverage": 0.9991073421111359,
+      "speakers": 9,
+      "auc": 0.5585419456103116,
+      "auc_ci95": [
+        0.4362284711246605,
+        0.6573668332840757
+      ],
+      "bal_acc_umbral_origen": 0.5295523055718113,
+      "bal_acc_ci95": [
+        0.4410836826671279,
+        0.5998975530001328
+      ],
+      "undefined_auc_replicates": 0
+    },
+    "opensmile_lineal": {
+      "n": 4481,
+      "total": 4481,
+      "coverage": 1.0,
+      "speakers": 9,
+      "auc": 0.5313235248532286,
+      "auc_ci95": [
+        0.4104673132486294,
+        0.6165590716335996
+      ],
+      "bal_acc_umbral_origen": 0.5049277068824829,
+      "bal_acc_ci95": [
+        0.4267464813561711,
+        0.5809204859570956
+      ],
+      "undefined_auc_replicates": 0
+    },
+    "praat_indice": {
+      "n": 4481,
+      "total": 4481,
+      "coverage": 1.0,
+      "speakers": 9,
+      "auc": 0.49842477538423385,
+      "auc_ci95": [
+        0.3448152975465848,
+        0.6333504979761458
+      ],
+      "bal_acc_umbral_origen": 0.5312512688460476,
+      "bal_acc_ci95": [
+        0.48519571148780816,
+        0.5818915137640565
+      ],
+      "undefined_auc_replicates": 0
+    },
+    "rms_trivial": {
+      "n": 4481,
+      "total": 4481,
+      "coverage": 1.0,
+      "speakers": 9,
+      "auc": 0.5421606161538236,
+      "auc_ci95": [
+        0.41681636281821216,
+        0.64395474053155
+      ],
+      "bal_acc_umbral_origen": 0.5147106463441735,
+      "bal_acc_ci95": [
+        0.47275946422621323,
+        0.5741658458461097
+      ],
+      "undefined_auc_replicates": 0
+    }
+  },
+  "dentro_nemo_dejando_un_actor": {
+    "egemaps": {
+      "n": 4477,
+      "total": 4481,
+      "coverage": 0.9991073421111359,
+      "speakers": 9,
+      "auc": 0.5585419456103116,
+      "auc_ci95": [
+        0.4362284711246605,
+        0.6573668332840757
+      ],
+      "undefined_auc_replicates": 0,
+      "bal_acc_umbral_propio": 0.4777361936847524
+    },
+    "opensmile_lineal": {
+      "n": 4481,
+      "total": 4481,
+      "coverage": 1.0,
+      "speakers": 9,
+      "auc": 0.7576889341780519,
+      "auc_ci95": [
+        0.6782647910658252,
+        0.8688371861886899
+      ],
+      "undefined_auc_replicates": 0,
+      "bal_acc_umbral_propio": 0.6940143647561829
+    },
+    "praat_indice": {
+      "n": 4481,
+      "total": 4481,
+      "coverage": 1.0,
+      "speakers": 9,
+      "auc": 0.49861512957837856,
+      "auc_ci95": [
+        0.3520661901510302,
+        0.6273419715495072
+      ],
+      "undefined_auc_replicates": 0,
+      "bal_acc_umbral_propio": 0.5072051900332989
+    },
+    "rms_trivial": {
+      "n": 4481,
+      "total": 4481,
+      "coverage": 1.0,
+      "speakers": 9,
+      "auc": 0.5421606161538236,
+      "auc_ci95": [
+        0.41681636281821216,
+        0.64395474053155
+      ],
+      "undefined_auc_replicates": 0,
+      "bal_acc_umbral_propio": 0.4810874812865673
+    }
+  },
+  "inversa_nemo_a_crema_eval": {
+    "egemaps": {
+      "n": 1984,
+      "total": 2035,
+      "coverage": 0.9749385749385749,
+      "speakers": 30,
+      "auc": 0.7711517776268116,
+      "auc_ci95": [
+        0.7404033890499601,
+        0.8014094415268009
+      ],
+      "bal_acc_umbral_origen": 0.6791039576365663,
+      "bal_acc_ci95": [
+        0.6451902307435209,
+        0.7137693200102656
+      ],
+      "undefined_auc_replicates": 0
+    },
+    "opensmile_lineal": {
+      "n": 2035,
+      "total": 2035,
+      "coverage": 1.0,
+      "speakers": 30,
+      "auc": 0.7571772879075123,
+      "auc_ci95": [
+        0.7161205357142857,
+        0.79923777305936
+      ],
+      "bal_acc_umbral_origen": 0.6392766062747841,
+      "bal_acc_ci95": [
+        0.6097832722832723,
+        0.6700641145679055
+      ],
+      "undefined_auc_replicates": 0
+    },
+    "praat_indice": {
+      "n": 2035,
+      "total": 2035,
+      "coverage": 1.0,
+      "speakers": 30,
+      "auc": 0.7150624881128406,
+      "auc_ci95": [
+        0.6865339296431097,
+        0.7427400412087912
+      ],
+      "bal_acc_umbral_origen": 0.666256623576353,
+      "bal_acc_ci95": [
+        0.6335454552194089,
+        0.6969870908005146
+      ],
+      "undefined_auc_replicates": 0
+    },
+    "rms_trivial": {
+      "n": 2035,
+      "total": 2035,
+      "coverage": 1.0,
+      "speakers": 30,
+      "auc": 0.8309420970074012,
+      "auc_ci95": [
+        0.8011804240421814,
+        0.8612980288310591
+      ],
+      "bal_acc_umbral_origen": 0.6510303227376563,
+      "bal_acc_ci95": [
+        0.6119857030522574,
+        0.6913873117183449
+      ],
+      "undefined_auc_replicates": 0
+    }
+  }
+}

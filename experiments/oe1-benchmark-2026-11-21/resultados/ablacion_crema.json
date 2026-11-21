@@ -1,0 +1,273 @@
+{
+  "scope": "CREMA-D completo (91 actores), desarrollo; clips con lectura en audio original y normalizado",
+  "clips": 7204,
+  "clips_con_lectura_original": 7204,
+  "clips_con_lectura_normalizado": 7388,
+  "total_clips": 7442,
+  "original": {
+    "energia": {
+      "spearman": {
+        "estimate": 0.452008726026555,
+        "ci95": [
+          0.4097288435011928,
+          0.4926974254124757
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "spearman_dentro_hablante": {
+        "estimate": 0.5228104239586812,
+        "ci95": [
+          0.4883943583582421,
+          0.5528936363334758
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "auc_activacion": {
+        "estimate": 0.8385883462183149,
+        "ci95": [
+          0.8211698034802066,
+          0.8561962241181298
+        ],
+        "speakers": 91,
+        "n": 6004,
+        "bootstrap_undefined": 0
+      }
+    },
+    "f0": {
+      "spearman": {
+        "estimate": 0.2224700678383194,
+        "ci95": [
+          0.17957874082720807,
+          0.26297962331752467
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "spearman_dentro_hablante": {
+        "estimate": 0.2357971424799271,
+        "ci95": [
+          0.19827148694728736,
+          0.2695248869002569
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "auc_activacion": {
+        "estimate": 0.6769650309581637,
+        "ci95": [
+          0.6555521334014056,
+          0.6972980080159216
+        ],
+        "speakers": 91,
+        "n": 6004,
+        "bootstrap_undefined": 0
+      }
+    },
+    "combinacion": {
+      "spearman": {
+        "estimate": 0.4176974668695922,
+        "ci95": [
+          0.37589224857226505,
+          0.45588661584051393
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "spearman_dentro_hablante": {
+        "estimate": 0.4436873342170752,
+        "ci95": [
+          0.4092304577698187,
+          0.4758952199683616
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "auc_activacion": {
+        "estimate": 0.7779152627167927,
+        "ci95": [
+          0.7598401804899447,
+          0.7956131980756375
+        ],
+        "speakers": 91,
+        "n": 6004,
+        "bootstrap_undefined": 0
+      }
+    },
+    "energia_menos_combinacion": {
+      "estimate": 0.034311259156962814,
+      "ci95": [
+        0.008890910142622013,
+        0.05986158530668414
+      ],
+      "speakers": 91,
+      "n": 7204,
+      "bootstrap_undefined": 0
+    },
+    "f0_menos_combinacion": {
+      "estimate": -0.19522739903127279,
+      "ci95": [
+        -0.2214614851891814,
+        -0.1707031790248105
+      ],
+      "speakers": 91,
+      "n": 7204,
+      "bootstrap_undefined": 0
+    }
+  },
+  "normalizado_rms": {
+    "energia": {
+      "spearman": {
+        "estimate": -0.17085490874477652,
+        "ci95": [
+          -0.20960335593985213,
+          -0.12912730999547195
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "spearman_dentro_hablante": {
+        "estimate": -0.13251844576170596,
+        "ci95": [
+          -0.17017644220465092,
+          -0.09100300960296939
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "auc_activacion": {
+        "estimate": 0.4380418034983295,
+        "ci95": [
+          0.4161288933458728,
+          0.45977177518041473
+        ],
+        "speakers": 91,
+        "n": 6004,
+        "bootstrap_undefined": 0
+      }
+    },
+    "f0": {
+      "spearman": {
+        "estimate": 0.14415869725456582,
+        "ci95": [
+          0.09975086491755959,
+          0.18661917691526717
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "spearman_dentro_hablante": {
+        "estimate": 0.14798464353524698,
+        "ci95": [
+          0.10956575560663383,
+          0.18178527156498622
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "auc_activacion": {
+        "estimate": 0.6058942257988499,
+        "ci95": [
+          0.5826530255689685,
+          0.6267138453880352
+        ],
+        "speakers": 91,
+        "n": 6004,
+        "bootstrap_undefined": 0
+      }
+    },
+    "combinacion": {
+      "spearman": {
+        "estimate": 0.11592854301833269,
+        "ci95": [
+          0.07304526537367706,
+          0.1559645084458817
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "spearman_dentro_hablante": {
+        "estimate": 0.12548613414393167,
+        "ci95": [
+          0.08778889264129058,
+          0.15769513437376254
+        ],
+        "speakers": 91,
+        "n": 7204,
+        "bootstrap_undefined": 0
+      },
+      "auc_activacion": {
+        "estimate": 0.5954585547345655,
+        "ci95": [
+          0.5730456895986149,
+          0.6155325390192982
+        ],
+        "speakers": 91,
+        "n": 6004,
+        "bootstrap_undefined": 0
+      }
+    },
+    "energia_menos_combinacion": {
+      "estimate": -0.2867834517631092,
+      "ci95": [
+        -0.3505288224000421,
+        -0.22112256890540477
+      ],
+      "speakers": 91,
+      "n": 7204,
+      "bootstrap_undefined": 0
+    },
+    "f0_menos_combinacion": {
+      "estimate": 0.028230154236233124,
+      "ci95": [
+        0.020750440964747943,
+        0.03537904708601312
+      ],
+      "speakers": 91,
+      "n": 7204,
+      "bootstrap_undefined": 0
+    }
+  },
+  "energia_normalizado_menos_original": {
+    "estimate": -0.6228636347713316,
+    "ci95": [
+      -0.6829634471173592,
+      -0.5605814106503758
+    ],
+    "speakers": 91,
+    "n": 7204,
+    "bootstrap_undefined": 0
+  },
+  "f0_normalizado_menos_original": {
+    "estimate": -0.07831137058375359,
+    "ci95": [
+      -0.0959316892279381,
+      -0.0606358484811993
+    ],
+    "speakers": 91,
+    "n": 7204,
+    "bootstrap_undefined": 0
+  },
+  "combinacion_normalizado_menos_original": {
+    "estimate": -0.30176892385125953,
+    "ci95": [
+      -0.3387734405558882,
+      -0.2657363825346897
+    ],
+    "speakers": 91,
+    "n": 7204,
+    "bootstrap_undefined": 0
+  }
+}
