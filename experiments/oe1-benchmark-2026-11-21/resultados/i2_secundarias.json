@@ -1,0 +1,351 @@
+{
+  "scope": "CREMA-D, partición de evaluación (30 actores); desarrollo",
+  "within_speaker": {
+    "egemaps": {
+      "estimate": 0.41142176354302157,
+      "ci95": [
+        0.345679925071867,
+        0.4701525907146683
+      ],
+      "speakers": 30,
+      "n": 2383,
+      "bootstrap_undefined": 0
+    },
+    "opensmile_lineal": {
+      "estimate": 0.5752814799841285,
+      "ci95": [
+        0.5190375789716029,
+        0.6244965952648842
+      ],
+      "speakers": 30,
+      "n": 2454,
+      "bootstrap_undefined": 0
+    },
+    "praat_indice": {
+      "estimate": 0.2649708344795153,
+      "ci95": [
+        0.21030145772257577,
+        0.31877290094044697
+      ],
+      "speakers": 30,
+      "n": 2454,
+      "bootstrap_undefined": 0
+    },
+    "rms_trivial": {
+      "estimate": 0.44817833481521113,
+      "ci95": [
+        0.3731981670281512,
+        0.5138392867385835
+      ],
+      "speakers": 30,
+      "n": 2454,
+      "bootstrap_undefined": 0
+    }
+  },
+  "by_category": {
+    "egemaps": {
+      "ANG": {
+        "estimate": 0.5997677224998635,
+        "ci95": [
+          0.48262943040471085,
+          0.687851923546846
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "DIS": {
+        "estimate": 0.17371266590189113,
+        "ci95": [
+          0.023880131436379168,
+          0.3055664651710414
+        ],
+        "speakers": 30,
+        "n": 399,
+        "bootstrap_undefined": 0
+      },
+      "FEA": {
+        "estimate": 0.33772838808016337,
+        "ci95": [
+          0.20865827756813662,
+          0.4617354482626215
+        ],
+        "speakers": 30,
+        "n": 412,
+        "bootstrap_undefined": 0
+      },
+      "HAP": {
+        "estimate": 0.41808343297976014,
+        "ci95": [
+          0.27572761992455785,
+          0.5349534420615807
+        ],
+        "speakers": 30,
+        "n": 417,
+        "bootstrap_undefined": 0
+      },
+      "NEU": {
+        "estimate": -0.08412942682252214,
+        "ci95": [
+          -0.17368625480439306,
+          0.007228291682965229
+        ],
+        "speakers": 30,
+        "n": 359,
+        "bootstrap_undefined": 0
+      },
+      "SAD": {
+        "estimate": 0.005345634855775853,
+        "ci95": [
+          -0.12433316244850637,
+          0.13701358727128435
+        ],
+        "speakers": 30,
+        "n": 377,
+        "bootstrap_undefined": 0
+      }
+    },
+    "opensmile_lineal": {
+      "ANG": {
+        "estimate": 0.6901626354459347,
+        "ci95": [
+          0.6015989936761453,
+          0.7595070892923912
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "DIS": {
+        "estimate": 0.2871305307649504,
+        "ci95": [
+          0.16224409250958743,
+          0.39016525475248853
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "FEA": {
+        "estimate": 0.5696784450894188,
+        "ci95": [
+          0.4541650987119691,
+          0.6596010044715072
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "HAP": {
+        "estimate": 0.5607172276664412,
+        "ci95": [
+          0.4368199553543098,
+          0.646276198805438
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "NEU": {
+        "estimate": 0.04204302916374925,
+        "ci95": [
+          -0.07377035760039057,
+          0.14640489190279102
+        ],
+        "speakers": 30,
+        "n": 359,
+        "bootstrap_undefined": 0
+      },
+      "SAD": {
+        "estimate": 0.19250093977370694,
+        "ci95": [
+          0.07605294461626926,
+          0.30885590908003563
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      }
+    },
+    "praat_indice": {
+      "ANG": {
+        "estimate": 0.28153596139468057,
+        "ci95": [
+          0.136745792201885,
+          0.40377337279942555
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "DIS": {
+        "estimate": 0.18832755677166985,
+        "ci95": [
+          0.07676203347956324,
+          0.2858334509077922
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "FEA": {
+        "estimate": 0.25111564380002216,
+        "ci95": [
+          0.11861236669576349,
+          0.37402245339406537
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "HAP": {
+        "estimate": 0.28341068460104646,
+        "ci95": [
+          0.17236844152479372,
+          0.3843923939597723
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "NEU": {
+        "estimate": -0.050869556667406494,
+        "ci95": [
+          -0.14365472464889711,
+          0.03341369904686596
+        ],
+        "speakers": 30,
+        "n": 359,
+        "bootstrap_undefined": 0
+      },
+      "SAD": {
+        "estimate": 0.09068932220114997,
+        "ci95": [
+          -0.017771903927840366,
+          0.18963847326213873
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      }
+    },
+    "rms_trivial": {
+      "ANG": {
+        "estimate": 0.6165821275387334,
+        "ci95": [
+          0.492364595213525,
+          0.7088024247750904
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "DIS": {
+        "estimate": 0.2923827827438983,
+        "ci95": [
+          0.12226402808219786,
+          0.4311042526324179
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "FEA": {
+        "estimate": 0.42873691068909203,
+        "ci95": [
+          0.28897097131744165,
+          0.550596398151656
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "HAP": {
+        "estimate": 0.3978568130414433,
+        "ci95": [
+          0.2736030972073997,
+          0.506312070121803
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      },
+      "NEU": {
+        "estimate": -0.050907991022277735,
+        "ci95": [
+          -0.17544180372686594,
+          0.06881600519093906
+        ],
+        "speakers": 30,
+        "n": 359,
+        "bootstrap_undefined": 0
+      },
+      "SAD": {
+        "estimate": 0.07608393276819993,
+        "ci95": [
+          -0.0686473347493145,
+          0.22582734077238403
+        ],
+        "speakers": 30,
+        "n": 419,
+        "bootstrap_undefined": 0
+      }
+    }
+  },
+  "paired_within_vs_egemaps": {
+    "opensmile_lineal": {
+      "estimate": 0.17145367175694487,
+      "ci95": [
+        0.1349801270609137,
+        0.20940890711920157
+      ],
+      "speakers": 30,
+      "n": 2383,
+      "bootstrap_undefined": 0
+    },
+    "praat_indice": {
+      "estimate": -0.14456344233003465,
+      "ci95": [
+        -0.19871711362337832,
+        -0.08882730445427464
+      ],
+      "speakers": 30,
+      "n": 2383,
+      "bootstrap_undefined": 0
+    },
+    "rms_trivial": {
+      "estimate": 0.04855638230740528,
+      "ci95": [
+        0.014739621240815608,
+        0.08682156702536767
+      ],
+      "speakers": 30,
+      "n": 2383,
+      "bootstrap_undefined": 0
+    }
+  },
+  "human_ceiling_split_half_spearman_brown": {
+    "estimate": 0.7809947033029702,
+    "ci95": [
+      0.7434895591780238,
+      0.8110252063224891
+    ],
+    "speakers": 30,
+    "n": 2454,
+    "bootstrap_undefined": 0
+  },
+  "human_ceiling_split_half_raw": {
+    "estimate": 0.6406819604632757,
+    "ci95": [
+      0.591709815827998,
+      0.6821214466794278
+    ],
+    "speakers": 30,
+    "n": 2454,
+    "bootstrap_undefined": 0
+  },
+  "ratings_per_clip_test": {
+    "median": 10.0,
+    "min": 6
+  }
+}

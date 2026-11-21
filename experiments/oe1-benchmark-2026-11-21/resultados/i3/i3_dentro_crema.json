@@ -1,0 +1,73 @@
+{
+  "scope": "CREMA-D, partici\u00f3n de evaluaci\u00f3n; desarrollo",
+  "resultados": {
+    "egemaps": {
+      "n": 1984,
+      "total": 2035,
+      "coverage": 0.9749385749385749,
+      "speakers": 30,
+      "auc": 0.7711517776268116,
+      "auc_ci95": [
+        0.7404033890499601,
+        0.8014094415268009
+      ],
+      "bal_acc_umbral_origen": 0.696401198439242,
+      "bal_acc_ci95": [
+        0.6662737533081134,
+        0.7286821491563986
+      ],
+      "undefined_auc_replicates": 0
+    },
+    "opensmile_lineal": {
+      "n": 2035,
+      "total": 2035,
+      "coverage": 1.0,
+      "speakers": 30,
+      "auc": 0.8954037339485003,
+      "auc_ci95": [
+        0.8706190681743444,
+        0.9201792385263999
+      ],
+      "bal_acc_umbral_origen": 0.8257367993733805,
+      "bal_acc_ci95": [
+        0.7967702797767533,
+        0.8548578000072563
+      ],
+      "undefined_auc_replicates": 0
+    },
+    "praat_indice": {
+      "n": 2035,
+      "total": 2035,
+      "coverage": 1.0,
+      "speakers": 30,
+      "auc": 0.6964694369627771,
+      "auc_ci95": [
+        0.667026187932438,
+        0.7243451745014244
+      ],
+      "bal_acc_umbral_origen": 0.6531459814754599,
+      "bal_acc_ci95": [
+        0.6246840414517718,
+        0.6796715136012478
+      ],
+      "undefined_auc_replicates": 0
+    },
+    "rms_trivial": {
+      "n": 2035,
+      "total": 2035,
+      "coverage": 1.0,
+      "speakers": 30,
+      "auc": 0.8309420970074012,
+      "auc_ci95": [
+        0.8011804240421814,
+        0.8612980288310591
+      ],
+      "bal_acc_umbral_origen": 0.7736613269035304,
+      "bal_acc_ci95": [
+        0.7387667887667888,
+        0.8075156986597233
+      ],
+      "undefined_auc_replicates": 0
+    }
+  }
+}
