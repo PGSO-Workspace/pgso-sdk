@@ -3,7 +3,8 @@
 ## context.md is stale: describes an architecture the shipped SDK does not implement
 
 **Type:** docs-only cleanup (no code change implied)
-**Status:** open
+**Status:** resolved on 2026-11-21 — `context.md` §2–§4 were rewritten to describe the shipped
+SDK (option 1 below); the discrepancy list is kept as history.
 
 ### Summary
 
@@ -64,3 +65,18 @@ Either:
    and stop citing it as the architecture reference.
 
 The paper should cite the master spec / implementation report, not `context.md`.
+
+## Confidence accepts low-frequency and periodic non-speech
+
+**Type:** signal limitation (no change to the G4 contract)
+**Status:** open — documented by the OE4-I5 calibration set
+(`experiments/oe4-i5-confidence-calibration-2026-11-21`)
+
+With the default `pgso-signal-egemaps` configuration and `confidence_threshold = 0.5`, silence,
+white noise and speech-shaped noise windows are never accepted, but brown (1/f²) noise and
+periodic non-speech (pure tones, vibrato tones, mains hum with harmonics) are accepted in about
+half of the windows, and raising the threshold up to 0.8 does not remove them while it lowers speech
+coverage. The confidence measures periodicity and voiced fraction, not the presence of a voice.
+The engine still holds its state on low-confidence readings; what is missing is a plausibility
+gate for the source (for example, a speech-band or spectral-shape check) before a reading is
+treated as voice.
