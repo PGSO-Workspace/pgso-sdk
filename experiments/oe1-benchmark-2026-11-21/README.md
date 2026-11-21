@@ -53,3 +53,5 @@ License 1.0; `datos/labels_crema.csv`, `predicciones/pred_i2_crema.csv` y las le
 y quedan bajo la misma licencia. nEMO (Christop, 2024) se distribuye con CC BY-NC-SA 4.0; por eso aquí solo constan sus huellas
 y resultados agregados, y no sus lecturas por clip. Los descriptores por clip de openSMILE y Praat, y el registro del consejo de
 asesores que decidió el plan, están en el paquete de evidencia del equipo (Evidencia_OE1_2026-11-21.zip, OneDrive del curso).
+
+Los CSV quedan normalizados a fin de línea LF por `.gitattributes`; por eso sus huellas pueden diferir de las del paquete de OneDrive, que conserva los archivos tal como se generaron.
