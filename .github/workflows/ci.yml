@@ -39,6 +39,9 @@ jobs:
           cargo test -p pgso-core --example validation_trace
           cargo test -p pgso-actuator-http --example lifecycle_comparison
 
+      - name: E0 acoustic manifest preflight (synthetic data only)
+        run: python3 -m unittest discover -s experiments/phase2-arousal-benchmark -p 'test_preflight_manifest.py' -v
+
       - name: Reproducible engineering evaluation
         run: |
           python3 experiments/reproducibility/test_package.py
